@@ -1,0 +1,177 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const metadata = {
+  title: 'Talk to Elle — The Ethical Intelligence Project',
+  description: 'Speak with Elle, the intelligence behind The Ethical Intelligence Project.',
+};
+---
+
+<Layout metadata={metadata}>
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap');
+    #elle-page * { box-sizing: border-box; }
+    #elle-page {
+      --bg:#0b0b12; --surface:#14141f; --raised:#1b1b29;
+      --gold:#C9A84C; --gold-l:#E4C97A; --text:#F5F0E8; --dim:#9a958c;
+      --border:rgba(201,168,76,.18);
+      position:fixed; inset:0; background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,sans-serif; display:flex; flex-direction:column; z-index:50;
+    }
+    #elle-page .top {
+      display:flex; align-items:center; gap:12px; padding:16px 22px;
+      border-bottom:1px solid var(--border); background:rgba(201,168,76,.03); flex-shrink:0;
+    }
+    #elle-page .mark { width:30px; height:30px; }
+    #elle-page .word { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--gold-l); letter-spacing:.01em; }
+    #elle-page .sub { font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-top:1px; }
+    #elle-page .back { margin-left:auto; font-size:.8rem; color:var(--dim); text-decoration:none; font-family:'JetBrains Mono',monospace; }
+    #elle-page .back:hover { color:var(--gold-l); }
+    #elle-page .scroll { flex:1; overflow-y:auto; }
+    #elle-page .conv { max-width:760px; margin:0 auto; padding:32px 22px 8px; }
+    #elle-page .empty { text-align:center; padding:8vh 12px 4vh; }
+    #elle-page .empty h1 { font-family:'Playfair Display',serif; font-weight:500; font-size:2rem; color:var(--text); margin:0 0 10px; }
+    #elle-page .empty p { color:var(--dim); font-size:1rem; line-height:1.6; max-width:520px; margin:0 auto; }
+    #elle-page .chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:24px; }
+    #elle-page .chip {
+      padding:8px 14px; border:1px solid var(--border); border-radius:999px;
+      font-size:.82rem; color:var(--gold-l); cursor:pointer; background:rgba(201,168,76,.04); transition:.15s;
+    }
+    #elle-page .chip:hover { background:rgba(201,168,76,.12); }
+    #elle-page .msg { display:flex; gap:13px; padding:14px 0; animation:eu .2s ease both; }
+    @keyframes eu { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    #elle-page .av { width:30px; height:30px; flex-shrink:0; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:.62rem; font-family:'JetBrains Mono',monospace; }
+    #elle-page .msg.user .av { background:rgba(245,240,232,.06); border:1px solid rgba(245,240,232,.12); color:var(--dim); }
+    #elle-page .msg.elle .av { background:rgba(201,168,76,.08); border:1px solid var(--border); }
+    #elle-page .who { font-size:.72rem; font-family:'JetBrains Mono',monospace; color:var(--dim); margin-bottom:4px; }
+    #elle-page .msg.elle .who { color:var(--gold); }
+    #elle-page .body { font-size:1rem; line-height:1.72; color:var(--text); white-space:pre-wrap; word-wrap:break-word; }
+    #elle-page .body strong { color:var(--gold-l); font-weight:600; }
+    #elle-page .body code { font-family:'JetBrains Mono',monospace; font-size:.86em; background:rgba(201,168,76,.1); border:1px solid var(--border); padding:1px 5px; border-radius:4px; color:var(--gold-l); }
+    #elle-page .body.err { color:#e08585; }
+    #elle-page .typing { display:flex; gap:5px; padding:6px 0; }
+    #elle-page .typing i { width:6px; height:6px; border-radius:50%; background:var(--gold); animation:eb 1.2s infinite; }
+    #elle-page .typing i:nth-child(2){animation-delay:.15s} #elle-page .typing i:nth-child(3){animation-delay:.3s}
+    @keyframes eb { 0%,60%,100%{opacity:.25} 30%{opacity:1} }
+    #elle-page .composer { flex-shrink:0; border-top:1px solid var(--border); background:rgba(245,240,232,.02); }
+    #elle-page .composer-inner { max-width:760px; margin:0 auto; padding:14px 22px 18px; display:flex; gap:10px; align-items:flex-end; }
+    #elle-page textarea {
+      flex:1; resize:none; background:var(--raised); border:1px solid var(--border); border-radius:14px;
+      color:var(--text); font-size:1rem; font-family:Inter,sans-serif; line-height:1.5; padding:13px 16px; outline:none; max-height:160px;
+    }
+    #elle-page textarea:focus { border-color:rgba(201,168,76,.5); }
+    #elle-page textarea::placeholder { color:rgba(245,240,232,.3); }
+    #elle-page .send { width:46px; height:46px; flex-shrink:0; border-radius:13px; border:1px solid var(--border); background:rgba(201,168,76,.15); color:var(--gold-l); font-size:1.1rem; cursor:pointer; transition:.12s; }
+    #elle-page .send:hover:not(:disabled) { background:rgba(201,168,76,.28); }
+    #elle-page .send:disabled { opacity:.35; cursor:default; }
+    #elle-page .foot { text-align:center; font-size:.66rem; color:rgba(245,240,232,.28); font-family:'JetBrains Mono',monospace; padding:0 0 10px; }
+    @media (max-width:640px){ #elle-page .empty h1{font-size:1.5rem} #elle-page .conv{padding:20px 16px 4px} }
+  </style>
+
+  <div id="elle-page">
+    <div class="top">
+      <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
+        <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <circle cx="21.5" cy="8.75" r="2" fill="#C9A84C"></circle>
+      </svg>
+      <div>
+        <div class="word">Elle</div>
+        <div class="sub">The Ethical Intelligence Project</div>
+      </div>
+      <a class="back" href="/">← back to site</a>
+    </div>
+
+    <div class="scroll"><div class="conv" id="elle-conv">
+      <div class="empty" id="elle-empty">
+        <h1>What are you trying to navigate?</h1>
+        <p>I'm Elle — the intelligence behind The Ethical Intelligence Project. Ask me about the corpus, the methodology, or whatever you're working through.</p>
+        <div class="chips" id="elle-chips">
+          <div class="chip">What is the Observer methodology?</div>
+          <div class="chip">Explain bilateral suppression.</div>
+          <div class="chip">What is the φ-winding result?</div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="composer"><div class="composer-inner">
+      <textarea id="elle-input" rows="1" placeholder="Ask Elle…"></textarea>
+      <button class="send" id="elle-send" aria-label="Send">↑</button>
+    </div>
+    <div class="foot">Elle can be wrong. Conversations are not private advice. · The Ethical Intelligence Project</div></div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      if (window.__elleInit) return; window.__elleInit = true;
+      var WORKER = "https://elle.sbarteau2022.workers.dev";
+      var conv = document.getElementById("elle-conv");
+      var empty = document.getElementById("elle-empty");
+      var input = document.getElementById("elle-input");
+      var sendBtn = document.getElementById("elle-send");
+      var scroller = document.querySelector("#elle-page .scroll");
+      var history = [];
+      var loading = false;
+      var session;
+      try {
+        session = localStorage.getItem("eip_elle_session");
+        if (!session) { session = "eip-" + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("eip_elle_session", session); }
+      } catch (e) { session = "eip-" + Math.random().toString(36).slice(2); }
+
+      function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+      function fmt(s){
+        return esc(s)
+          .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+          .replace(/`([^`]+)`/g, "<code>$1</code>");
+      }
+      function scrollDown(){ if (scroller) scroller.scrollTop = scroller.scrollHeight; }
+      function addMsg(role, text, isErr){
+        if (empty) { empty.remove(); empty = null; }
+        var m = document.createElement("div");
+        m.className = "msg " + role;
+        m.innerHTML = '<div class="av">' + (role === "user" ? "you" : "✦") + '</div>' +
+          '<div style="flex:1"><div class="who">' + (role === "user" ? "you" : "Elle") + '</div>' +
+          '<div class="body' + (isErr ? " err" : "") + '">' + fmt(text) + '</div></div>';
+        conv.appendChild(m); scrollDown(); return m;
+      }
+      function setTyping(on){
+        var t = document.getElementById("elle-typing");
+        if (on && !t){
+          t = document.createElement("div"); t.id = "elle-typing"; t.className = "msg elle";
+          t.innerHTML = '<div class="av">✦</div><div style="flex:1"><div class="who">Elle</div><div class="typing"><i></i><i></i><i></i></div></div>';
+          conv.appendChild(t); scrollDown();
+        }
+        if (!on && t) t.remove();
+      }
+      function send(q){
+        q = (q || input.value).trim();
+        if (!q || loading) return;
+        input.value = ""; input.style.height = "auto";
+        addMsg("user", q); history.push({ role: "user", content: q });
+        loading = true; sendBtn.disabled = true; setTyping(true);
+        fetch(WORKER + "/api/widget-chat", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: q, messages: history.slice(-16), session_id: session, source: "eip:" + location.hostname })
+        }).then(function(r){ return r.json().then(function(d){ return { ok: r.ok, status: r.status, d: d }; }); })
+          .then(function(res){
+            setTyping(false);
+            if (res.status === 429) { addMsg("elle", "I've hit a rate limit for now — please try again in a little while.", true); return; }
+            if (!res.ok || res.d.error) { addMsg("elle", res.d.error || "Something interrupted the connection. Please try again.", true); return; }
+            var content = res.d.content || res.d.response || "";
+            addMsg("elle", content); history.push({ role: "assistant", content: content });
+          })
+          .catch(function(){ setTyping(false); addMsg("elle", "Connection failed. Please try again.", true); })
+          .finally(function(){ loading = false; sendBtn.disabled = false; input.focus(); });
+      }
+
+      sendBtn.addEventListener("click", function(){ send(); });
+      input.addEventListener("keydown", function(e){ if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+      input.addEventListener("input", function(){ input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
+      var chips = document.getElementById("elle-chips");
+      if (chips) chips.addEventListener("click", function(e){ if (e.target.classList.contains("chip")) send(e.target.textContent); });
+      input.focus();
+    })();
+  </script>
+</Layout>
