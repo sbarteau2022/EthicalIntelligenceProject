@@ -1,398 +1,432 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import Note from '~/components/widgets/Note.astro';
-import Features from '~/components/widgets/Features.astro';
-import Features2 from '~/components/widgets/Features2.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import FAQs from '~/components/widgets/FAQs.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+// ============================================================
+// THE ETHICAL INTELLIGENCE PROJECT — Landing Page
+// Community-Based Intelligence for the People Doing the Work
+// ============================================================
+import Layout from '~/layouts/Layout.astro';
 
 const metadata = {
-  title: 'AstroWind — Free template for creating websites with Astro + Tailwind CSS',
-  ignoreTitleTemplate: true,
+  title: 'The Ethical Intelligence Project — Community-Based Intelligence',
+  description: 'We build community-based intelligence infrastructure that transforms complexity into action. Intelligence should serve the people doing the work.',
 };
+
+const programs = [
+  {
+    name: 'Agricultural Intelligence',
+    body: 'Plain-language navigation for USDA programs, conservation initiatives, agricultural funding, crop insurance, and farm resources.',
+    because: 'Because access should not require a lawyer and an accountant.',
+    href: '/programs/agriculture',
+    icon: 'leaf',
+  },
+  {
+    name: 'Healthcare Navigation',
+    body: 'Guided support for healthcare access, benefits eligibility, assistance programs, and patient rights.',
+    because: 'Because understanding healthcare should not be a full-time job.',
+    href: '/programs/healthcare',
+    icon: 'cross',
+  },
+  {
+    name: 'Small Business Resource Hub',
+    body: 'Licensing, compliance, legal literacy, grants, funding pathways, and operational guidance for rural entrepreneurs and local businesses.',
+    because: 'Because opportunity should not belong only to those who can afford consultants.',
+    href: '/programs/business',
+    icon: 'briefcase',
+  },
+  {
+    name: 'Civic Intelligence',
+    body: 'Government documents translated into language people can actually use.',
+    because: 'Because participation requires understanding.',
+    href: '/programs/civic',
+    icon: 'people',
+  },
+];
+
+const principles = [
+  { name: 'Transparent', body: 'Our methods, data, and models are open to review.', icon: 'eye' },
+  { name: 'Auditable', body: 'Systems are designed for independent audit.', icon: 'shield' },
+  { name: 'Human-Centered', body: 'Technology serves people. Not the other way around.', icon: 'people' },
+  { name: 'Non-Extractive', body: 'We do not sell data. We build trust.', icon: 'hands' },
+  { name: 'Community Governed', body: 'Guided by the communities we exist to serve.', icon: 'people' },
+];
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero Widget ******************* -->
+  <div class="eip">
 
-  <Hero
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Get template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        target: '_blank',
-        icon: 'tabler:download',
-      },
-      { text: 'Learn more', href: '#features' },
-    ]}
-    image={{ src: '~/assets/images/hero-image.png', alt: 'AstroWind Hero Image' }}
-  >
-    <Fragment slot="title">
-      Free template for <span class="hidden xl:inline">creating websites with</span>
-      <span class="text-accent dark:text-white"> Astro v6</span> + Tailwind CSS
-    </Fragment>
+    <!-- ══════════════ NAV ══════════════ -->
+    <header class="eip-nav">
+      <div class="eip-nav-inner">
+        <a href="/" class="eip-brand">
+          <svg class="eip-compass" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+            <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+            <path d="M24 4 L27 21 L44 24 L27 27 L24 44 L21 27 L4 24 L21 21 Z" fill="currentColor"/>
+            <circle cx="24" cy="24" r="2.5" fill="#0A1020"/>
+          </svg>
+          <span class="eip-brand-text">THE ETHICAL<br/>INTELLIGENCE PROJECT</span>
+        </a>
+        <nav class="eip-links">
+          <a href="#mission">MISSION</a>
+          <a href="#build">WHAT WE BUILD</a>
+          <a href="#observer">THE OBSERVER</a>
+          <a href="#principles">PRINCIPLES</a>
+          <a href="#involved">GET INVOLVED</a>
+          <a href="/about">ABOUT</a>
+          <a href="/donate" class="eip-donate">DONATE</a>
+        </nav>
+      </div>
+    </header>
 
-    <Fragment slot="subtitle">
-      <span class="hidden sm:inline">
-        <span class="font-semibold">AstroWind</span> is a free, customizable and production-ready template for Astro v6 +
-        Tailwind CSS v4.</span
-      >
-      <span class="block mb-1 sm:hidden font-bold text-blue-600">AstroWind: Production-ready.</span>
-      Suitable for Startups, Small Business, SaaS websites, Professional Portfolios, Marketing websites, Landing Pages & Blogs.
-    </Fragment>
-  </Hero>
+    <!-- ══════════════ HERO ══════════════ -->
+    <section class="eip-hero">
+      <div class="eip-hero-grid">
+        <div class="eip-hero-left">
+          <h1 class="eip-h1">Community-Based<br/>Intelligence</h1>
+          <p class="eip-h1-sub"><em>for the People Doing the Work.</em></p>
+          <div class="eip-rule"></div>
 
-  <!-- Note Widget ******************* -->
+          <div class="eip-exists">
+            <div class="eip-exists-item">
+              <svg viewBox="0 0 24 24" class="eip-ei-icon"><path d="M4 3h12l4 4v14H4z" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.3"/></svg>
+              <span>THE INFORMATION<br/>EXISTS.</span>
+            </div>
+            <div class="eip-exists-item">
+              <svg viewBox="0 0 24 24" class="eip-ei-icon"><circle cx="9" cy="8" r="3" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="16" cy="9" r="2.4" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 14c3 0 6 1.6 6 4.4" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>
+              <span>THE RESOURCES<br/>EXIST.</span>
+            </div>
+            <div class="eip-exists-item">
+              <svg viewBox="0 0 24 24" class="eip-ei-icon"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+              <span>THE OPPORTUNITIES<br/>EXIST.</span>
+            </div>
+          </div>
 
-  <Note title="Philosophy:" description="Simplicity, Best Practices and High Performance" />
+          <p class="eip-lead">For millions of working people, the problem is access.</p>
+          <p class="eip-body">
+            Government programs, healthcare systems, legal processes, grant opportunities,
+            and civic institutions are often written for specialists, consultants, and
+            organizations with resources most communities do not have.
+          </p>
+          <p class="eip-accent-line">The Ethical Intelligence Project exists to close that gap.</p>
+          <p class="eip-body">
+            We build community-based intelligence infrastructure that transforms
+            complexity into action.
+          </p>
 
-  <!-- Features Widget *************** -->
+          <div class="eip-cta-row">
+            <a href="#build" class="eip-btn eip-btn-primary">LEARN MORE →</a>
+            <a href="/donate" class="eip-btn eip-btn-ghost">SUPPORT THE MISSION</a>
+          </div>
+        </div>
 
-  <Features
-    id="features"
-    tagline="Features"
-    title="What you get with AstroWind"
-    subtitle="One of the most professional and comprehensive templates currently on the market. Most starred & forked Astro theme in 2022, 2023, 2024 and 2025."
-    items={[
-      {
-        title: 'Astro + Tailwind CSS Integration',
-        description:
-          'A seamless integration between two great frameworks that offer high productivity, performance and versatility. Now powered by Tailwind CSS v4.',
-        icon: 'tabler:brand-tailwind',
-      },
-      {
-        title: 'Ready-to-use Components',
-        description:
-          'Widgets made with Tailwind CSS v4 ready to be used in Marketing Websites, SaaS, Blogs, Personal Profiles, Small Business...',
-        icon: 'tabler:components',
-      },
-      {
-        title: 'Best Practices',
-        description:
-          'Creating secure, efficient, and user-friendly websites that deliver exceptional experiences and lasting value.',
-        icon: 'tabler:list-check',
-      },
-      {
-        title: 'Excellent Page Speed',
-        description:
-          'Having a good page speed impacts organic search ranking, improves user experience (UI/UX) and increase conversion rates.',
-        icon: 'tabler:rocket',
-      },
-      {
-        title: 'Search Engine Optimization (SEO)',
-        description:
-          "SEO lies in its ability to enhance a website's visibility, driving organic traffic and enabling it to reach a wider audience.",
-        icon: 'tabler:arrows-right-left',
-      },
-      {
-        title: 'Open to new ideas and contributions',
-        description:
-          'Embracing a culture that is open to new ideas and contributions is integral fostering innovation, collaboration, and a dynamic user experience.',
-        icon: 'tabler:bulb',
-      },
-    ]}
-  />
+        <div class="eip-hero-right">
+          <div class="eip-hero-art">
+            <div class="eip-constellation">
+              <span class="eip-c-label" style="top:14%;left:30%">COMMUNITIES</span>
+              <span class="eip-c-label" style="top:14%;right:6%">OPPORTUNITIES</span>
+              <span class="eip-c-label" style="top:40%;left:6%">RESOURCES</span>
+              <span class="eip-c-label" style="top:62%;right:18%">UNDERSTANDING</span>
+              <div class="eip-sun"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Content Widget **************** -->
+    <!-- ══════════════ MISSION BAND ══════════════ -->
+    <section id="mission" class="eip-band">
+      <div class="eip-band-inner">
+        <div class="eip-band-title">
+          <svg viewBox="0 0 48 48" class="eip-band-icon"><path d="M24 6v36M12 18h24M14 42h20M16 18l-4 24M32 18l4 24" stroke="currentColor" fill="none" stroke-width="1.2"/><circle cx="24" cy="6" r="2.5" fill="currentColor"/></svg>
+          <h2>A New Kind of<br/>Public Infrastructure</h2>
+        </div>
+        <div class="eip-band-col">
+          <p class="eip-band-strong">The internet gave people information.</p>
+          <p class="eip-band-accent"><em>We are building understanding.</em></p>
+          <p class="eip-band-body">
+            The Ethical Intelligence Project combines human expertise, transparent research,
+            and accountable artificial intelligence to help people find resources, understand
+            institutions, and make informed decisions.
+          </p>
+        </div>
+        <div class="eip-band-col eip-band-divider">
+          <p class="eip-band-body">Every system we build follows a simple principle:</p>
+          <p class="eip-band-accent eip-band-accent-lg"><em>Intelligence should serve the people doing the work.</em></p>
+        </div>
+      </div>
+    </section>
 
-  <Content
-    isReversed
-    tagline="Inside template"
-    title="AstroWind's Blueprint: Fun Meets Functionality!"
-    items={[
-      {
-        title: 'Built on top of Astro v6',
-        description:
-          'Benefiting from the performance and developer-friendly features of this modern static site generator.',
-      },
-      {
-        title: 'Styled using Tailwind CSS v4',
-        description:
-          'Facilitating rapid design and consistent styling with this highly popular utility-first CSS framework.',
-      },
-      {
-        title: 'Cross-browser compatibility',
-        description:
-          'Ensure your website looks and functions consistently across various web browsers, delivering a seamless experience to all users.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Colorful Image',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">Building on modern foundations</h3>
-      Gain a competitive advantage by incorporating industry leading practices
-    </Fragment>
+    <!-- ══════════════ WHAT WE BUILD ══════════════ -->
+    <section id="build" class="eip-build">
+      <div class="eip-section-label">WHAT WE BUILD</div>
+      <div class="eip-programs">
+        {programs.map((p) => (
+          <a href={p.href} class="eip-card">
+            <div class="eip-card-img" data-icon={p.icon}>
+              <div class="eip-card-icon">
+                {p.icon === 'leaf' && <svg viewBox="0 0 24 24"><path d="M12 21c-5-3-8-7-8-12a8 8 0 0116 0c0 5-3 9-8 12z" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M12 21V9M12 13l4-3M12 16l-3-2" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+                {p.icon === 'cross' && <svg viewBox="0 0 24 24"><path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+                {p.icon === 'briefcase' && <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="1.5" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2M3 13h18" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+                {p.icon === 'people' && <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="16" cy="9" r="2.4" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 14c3 0 6 1.6 6 4.4" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+              </div>
+            </div>
+            <h3 class="eip-card-title">{p.name}</h3>
+            <p class="eip-card-body">{p.body}</p>
+            <p class="eip-card-because"><em>{p.because}</em></p>
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
+    <!-- ══════════════ THE OBSERVER ══════════════ -->
+    <section id="observer" class="eip-observer">
+      <div class="eip-observer-inner">
+        <div class="eip-observer-left">
+          <h2 class="eip-observer-title">THE OBSERVER</h2>
+          <p class="eip-observer-lead">
+            The Observer is the research and testimony platform operated by the Foundation.
+          </p>
+          <p class="eip-observer-body">
+            It preserves public records, analyzes institutional systems, documents structural
+            patterns, and creates permanent space for witness testimony from people living
+            inside the events shaping our world.
+          </p>
+          <a href="/observer" class="eip-btn eip-btn-ghost">EXPLORE THE OBSERVER →</a>
+        </div>
+        <div class="eip-observer-mid">
+          <div class="eip-globe"></div>
+        </div>
+        <div class="eip-observer-right">
+          <div class="eip-observer-claim"><span class="eip-check">▣</span> Every claim is sourced.</div>
+          <div class="eip-observer-claim"><span class="eip-check">▣</span> Every revision is documented.</div>
+          <div class="eip-observer-claim"><span class="eip-check">▣</span> Every disclosure is public.</div>
+          <div class="eip-observer-rule"></div>
+          <p class="eip-observer-strong">Transparency is not a feature.</p>
+          <p class="eip-observer-accent"><em>It is the foundation.</em></p>
+        </div>
+      </div>
+    </section>
 
-  <!-- Content Widget **************** -->
+    <!-- ══════════════ PRINCIPLES ══════════════ -->
+    <section id="principles" class="eip-principles">
+      <div class="eip-section-label">OUR AI PRINCIPLES</div>
+      <div class="eip-principles-row">
+        {principles.map((pr) => (
+          <div class="eip-principle">
+            <div class="eip-principle-icon">
+              {pr.icon === 'eye' && <svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+              {pr.icon === 'shield' && <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M9 12l2 2 4-4" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+              {pr.icon === 'people' && <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3" stroke="currentColor" fill="none" stroke-width="1.3"/><circle cx="16" cy="9" r="2.4" stroke="currentColor" fill="none" stroke-width="1.3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 14c3 0 6 1.6 6 4.4" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+              {pr.icon === 'hands' && <svg viewBox="0 0 24 24"><path d="M12 21c-5-3-8-6-8-10a4 4 0 018-1 4 4 0 018 1c0 4-3 7-8 10z" stroke="currentColor" fill="none" stroke-width="1.3"/></svg>}
+            </div>
+            <h4>{pr.name}</h4>
+            <p>{pr.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
 
-  <Content
-    isAfterContent
-    items={[
-      {
-        title: 'High level of customization',
-        description: `Tailor the template effortlessly to match your brand's identity and requirements, making your website distinct and saving you time.`,
-      },
-      {
-        title: 'Multiple layout possibilities',
-        description:
-          'Explore various layout options to find the structure that best presents your content, enhancing user engagement and navigation.',
-      },
-      {
-        title: 'Fully responsive design',
-        description:
-          "Ensure your website's optimal performance on various devices and screen sizes, providing a consistent and enjoyable user experience.",
-      },
-      {
-        title: 'Integration of media',
-        description:
-          'Seamlessly incorporate images, videos, and multimedia elements that enhance your content and engage visitors effectively.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2194&q=80',
-      alt: 'Blueprint Image',
-    }}
-  >
-    <Fragment slot="content">Ensure your online presence truly represents you.</Fragment>
+    <!-- ══════════════ WHY THIS MATTERS + JOIN ══════════════ -->
+    <section id="involved" class="eip-why">
+      <div class="eip-why-inner">
+        <div class="eip-why-left">
+          <div class="eip-section-label eip-label-left">WHY THIS MATTERS</div>
+          <p class="eip-why-strong">A resource nobody can understand is not a resource.</p>
+          <p class="eip-why-strong">A right nobody can access is not a right.</p>
+          <p class="eip-why-strong">Information that cannot be used is exclusion.</p>
+          <p class="eip-why-body">
+            The future will be shaped by intelligence systems. The question is whether those
+            systems serve institutions — or the people living inside them.
+          </p>
+          <p class="eip-why-accent"><em>We know our answer.</em></p>
+        </div>
+        <div class="eip-why-right">
+          <div class="eip-section-label eip-label-left">JOIN THE PROJECT</div>
+          <p class="eip-join-body">
+            Whether you're a farmer, educator, veteran, community leader, researcher, donor,
+            developer, or citizen, there is a place for you here.
+          </p>
+          <p class="eip-join-body">
+            Help build intelligence infrastructure that belongs to the public.
+          </p>
+          <div class="eip-join-grid">
+            <a href="/volunteer" class="eip-join-btn">VOLUNTEER</a>
+            <a href="/partner" class="eip-join-btn">PARTNER</a>
+            <a href="/donate" class="eip-join-btn eip-join-btn-gold">DONATE</a>
+            <a href="/subscribe" class="eip-join-btn">STAY INFORMED</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
+    <!-- ══════════════ FOOTER ══════════════ -->
+    <footer class="eip-footer">
+      <div class="eip-footer-inner">
+        <div class="eip-footer-brand">
+          <svg class="eip-compass" viewBox="0 0 48 48" fill="none" aria-hidden="true" style="width:28px;height:28px">
+            <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+            <path d="M24 4 L27 21 L44 24 L27 27 L24 44 L21 27 L4 24 L21 21 Z" fill="currentColor"/>
+          </svg>
+          <span>THE ETHICAL INTELLIGENCE PROJECT<br/><span class="eip-footer-loc">Hermann, Missouri</span></span>
+        </div>
+        <nav class="eip-footer-links">
+          <a href="/about">ABOUT</a>
+          <a href="/transparency">TRANSPARENCY</a>
+          <a href="/observer">NECAI-F v2</a>
+          <a href="/contact">CONTACT</a>
+          <a href="/careers">CAREERS</a>
+        </nav>
+        <div class="eip-footer-social">
+          <a href="#" aria-label="X">𝕏</a>
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+    </footer>
 
-  <!-- Content Widget **************** -->
+  </div>
 
-  <Content
-    isReversed
-    isAfterContent
-    items={[
-      {
-        title: 'Enhanced user engagement',
-        description:
-          'Captivate your audience with interactive elements, intuitive navigation, and visually appealing layouts, encouraging longer visits.',
-      },
-      {
-        title: 'Continuous improvement',
-        description:
-          'Ensure your website stays aligned with the latest trends and technologies through regular updates and enhancements.',
-      },
-      {
-        title: 'Time and resource efficiency',
-        description:
-          'Skip the time-consuming process of building a website from scratch and launch your online presence sooner with AstroWind.',
-      },
-      {
-        title: 'Community support',
-        description: `Join the growing AstroWind community for insights, resources, and assistance, ensuring you're never alone on your web development journey.`,
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1611462985358-60d3498e0364?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Astronauts Image',
-    }}
-  >
-    <Fragment slot="content">Designed to foster growth and success.</Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
-
-  <!-- Steps Widget ****************** -->
-
-  <Steps
-    title="Get your dream website up and running in no time with AstroWind."
-    items={[
-      {
-        title: 'Step 1: <span class="font-medium">Download</span>',
-        description:
-          "Kickstart with GitHub! Either fork the AstroWind template or simply click 'Use this template'. Your canvas awaits, ready for your digital masterpiece. In just a few clicks, you've already set the foundation.",
-        icon: 'tabler:package',
-      },
-      {
-        title: 'Step 2: <span class="font-medium">Add content</span>',
-        description:
-          "Pour your vision into it. Add images, text, and all that jazz to breathe life into your digital space. Remember, it's the content that tells your story, so make it captivating.",
-        icon: 'tabler:letter-case',
-      },
-      {
-        title: 'Step 3: <span class="font-medium">Customize styles</span>',
-        description:
-          'Give it your personal touch. Tailor colors, fonts, and layouts until it feels just right. Your unique flair, amplified by AstroWind! Precision in design ensures a seamless user experience.',
-        icon: 'tabler:paint',
-      },
-      {
-        title: 'Ready!',
-        icon: 'tabler:check',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1616198814651-e71f960c3180?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
-      alt: 'Steps image',
-    }}
-  />
-
-  <!-- Features2 Widget ************** -->
-
-  <Features2
-    title="Most used widgets"
-    subtitle="Provides frequently used components for building websites using Tailwind CSS v4"
-    tagline="Components"
-    items={[
-      {
-        title: 'Headers',
-        description: "Ever tried driving without GPS? Boom! That's why websites need headers for direction.",
-        icon: 'flat-color-icons:template',
-      },
-      {
-        title: 'Heros',
-        description:
-          "Picture a superhero landing – epic, right? That's the job of a Hero section, making grand entrances!",
-        icon: 'flat-color-icons:gallery',
-      },
-      {
-        title: 'Features',
-        description:
-          'Where websites strut their stuff and show off superpowers. No holding back on the bragging rights here!',
-        icon: 'flat-color-icons:approval',
-      },
-      {
-        title: 'Content',
-        description:
-          "Dive into the meat and potatoes of a site; without it, you'd just be window shopping. Content is king.",
-        icon: 'flat-color-icons:document',
-      },
-      {
-        title: 'Call-to-Action',
-        description:
-          'That enthusiastic friend who\'s always urging, "Do it! Do it!"? Yeah, that\'s this button nudging you towards adventure.',
-        icon: 'flat-color-icons:advertising',
-      },
-      {
-        title: 'Pricing',
-        description: 'Behold the dessert menu of the website world. Tempting choices await, can you resist?',
-        icon: 'flat-color-icons:currency-exchange',
-      },
-      {
-        title: 'Testimonial',
-        description: 'Step into the gossip corner! Here, other visitors spill the beans and share the juicy details.',
-        icon: 'flat-color-icons:voice-presentation',
-      },
-      {
-        title: 'Contact',
-        description:
-          'Like a digital mailbox, but faster! Drop a line, ask a question, or send a virtual high-five. Ding! Message in.',
-        icon: 'flat-color-icons:business-contact',
-      },
-      {
-        title: 'Footers',
-        description: "The footer's like the credits of a movie but sprinkled with easter eggs. Time to hunt!",
-        icon: 'flat-color-icons:database',
-      },
-    ]}
-  >
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Features2>
-
-  <!-- HighlightedPosts Widget ******* -->
-
-  <BlogLatestPosts
-    title="Find out more content in our Blog"
-    information={`The blog is used to display AstroWind documentation.
-                        Each new article will be an important step that you will need to know to be an expert in creating a website using Astro v6 + Tailwind CSS v4.
-                        Astro is a very interesting technology. Thanks.
-                `}
-  />
-
-  <!-- FAQs Widget ******************* -->
-
-  <FAQs
-    title="Frequently Asked Questions"
-    subtitle="Dive into the following questions to gain insights into the powerful features that AstroWind offers and how it can elevate your web development journey."
-    tagline="FAQs"
-    classes={{ container: 'max-w-6xl' }}
-    items={[
-      {
-        title: 'Why AstroWind?',
-        description:
-          "Michael Knight a young loner on a crusade to champion the cause of the innocent. The helpless. The powerless in a world of criminals who operate above the law. Here he comes Here comes Speed Racer. He's a demon on wheels.",
-      },
-      {
-        title: 'What do I need to start?',
-        description:
-          'Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds. Many say exploration is part of our destiny, but it’s actually our duty to future generations.',
-      },
-      {
-        title: 'How to install the Astro + Tailwind CSS template?',
-        description:
-          "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows.",
-      },
-      {
-        title: "What's something that you don't understand?",
-        description:
-          "A flower in my garden, a mystery in my panties. Heart attack never stopped old Big Bear. I didn't even know we were calling him Big Bear.",
-      },
-      {
-        title: 'What is something that you would like to try again?',
-        description:
-          "A business big enough that it could be listed on the NASDAQ goes belly up. Disappears! It ceases to exist without me. No, you clearly don't know who you're talking to, so let me clue you in.",
-      },
-      {
-        title: 'If you could only ask one question to each person you meet, what would that question be?',
-        description:
-          "This is not about revenge. This is about justice. A lot of things can change in twelve years, Admiral. Well, that's certainly good to know. About four years. I got tired of hearing how young I looked.",
-      },
-    ]}
-  />
-
-  <!-- Stats Widget ****************** -->
-
-  <Stats
-    stats={[
-      { title: 'Downloads', amount: '132K' },
-      { title: 'Stars', amount: '24.8K' },
-      { title: 'Forks', amount: '10.3K' },
-      { title: 'Users', amount: '48.4K' },
-    ]}
-  />
-
-  <!-- CallToAction Widget *********** -->
-
-  <CallToAction
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Get template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        target: '_blank',
-        icon: 'tabler:download',
-      },
-    ]}
-  >
-    <Fragment slot="title">
-      Astro&nbsp;+&nbsp;<br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Tailwind CSS</span>
-    </Fragment>
-
-    <Fragment slot="subtitle">
-      Be very surprised by these huge fake numbers you are seeing on this page. <br class="hidden md:inline" />Don't
-      waste more time! :P
-    </Fragment>
-  </CallToAction>
+  <!-- Elle consumer widget — appears on every page -->
+  <script src="https://elle-worker.sbarteau2022.workers.dev/widget.js" data-title="Elle" data-accent="#C9A84C" defer></script>
 </Layout>
+
+<style is:global>
+  .eip {
+    --navy:#0A1020; --navy2:#0D1426; --navy3:#111B33;
+    --gold:#C9A84C; --gold-l:#E0C97A; --gold-d:#A8893A;
+    --ink:#EAE3D2; --ink2:#A9B0BE; --ink3:#6B7384;
+    --line:rgba(201,168,76,0.18); --line2:rgba(255,255,255,0.06);
+    --serif:'Playfair Display',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    background:var(--navy); color:var(--ink); font-family:var(--sans);
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+  .eip *,.eip *::before,.eip *::after{box-sizing:border-box}
+  .eip a{text-decoration:none;color:inherit}
+
+  /* NAV */
+  .eip-nav{position:sticky;top:0;z-index:100;background:rgba(10,16,32,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line2)}
+  .eip-nav-inner{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+  .eip-brand{display:flex;align-items:center;gap:12px;color:var(--gold)}
+  .eip-compass{width:38px;height:38px;flex-shrink:0}
+  .eip-brand-text{font-family:var(--serif);font-size:13px;line-height:1.25;letter-spacing:0.08em;color:var(--ink)}
+  .eip-links{display:flex;align-items:center;gap:26px}
+  .eip-links a{font-size:11.5px;letter-spacing:0.12em;color:var(--ink2);transition:color .15s}
+  .eip-links a:hover{color:var(--gold-l)}
+  .eip-donate{border:1px solid var(--gold);color:var(--gold)!important;padding:8px 18px;border-radius:3px}
+  .eip-donate:hover{background:var(--gold);color:var(--navy)!important}
+  @media(max-width:980px){.eip-links a:not(.eip-donate){display:none}}
+
+  /* HERO */
+  .eip-hero{max-width:1280px;margin:0 auto;padding:40px 28px 20px}
+  .eip-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  @media(max-width:900px){.eip-hero-grid{grid-template-columns:1fr}}
+  .eip-h1{font-family:var(--serif);font-size:clamp(40px,5vw,64px);font-weight:500;line-height:1.04;letter-spacing:-0.01em;color:var(--ink)}
+  .eip-h1-sub{font-family:var(--serif);font-size:clamp(20px,2.4vw,30px);color:var(--gold);margin-top:6px;font-weight:400}
+  .eip-rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:22px 0;max-width:300px}
+  .eip-exists{display:flex;gap:26px;margin-bottom:26px;flex-wrap:wrap}
+  .eip-exists-item{display:flex;flex-direction:column;gap:8px;border-left:1px solid var(--line);padding-left:12px}
+  .eip-exists-item:first-child{border-left:none;padding-left:0}
+  .eip-ei-icon{width:26px;height:26px;color:var(--gold)}
+  .eip-exists-item span{font-size:10.5px;letter-spacing:0.1em;color:var(--ink2);line-height:1.35}
+  .eip-lead{font-family:var(--serif);font-size:19px;color:var(--ink);margin-bottom:14px}
+  .eip-body{font-size:13.5px;line-height:1.7;color:var(--ink2);margin-bottom:14px;max-width:440px}
+  .eip-accent-line{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold);margin-bottom:14px}
+  .eip-cta-row{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+  .eip-btn{font-size:12px;letter-spacing:0.1em;padding:13px 24px;border-radius:3px;transition:all .15s;display:inline-block}
+  .eip-btn-primary{background:var(--gold);color:var(--navy);font-weight:600}
+  .eip-btn-primary:hover{background:var(--gold-l)}
+  .eip-btn-ghost{border:1px solid var(--line);color:var(--ink2)}
+  .eip-btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* HERO ART */
+  .eip-hero-art{position:relative;height:420px;border-radius:8px;overflow:hidden;background:radial-gradient(ellipse at 70% 45%,rgba(201,168,76,0.22),transparent 55%),linear-gradient(160deg,#0D1830,#0A1020 70%)}
+  .eip-constellation{position:absolute;inset:0}
+  .eip-c-label{position:absolute;font-size:10px;letter-spacing:0.14em;color:var(--ink2);opacity:0.8}
+  .eip-sun{position:absolute;top:42%;right:18%;width:10px;height:10px;background:var(--gold-l);border-radius:50%;box-shadow:0 0 40px 18px rgba(201,168,76,0.35),0 0 80px 40px rgba(201,168,76,0.15)}
+
+  /* MISSION BAND */
+  .eip-band{max-width:1280px;margin:30px auto;padding:0 28px}
+  .eip-band-inner{background:var(--navy2);border:1px solid var(--line);border-radius:8px;padding:34px;display:grid;grid-template-columns:1.1fr 1.3fr 1fr;gap:34px;align-items:start}
+  @media(max-width:900px){.eip-band-inner{grid-template-columns:1fr;gap:24px}}
+  .eip-band-title{display:flex;flex-direction:column;gap:14px}
+  .eip-band-icon{width:54px;height:54px;color:var(--gold)}
+  .eip-band-title h2{font-family:var(--serif);font-size:26px;font-weight:500;line-height:1.15;color:var(--ink)}
+  .eip-band-strong{font-size:15px;color:var(--ink);margin-bottom:6px}
+  .eip-band-accent{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:16px;margin-bottom:14px}
+  .eip-band-accent-lg{font-size:19px;line-height:1.4}
+  .eip-band-body{font-size:13px;line-height:1.7;color:var(--ink2)}
+  .eip-band-divider{border-left:1px solid var(--line);padding-left:28px}
+  @media(max-width:900px){.eip-band-divider{border-left:none;padding-left:0}}
+
+  /* SECTION LABEL */
+  .eip-section-label{text-align:center;font-size:11px;letter-spacing:0.22em;color:var(--gold);margin:50px 0 26px}
+  .eip-label-left{text-align:left;margin:0 0 20px}
+
+  /* WHAT WE BUILD */
+  .eip-build{max-width:1280px;margin:0 auto;padding:0 28px}
+  .eip-programs{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:980px){.eip-programs{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.eip-programs{grid-template-columns:1fr}}
+  .eip-card{background:var(--navy2);border:1px solid var(--line2);border-radius:8px;overflow:hidden;transition:all .2s;display:block}
+  .eip-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+  .eip-card-img{height:120px;background:linear-gradient(135deg,#16223C,#0C1426);display:flex;align-items:center;justify-content:center;position:relative}
+  .eip-card-icon{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);background:rgba(10,16,32,0.6)}
+  .eip-card-icon svg{width:24px;height:24px}
+  .eip-card-title{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--ink);padding:18px 18px 8px;line-height:1.2}
+  .eip-card-body{font-size:12.5px;line-height:1.6;color:var(--ink2);padding:0 18px 12px}
+  .eip-card-because{font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--gold);padding:0 18px 20px;line-height:1.5}
+
+  /* OBSERVER */
+  .eip-observer{max-width:1280px;margin:50px auto;padding:0 28px}
+  .eip-observer-inner{background:linear-gradient(135deg,var(--navy3),var(--navy2));border:1px solid var(--line);border-radius:8px;padding:40px;display:grid;grid-template-columns:1fr 0.8fr 1fr;gap:30px;align-items:center}
+  @media(max-width:900px){.eip-observer-inner{grid-template-columns:1fr;gap:26px}.eip-observer-mid{display:none}}
+  .eip-observer-title{font-family:var(--serif);font-size:30px;font-weight:500;letter-spacing:0.05em;color:var(--ink);margin-bottom:18px}
+  .eip-observer-lead{font-size:14.5px;color:var(--ink);line-height:1.6;margin-bottom:14px}
+  .eip-observer-body{font-size:13px;line-height:1.7;color:var(--ink2);margin-bottom:22px}
+  .eip-globe{width:200px;height:200px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(201,168,76,0.25),transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(201,168,76,0.12) 15px),repeating-linear-gradient(90deg,transparent,transparent 14px,rgba(201,168,76,0.12) 15px);border:1px solid var(--line);box-shadow:inset 0 0 60px rgba(0,0,0,0.6),0 0 50px rgba(201,168,76,0.1)}
+  .eip-observer-claim{font-size:13px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  .eip-check{color:var(--gold)}
+  .eip-observer-rule{height:1px;background:var(--line);margin:18px 0}
+  .eip-observer-strong{font-size:15px;color:var(--ink);margin-bottom:4px}
+  .eip-observer-accent{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--gold)}
+
+  /* PRINCIPLES */
+  .eip-principles{max-width:1280px;margin:0 auto;padding:0 28px}
+  .eip-principles-row{background:var(--navy2);border:1px solid var(--line2);border-radius:8px;padding:28px;display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+  @media(max-width:900px){.eip-principles-row{grid-template-columns:repeat(2,1fr);gap:24px}}
+  @media(max-width:520px){.eip-principles-row{grid-template-columns:1fr}}
+  .eip-principle{text-align:left}
+  .eip-principle-icon{width:34px;height:34px;color:var(--gold);margin-bottom:12px}
+  .eip-principle-icon svg{width:34px;height:34px}
+  .eip-principle h4{font-size:12px;letter-spacing:0.1em;color:var(--ink);margin-bottom:8px}
+  .eip-principle p{font-size:12px;line-height:1.6;color:var(--ink3)}
+
+  /* WHY + JOIN */
+  .eip-why{max-width:1280px;margin:50px auto;padding:0 28px}
+  .eip-why-inner{display:grid;grid-template-columns:1fr 1fr;gap:50px;border-top:1px solid var(--line);padding-top:36px}
+  @media(max-width:900px){.eip-why-inner{grid-template-columns:1fr;gap:36px}}
+  .eip-why-strong{font-family:var(--serif);font-size:17px;color:var(--ink);line-height:1.4;margin-bottom:10px}
+  .eip-why-body{font-size:13px;line-height:1.7;color:var(--ink2);margin:16px 0}
+  .eip-why-accent{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--gold)}
+  .eip-join-body{font-size:13px;line-height:1.7;color:var(--ink2);margin-bottom:14px}
+  .eip-join-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+  .eip-join-btn{border:1px solid var(--line);border-radius:4px;padding:16px;text-align:center;font-size:11.5px;letter-spacing:0.1em;color:var(--ink2);transition:all .15s}
+  .eip-join-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .eip-join-btn-gold{background:var(--gold);color:var(--navy);font-weight:600;border-color:var(--gold)}
+  .eip-join-btn-gold:hover{background:var(--gold-l);color:var(--navy)}
+
+  /* FOOTER */
+  .eip-footer{border-top:1px solid var(--line2);margin-top:50px}
+  .eip-footer-inner{max-width:1280px;margin:0 auto;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .eip-footer-brand{display:flex;align-items:center;gap:12px;color:var(--gold);font-size:11px;letter-spacing:0.08em;line-height:1.4}
+  .eip-footer-brand span{color:var(--ink2)}
+  .eip-footer-loc{color:var(--ink3)!important}
+  .eip-footer-links{display:flex;gap:22px;flex-wrap:wrap}
+  .eip-footer-links a{font-size:11px;letter-spacing:0.1em;color:var(--ink3);transition:color .15s}
+  .eip-footer-links a:hover{color:var(--gold)}
+  .eip-footer-social{display:flex;gap:16px}
+  .eip-footer-social a{color:var(--ink3);font-size:15px;transition:color .15s}
+  .eip-footer-social a:hover{color:var(--gold)}
+</style>
