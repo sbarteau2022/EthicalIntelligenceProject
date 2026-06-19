@@ -582,6 +582,14 @@ const metadata = {
       window.__elleInit = true;
 
       // ── config ──────────────────────────────────────────────
+      const WORKER = "https://elle-worker.sbarteau2022.workers.dev";
+      // Set this to the Google OAuth client ID to enable "Continue with Google".
+      // Google sign-in also requires the elle-worker /api/elle-oauth endpoint to be deployed.
+      // Left empty → the Google button is hidden and email/password + guest still work.
+      const GOOGLE_CLIENT_ID = "";
+      const TOKEN_KEY = "eip_elle_jwt";
+
+      // ── state ───────────────────────────────────────────────
       const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
       // Set this to the Google OAuth client ID to enable "Continue with Google".
       // Google sign-in also requires the elle-worker /api/elle-oauth endpoint to be deployed.
