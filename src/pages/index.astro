@@ -281,22 +281,22 @@ const principles = [
 
   <script is:inline>
     (function(){
-      var root = document.querySelector('.eip');
-      var saved = localStorage.getItem('eip-theme') || 'light';
+      const root = document.querySelector('.eip');
+      const saved = localStorage.getItem('eip-theme') || 'light';
       root.setAttribute('data-theme', saved);
       function toggleTheme(){
-        var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         root.setAttribute('data-theme', next);
         localStorage.setItem('eip-theme', next);
       }
-      var t1 = document.getElementById('themeToggle');
-      var t2 = document.getElementById('themeToggleM');
+      const t1 = document.getElementById('themeToggle');
+      const t2 = document.getElementById('themeToggleM');
       if(t1) t1.addEventListener('click', toggleTheme);
       if(t2) t2.addEventListener('click', toggleTheme);
 
       // Mobile drawer
-      var burger = document.getElementById('burger');
-      var drawer = document.getElementById('drawer');
+      const burger = document.getElementById('burger');
+      const drawer = document.getElementById('drawer');
       if(burger && drawer){
         burger.addEventListener('click', function(){
           burger.classList.toggle('open');
@@ -312,8 +312,8 @@ const principles = [
       }
 
       // Mobile accordion
-      var accBtn = document.getElementById('accBtn');
-      var accSub = document.getElementById('accSub');
+      const accBtn = document.getElementById('accBtn');
+      const accSub = document.getElementById('accSub');
       if(accBtn && accSub){
         accBtn.addEventListener('click', function(){
           accBtn.classList.toggle('open');
