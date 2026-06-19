@@ -171,43 +171,44 @@ const metadata = {
       if (window.__elleInit) return; window.__elleInit = true;
 
       // ── config ──────────────────────────────────────────────
-      var WORKER = "https://elle-worker.sbarteau2022.workers.dev";
+      const WORKER = "https://elle-worker.sbarteau2022.workers.dev";
       // Set this to the Google OAuth client ID to enable "Continue with Google".
       // Google sign-in also requires the elle-worker /api/elle-oauth endpoint to be deployed.
       // Left empty → the Google button is hidden and email/password + guest still work.
-      var GOOGLE_CLIENT_ID = "";
-      var TOKEN_KEY = "eip_elle_jwt";
+      const GOOGLE_CLIENT_ID = "";
+      const TOKEN_KEY = "eip_elle_jwt";
 
       // ── state ───────────────────────────────────────────────
-      var token = null, user = null, history = [], loading = false, session, mode = "signin";
-      try { token = localStorage.getItem(TOKEN_KEY) || null; } catch (e) {}
+      let token = null, user = null, loading = false, session, mode = "signin";
+      const history = [];
+      try { token = localStorage.getItem(TOKEN_KEY) || null; } catch { /* ignore */ }
       try {
         session = localStorage.getItem("eip_elle_session");
         if (!session) { session = "eip-" + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("eip_elle_session", session); }
-      } catch (e) { session = "eip-" + Math.random().toString(36).slice(2); }
+      } catch { session = "eip-" + Math.random().toString(36).slice(2); }
 
       // ── els ─────────────────────────────────────────────────
-      var conv = document.getElementById("elle-conv");
-      var empty = document.getElementById("elle-empty");
-      var emptyMode = document.getElementById("elle-empty-mode");
-      var input = document.getElementById("elle-input");
-      var sendBtn = document.getElementById("elle-send");
-      var scroller = document.querySelector("#elle-page .scroll");
-      var modeEl = document.getElementById("elle-mode");
-      var acctEl = document.getElementById("elle-acct");
-      var auth = document.getElementById("elle-auth");
-      var emailEl = document.getElementById("elle-email");
-      var pwEl = document.getElementById("elle-pw");
-      var errEl = document.getElementById("elle-auth-err");
-      var goEl = document.getElementById("elle-auth-go");
-      var titleEl = document.getElementById("elle-auth-title");
-      var subEl = document.getElementById("elle-auth-sub");
-      var toggleEl = document.getElementById("elle-auth-toggle");
+      const conv = document.getElementById("elle-conv");
+      let empty = document.getElementById("elle-empty");
+      const emptyMode = document.getElementById("elle-empty-mode");
+      const input = document.getElementById("elle-input");
+      const sendBtn = document.getElementById("elle-send");
+      const scroller = document.querySelector("#elle-page .scroll");
+      const modeEl = document.getElementById("elle-mode");
+      const acctEl = document.getElementById("elle-acct");
+      const auth = document.getElementById("elle-auth");
+      const emailEl = document.getElementById("elle-email");
+      const pwEl = document.getElementById("elle-pw");
+      const errEl = document.getElementById("elle-auth-err");
+      const goEl = document.getElementById("elle-auth-go");
+      const titleEl = document.getElementById("elle-auth-title");
+      const subEl = document.getElementById("elle-auth-sub");
+      const toggleEl = document.getElementById("elle-auth-toggle");
 
       // ── render ──────────────────────────────────────────────
       function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
       function fmt(s){
-        var paras = esc(s).split(/\n\n+/).map(function(p){
+        const paras = esc(s).split(/\n\n+/).map(function(p){
           return "<p>" + p.replace(/\n/g,"<br>")
             .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
             .replace(/`([^`]+)`/g,"<code>$1</code>") + "</p>";
@@ -217,7 +218,7 @@ const metadata = {
       function scrollDown(){ if (scroller) scroller.scrollTop = scroller.scrollHeight; }
       function addMsg(role, text, isErr){
         if (empty) { empty.remove(); empty = null; }
-        var m = document.createElement("div");
+        const m = document.createElement("div");
         m.className = "msg " + role;
         m.innerHTML = '<div class="av">' + (role === "user" ? "you" : "✦") + '</div>' +
           '<div style="flex:1"><div class="who">' + (role === "user" ? "you" : "Elle") + '</div>' +
@@ -225,7 +226,7 @@ const metadata = {
         conv.appendChild(m); scrollDown(); return m;
       }
       function setTyping(on){
-        var t = document.getElementById("elle-typing");
+        let t = document.getElementById("elle-typing");
         if (on && !t){
           t = document.createElement("div"); t.id = "elle-typing"; t.className = "msg elle";
           t.innerHTML = '<div class="av">✦</div><div style="flex:1"><div class="who">Elle</div><div class="typing"><i></i><i></i><i></i></div></div>';
@@ -255,17 +256,17 @@ const metadata = {
       }
       function applyToken(tok, usr){
         token = tok; user = usr || null;
-        try { localStorage.setItem(TOKEN_KEY, tok); } catch (e) {}
+        try { localStorage.setItem(TOKEN_KEY, tok); } catch { /* ignore */ }
         refreshChrome(); closeAuth();
       }
       function logout(){
         token = null; user = null;
-        try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+        try { localStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ }
         refreshChrome();
       }
 
       function doAuth(){
-        var email = emailEl.value.trim(), pw = pwEl.value;
+        const email = emailEl.value.trim(), pw = pwEl.value;
         if (!email || !pw){ errEl.textContent = "Email and password required."; return; }
         goEl.disabled = true; goEl.style.opacity = ".5"; errEl.textContent = "";
         fetch(WORKER + "/api/elle-auth", {
@@ -295,14 +296,14 @@ const metadata = {
           .catch(function(){ errEl.textContent = "Google sign-in failed."; });
       }
       function initGoogle(){
-        var orEl = document.getElementById("elle-or"), gbtn = document.getElementById("gbtn");
+        const orEl = document.getElementById("elle-or"), gbtn = document.getElementById("gbtn");
         if (!GOOGLE_CLIENT_ID){ if (orEl) orEl.style.display = "none"; if (gbtn) gbtn.style.display = "none"; return; }
-        var s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true;
+        const s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true;
         s.onload = function(){
           try {
             window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogle });
             window.google.accounts.id.renderButton(gbtn, { theme: "filled_black", size: "large", shape: "pill", text: "continue_with", width: 320 });
-          } catch (e) { if (orEl) orEl.style.display = "none"; if (gbtn) gbtn.style.display = "none"; }
+          } catch { if (orEl) orEl.style.display = "none"; if (gbtn) gbtn.style.display = "none"; }
         };
         s.onerror = function(){ if (orEl) orEl.style.display = "none"; if (gbtn) gbtn.style.display = "none"; };
         document.head.appendChild(s);
@@ -316,11 +317,11 @@ const metadata = {
         addMsg("user", q); history.push({ role: "user", content: q });
         loading = true; sendBtn.disabled = true; setTyping(true);
 
-        var authed = !!token;
-        var url = WORKER + (authed ? "/api/elle-conversation" : "/api/widget-chat");
-        var headers = { "Content-Type": "application/json" };
+        const authed = !!token;
+        const url = WORKER + (authed ? "/api/elle-conversation" : "/api/widget-chat");
+        const headers = { "Content-Type": "application/json" };
         if (authed) headers["Authorization"] = "Bearer " + token;
-        var payload = { query: q, messages: history.slice(-16), session_id: session, source: "eip:" + location.hostname };
+        const payload = { query: q, messages: history.slice(-16), session_id: session, source: "eip:" + location.hostname };
 
         fetch(url, { method: "POST", headers: headers, body: JSON.stringify(payload) })
           .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, status: r.status, d: d }; }).catch(function(){ return { ok: r.ok, status: r.status, d: {} }; }); })
@@ -334,8 +335,8 @@ const metadata = {
             }
             if (res.status === 429){ addMsg("elle", "I've hit a rate limit for now — please try again in a little while" + (authed ? "." : ", or sign in for higher limits."), true); return; }
             if (!res.ok || res.d.error){ addMsg("elle", res.d.error || "Something interrupted the connection. Please try again.", true); return; }
-            var content = res.d.content || res.d.response || "";
-            if (res.d.session_id) { session = res.d.session_id; try { localStorage.setItem("eip_elle_session", session); } catch (e) {} }
+            const content = res.d.content || res.d.response || "";
+            if (res.d.session_id) { session = res.d.session_id; try { localStorage.setItem("eip_elle_session", session); } catch { /* ignore */ } }
             addMsg("elle", content); history.push({ role: "assistant", content: content });
           })
           .catch(function(){ setTyping(false); addMsg("elle", "Connection failed. Please try again.", true); })
@@ -346,7 +347,7 @@ const metadata = {
       sendBtn.addEventListener("click", function(){ send(); });
       input.addEventListener("keydown", function(e){ if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
       input.addEventListener("input", function(){ input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
-      var chips = document.getElementById("elle-chips");
+      const chips = document.getElementById("elle-chips");
       if (chips) chips.addEventListener("click", function(e){ if (e.target.classList.contains("chip")) send(e.target.textContent); });
 
       acctEl.addEventListener("click", function(e){ e.preventDefault(); if (token) logout(); else openAuth(); });
