@@ -1,0 +1,979 @@
+---
+import Layout from '~/layouts/Layout.astro';
+
+const metadata = {
+  title: 'Talk to Elle — The Ethical Intelligence Project',
+  description: 'Speak with Elle, the intelligence behind The Ethical Intelligence Project.',
+};
+---
+
+<Layout metadata={metadata}>
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+    #elle-page * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    #elle-page {
+      --void: #06060a;
+      --base: #0b0b11;
+      --raised: #101018;
+      --float: #16161f;
+      --overlay: #1c1c27;
+      --gold: #c9a84c;
+      --gold-l: #e8cc88;
+      --gold-d: #8b6b28;
+      --ivory: #f5f0e8;
+      --t1: #eee8d8;
+      --t2: #9a9480;
+      --t3: #5a5448;
+      --t4: #38342c;
+      --b1: rgba(201, 168, 76, 0.18);
+      --b2: rgba(255, 255, 255, 0.06);
+      --b3: rgba(255, 255, 255, 0.03);
+      --gold-gl: rgba(201, 168, 76, 0.12);
+      --gold-gb: rgba(201, 168, 76, 0.06);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-ui: 'Instrument Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      position: fixed;
+      inset: 0;
+      background: var(--void);
+      color: var(--t1);
+      font-family: var(--font-ui);
+      display: flex;
+      flex-direction: column;
+      z-index: 50;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #elle-page ::-webkit-scrollbar {
+      width: 3px;
+    }
+    #elle-page ::-webkit-scrollbar-thumb {
+      background: var(--b1);
+      border-radius: 2px;
+    }
+    #elle-page ::selection {
+      background: rgba(201, 168, 76, 0.18);
+    }
+
+    #elle-page .top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      border-bottom: 0.5px solid var(--b2);
+      background: rgba(201, 168, 76, 0.025);
+      flex-shrink: 0;
+    }
+    #elle-page .mark {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    #elle-page .word {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gold-l);
+      letter-spacing: 0.005em;
+      line-height: 1;
+    }
+    #elle-page .sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--t2);
+      margin-top: 3px;
+      font-family: var(--font-mono);
+    }
+    #elle-page .top-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    #elle-page .mode {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 0.5px solid var(--b1);
+      color: var(--gold);
+      background: var(--gold-gb);
+      white-space: nowrap;
+    }
+    #elle-page .mode.guest {
+      color: var(--t2);
+      border-color: var(--b2);
+      background: transparent;
+    }
+    #elle-page .acct {
+      font-size: 0.78rem;
+      color: var(--t2);
+      font-family: var(--font-mono);
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    #elle-page .acct:hover {
+      color: var(--gold-l);
+    }
+    #elle-page .back {
+      font-size: 0.78rem;
+      color: var(--t3);
+      text-decoration: none;
+      font-family: var(--font-mono);
+    }
+    #elle-page .back:hover {
+      color: var(--gold-l);
+    }
+
+    #elle-page .scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+    #elle-page .conv {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 34px 22px 8px;
+    }
+    #elle-page .empty {
+      text-align: center;
+      padding: 7vh 12px 4vh;
+    }
+    #elle-page .empty h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 2.4rem;
+      color: var(--ivory);
+      margin: 0 0 12px;
+      letter-spacing: 0.005em;
+    }
+    #elle-page .empty p {
+      color: var(--t2);
+      font-size: 1.02rem;
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+    #elle-page .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 26px;
+    }
+    #elle-page .chip {
+      padding: 8px 15px;
+      border: 0.5px solid var(--b1);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--gold-l);
+      cursor: pointer;
+      background: var(--gold-gb);
+      transition: 0.15s;
+      font-family: var(--font-ui);
+    }
+    #elle-page .chip:hover {
+      background: var(--gold-gl);
+    }
+
+    #elle-page .msg {
+      display: flex;
+      gap: 14px;
+      padding: 15px 0;
+      animation: eu 0.2s ease both;
+    }
+    @keyframes eu {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #elle-page .av {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+    }
+    #elle-page .msg.user .av {
+      background: rgba(245, 240, 232, 0.05);
+      border: 0.5px solid var(--b2);
+      color: var(--t2);
+    }
+    #elle-page .msg.elle .av {
+      background: var(--gold-gb);
+      border: 0.5px solid var(--b1);
+      color: var(--gold);
+    }
+    #elle-page .who {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--t2);
+      margin-bottom: 5px;
+      letter-spacing: 0.04em;
+    }
+    #elle-page .msg.elle .who {
+      color: var(--gold);
+    }
+    #elle-page .body {
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: var(--t1);
+    }
+    #elle-page .body p {
+      margin: 0 0 0.85em;
+    }
+    #elle-page .body p:last-child {
+      margin-bottom: 0;
+    }
+    #elle-page .body strong {
+      color: var(--gold-l);
+      font-weight: 600;
+    }
+    #elle-page .body code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--gold-gb);
+      border: 0.5px solid var(--b1);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--gold-l);
+    }
+    #elle-page .body.err {
+      color: #e08585;
+    }
+    #elle-page .typing {
+      display: flex;
+      gap: 5px;
+      padding: 8px 0;
+    }
+    #elle-page .typing i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: eb 1.2s infinite;
+    }
+    #elle-page .typing i:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    #elle-page .typing i:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    @keyframes eb {
+      0%,
+      60%,
+      100% {
+        opacity: 0.25;
+      }
+      30% {
+        opacity: 1;
+      }
+    }
+
+    #elle-page .composer {
+      flex-shrink: 0;
+      border-top: 0.5px solid var(--b2);
+      background: rgba(245, 240, 232, 0.015);
+    }
+    #elle-page .composer-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 14px 22px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    #elle-page textarea {
+      flex: 1;
+      resize: none;
+      background: var(--raised);
+      border: 0.5px solid var(--b1);
+      border-radius: 14px;
+      color: var(--t1);
+      font-size: 1rem;
+      font-family: var(--font-ui);
+      line-height: 1.5;
+      padding: 13px 16px;
+      outline: none;
+      max-height: 160px;
+    }
+    #elle-page textarea:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+    #elle-page textarea::placeholder {
+      color: var(--t3);
+    }
+    #elle-page .send {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      border-radius: 13px;
+      border: 0.5px solid var(--b1);
+      background: var(--gold-gl);
+      color: var(--gold-l);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.12s;
+    }
+    #elle-page .send:hover:not(:disabled) {
+      background: rgba(201, 168, 76, 0.28);
+    }
+    #elle-page .send:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    #elle-page .foot {
+      text-align: center;
+      font-size: 0.64rem;
+      color: var(--t3);
+      font-family: var(--font-mono);
+      padding: 0 0 10px;
+      letter-spacing: 0.03em;
+    }
+
+    /* auth overlay */
+    #elle-auth {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 6, 10, 0.86);
+      backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 20px;
+    }
+    #elle-auth.show {
+      display: flex;
+    }
+    #elle-auth .card {
+      width: 380px;
+      max-width: 100%;
+      background: var(--float);
+      border: 0.5px solid var(--b1);
+      border-radius: 16px;
+      padding: 26px 24px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+      animation: eu 0.18s ease both;
+    }
+    #elle-auth h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1.55rem;
+      color: var(--ivory);
+      margin-bottom: 4px;
+    }
+    #elle-auth .h-sub {
+      font-size: 0.82rem;
+      color: var(--t2);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    #elle-auth label {
+      display: block;
+      font-size: 0.64rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--t2);
+      margin: 14px 0 5px;
+    }
+    #elle-auth input {
+      width: 100%;
+      background: var(--raised);
+      border: 0.5px solid var(--b1);
+      border-radius: 9px;
+      color: var(--t1);
+      font-size: 0.95rem;
+      font-family: var(--font-ui);
+      padding: 10px 12px;
+      outline: none;
+    }
+    #elle-auth input:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+    #elle-auth .err {
+      color: #e08585;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      margin-top: 12px;
+      min-height: 1em;
+    }
+    #elle-auth .primary {
+      width: 100%;
+      margin-top: 18px;
+      padding: 11px;
+      border-radius: 10px;
+      border: 0.5px solid var(--gold-d);
+      background: var(--gold-gl);
+      color: var(--gold-l);
+      font-size: 0.92rem;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.12s;
+    }
+    #elle-auth .primary:hover {
+      background: rgba(201, 168, 76, 0.26);
+    }
+    #elle-auth .toggle {
+      font-size: 0.8rem;
+      color: var(--t2);
+      text-align: center;
+      margin-top: 14px;
+    }
+    #elle-auth .toggle b {
+      color: var(--gold-l);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    #elle-auth .or {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 4px;
+      color: var(--t3);
+      font-size: 0.66rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+    }
+    #elle-auth .or:before,
+    #elle-auth .or:after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--b2);
+    }
+    #elle-auth #gbtn {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      min-height: 0;
+    }
+    #elle-auth .guest {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--t2);
+      font-family: var(--font-mono);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    #elle-auth .guest:hover {
+      color: var(--gold-l);
+    }
+    #elle-auth .x {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      color: var(--t3);
+      font-size: 1.3rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    #elle-auth .x:hover {
+      color: var(--gold-l);
+    }
+
+    @media (max-width: 640px) {
+      #elle-page .empty h1 {
+        font-size: 1.7rem;
+      }
+      #elle-page .conv {
+        padding: 22px 16px 4px;
+      }
+      #elle-page .sub {
+        display: none;
+      }
+    }
+  </style>
+
+  <div id="elle-page">
+    <div class="top">
+      <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
+        <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <circle cx="21.5" cy="8.75" r="2" fill="#E8CC88"></circle>
+      </svg>
+      <div>
+        <div class="word">Elle</div>
+        <div class="sub">The Ethical Intelligence Project</div>
+      </div>
+      <div class="top-right">
+        <span class="mode guest" id="elle-mode">guest</span>
+        <a class="acct" id="elle-acct" href="#">Sign in</a>
+        <a class="back" href="/">← site</a>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="conv" id="elle-conv">
+        <div class="empty" id="elle-empty">
+          <h1>What are you trying to navigate?</h1>
+          <p>
+            I'm Elle — the intelligence behind The Ethical Intelligence Project. Ask me about the corpus, the
+            methodology, or whatever you're working through. <span id="elle-empty-mode"
+              >You're chatting as a guest — sign in for full corpus reasoning and persistent memory.</span
+            >
+          </p>
+          <div class="chips" id="elle-chips">
+            <div class="chip">What is the Observer methodology?</div>
+            <div class="chip">Explain bilateral suppression.</div>
+            <div class="chip">What is the φ-winding result?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="composer-inner">
+        <textarea id="elle-input" rows="1" placeholder="Ask Elle…"></textarea>
+        <button class="send" id="elle-send" aria-label="Send">↑</button>
+      </div>
+      <div class="foot">
+        Elle can be wrong. Conversations are not private advice. · The Ethical Intelligence Project
+      </div>
+    </div>
+
+    <div id="elle-auth">
+      <div class="card">
+        <button class="x" id="elle-auth-x" aria-label="Close">×</button>
+        <h2 id="elle-auth-title">Sign in to Elle</h2>
+        <div class="h-sub" id="elle-auth-sub">Full corpus reasoning, persistent memory across sessions.</div>
+        <label>Email</label>
+        <input id="elle-email" type="email" autocomplete="email" placeholder="you@example.com" />
+        <label>Password</label>
+        <input id="elle-pw" type="password" autocomplete="current-password" placeholder="••••••••" />
+        <div class="err" id="elle-auth-err"></div>
+        <button class="primary" id="elle-auth-go">Sign in</button>
+        <div class="toggle" id="elle-auth-toggle">New here? <b>Create an account</b></div>
+        <div class="or" id="elle-or">or</div>
+        <div id="gbtn"></div>
+        <button class="guest" id="elle-guest">Continue as guest →</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      if (window.__elleInit) return;
+      window.__elleInit = true;
+
+      // ── config ──────────────────────────────────────────────
+      const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
+      // Set this to the Google OAuth client ID to enable "Continue with Google".
+      // Google sign-in also requires the elle-worker /api/elle-oauth endpoint to be deployed.
+      // Left empty → the Google button is hidden and email/password + guest still work.
+      const GOOGLE_CLIENT_ID = '';
+      const TOKEN_KEY = 'eip_elle_jwt';
+
+      // ── state ───────────────────────────────────────────────
+      let token = null,
+        user = null,
+        loading = false,
+        session,
+        mode = 'signin';
+      const history = [];
+      try {
+        token = localStorage.getItem(TOKEN_KEY) || null;
+      } catch {
+        /* ignore */
+      }
+      try {
+        session = localStorage.getItem('eip_elle_session');
+        if (!session) {
+          session = 'eip-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+          localStorage.setItem('eip_elle_session', session);
+        }
+      } catch {
+        session = 'eip-' + Math.random().toString(36).slice(2);
+      }
+
+      // ── els ─────────────────────────────────────────────────
+      const conv = document.getElementById('elle-conv');
+      let empty = document.getElementById('elle-empty');
+      const emptyMode = document.getElementById('elle-empty-mode');
+      const input = document.getElementById('elle-input');
+      const sendBtn = document.getElementById('elle-send');
+      const scroller = document.querySelector('#elle-page .scroll');
+      const modeEl = document.getElementById('elle-mode');
+      const acctEl = document.getElementById('elle-acct');
+      const auth = document.getElementById('elle-auth');
+      const emailEl = document.getElementById('elle-email');
+      const pwEl = document.getElementById('elle-pw');
+      const errEl = document.getElementById('elle-auth-err');
+      const goEl = document.getElementById('elle-auth-go');
+      const titleEl = document.getElementById('elle-auth-title');
+      const subEl = document.getElementById('elle-auth-sub');
+      const toggleEl = document.getElementById('elle-auth-toggle');
+
+      // ── render ──────────────────────────────────────────────
+      function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function fmt(s) {
+        const paras = esc(s)
+          .split(/\n\n+/)
+          .map(function (p) {
+            return (
+              '<p>' +
+              p
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>') +
+              '</p>'
+            );
+          });
+        return paras.join('');
+      }
+      function scrollDown() {
+        if (scroller) scroller.scrollTop = scroller.scrollHeight;
+      }
+      function addMsg(role, text, isErr) {
+        if (empty) {
+          empty.remove();
+          empty = null;
+        }
+        const m = document.createElement('div');
+        m.className = 'msg ' + role;
+        m.innerHTML =
+          '<div class="av">' +
+          (role === 'user' ? 'you' : '✦') +
+          '</div>' +
+          '<div style="flex:1"><div class="who">' +
+          (role === 'user' ? 'you' : 'Elle') +
+          '</div>' +
+          '<div class="body' +
+          (isErr ? ' err' : '') +
+          '">' +
+          fmt(text) +
+          '</div></div>';
+        conv.appendChild(m);
+        scrollDown();
+        return m;
+      }
+      function setTyping(on) {
+        let t = document.getElementById('elle-typing');
+        if (on && !t) {
+          t = document.createElement('div');
+          t.id = 'elle-typing';
+          t.className = 'msg elle';
+          t.innerHTML =
+            '<div class="av">✦</div><div style="flex:1"><div class="who">Elle</div><div class="typing"><i></i><i></i><i></i></div></div>';
+          conv.appendChild(t);
+          scrollDown();
+        }
+        if (!on && t) t.remove();
+      }
+
+      // ── auth ui ─────────────────────────────────────────────
+      function refreshChrome() {
+        if (token) {
+          modeEl.textContent = 'corpus · rag';
+          modeEl.classList.remove('guest');
+          acctEl.textContent = user && user.email ? 'Sign out · ' + user.email : 'Sign out';
+          if (emptyMode) emptyMode.textContent = '';
+        } else {
+          modeEl.textContent = 'guest';
+          modeEl.classList.add('guest');
+          acctEl.textContent = 'Sign in';
+          if (emptyMode)
+            emptyMode.textContent =
+              "You're chatting as a guest — sign in for full corpus reasoning and persistent memory.";
+        }
+      }
+      function openAuth() {
+        errEl.textContent = '';
+        auth.classList.add('show');
+        setTimeout(function () {
+          emailEl.focus();
+        }, 60);
+      }
+      function closeAuth() {
+        auth.classList.remove('show');
+      }
+      function setMode(m) {
+        mode = m;
+        if (m === 'signup') {
+          titleEl.textContent = 'Create your account';
+          subEl.textContent = 'Full corpus reasoning, persistent memory across sessions.';
+          goEl.textContent = 'Create account';
+          toggleEl.innerHTML = 'Already have an account? <b>Sign in</b>';
+          pwEl.setAttribute('autocomplete', 'new-password');
+        } else {
+          titleEl.textContent = 'Sign in to Elle';
+          subEl.textContent = 'Full corpus reasoning, persistent memory across sessions.';
+          goEl.textContent = 'Sign in';
+          toggleEl.innerHTML = 'New here? <b>Create an account</b>';
+          pwEl.setAttribute('autocomplete', 'current-password');
+        }
+      }
+      function applyToken(tok, usr) {
+        token = tok;
+        user = usr || null;
+        try {
+          localStorage.setItem(TOKEN_KEY, tok);
+        } catch {
+          /* ignore */
+        }
+        refreshChrome();
+        closeAuth();
+      }
+      function logout() {
+        token = null;
+        user = null;
+        try {
+          localStorage.removeItem(TOKEN_KEY);
+        } catch {
+          /* ignore */
+        }
+        refreshChrome();
+      }
+
+      function doAuth() {
+        const email = emailEl.value.trim(),
+          pw = pwEl.value;
+        if (!email || !pw) {
+          errEl.textContent = 'Email and password required.';
+          return;
+        }
+        goEl.disabled = true;
+        goEl.style.opacity = '.5';
+        errEl.textContent = '';
+        fetch(WORKER + '/api/elle-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: mode === 'signup' ? 'signup' : 'login', email: email, password: pw }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, status: r.status, d: d };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok || !res.d.access_token) {
+              errEl.textContent = res.d.error || 'Failed (' + res.status + ')';
+              return;
+            }
+            applyToken(res.d.access_token, res.d.user);
+          })
+          .catch(function () {
+            errEl.textContent = 'Connection failed. Try again.';
+          })
+          .finally(function () {
+            goEl.disabled = false;
+            goEl.style.opacity = '1';
+          });
+      }
+
+      // Google Identity Services — only if a client ID is configured.
+      function onGoogle(resp) {
+        if (!resp || !resp.credential) return;
+        errEl.textContent = '';
+        fetch(WORKER + '/api/elle-oauth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: resp.credential }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, status: r.status, d: d };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok || !res.d.access_token) {
+              errEl.textContent = res.d.error || 'Google sign-in is not available yet.';
+              return;
+            }
+            applyToken(res.d.access_token, res.d.user);
+          })
+          .catch(function () {
+            errEl.textContent = 'Google sign-in failed.';
+          });
+      }
+      function initGoogle() {
+        const orEl = document.getElementById('elle-or'),
+          gbtn = document.getElementById('gbtn');
+        if (!GOOGLE_CLIENT_ID) {
+          if (orEl) orEl.style.display = 'none';
+          if (gbtn) gbtn.style.display = 'none';
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = 'https://accounts.google.com/gsi/client';
+        s.async = true;
+        s.defer = true;
+        s.onload = function () {
+          try {
+            window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogle });
+            window.google.accounts.id.renderButton(gbtn, {
+              theme: 'filled_black',
+              size: 'large',
+              shape: 'pill',
+              text: 'continue_with',
+              width: 320,
+            });
+          } catch {
+            if (orEl) orEl.style.display = 'none';
+            if (gbtn) gbtn.style.display = 'none';
+          }
+        };
+        s.onerror = function () {
+          if (orEl) orEl.style.display = 'none';
+          if (gbtn) gbtn.style.display = 'none';
+        };
+        document.head.appendChild(s);
+      }
+
+      // ── send ────────────────────────────────────────────────
+      function send(q) {
+        q = (q || input.value).trim();
+        if (!q || loading) return;
+        input.value = '';
+        input.style.height = 'auto';
+        addMsg('user', q);
+        history.push({ role: 'user', content: q });
+        loading = true;
+        sendBtn.disabled = true;
+        setTyping(true);
+
+        const authed = !!token;
+        const url = WORKER + (authed ? '/api/elle-conversation' : '/api/widget-chat');
+        const headers = { 'Content-Type': 'application/json' };
+        if (authed) headers['Authorization'] = 'Bearer ' + token;
+        const payload = {
+          query: q,
+          messages: history.slice(-16),
+          session_id: session,
+          source: 'eip:' + location.hostname,
+        };
+
+        fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(payload) })
+          .then(function (r) {
+            return r
+              .json()
+              .then(function (d) {
+                return { ok: r.ok, status: r.status, d: d };
+              })
+              .catch(function () {
+                return { ok: r.ok, status: r.status, d: {} };
+              });
+          })
+          .then(function (res) {
+            setTyping(false);
+            if (res.status === 401 && authed) {
+              // token expired/invalid → drop to guest and let them retry
+              logout();
+              addMsg(
+                'elle',
+                "Your session expired — I've dropped you back to guest mode. Sign in again for full corpus reasoning, or just keep going.",
+                true
+              );
+              return;
+            }
+            if (res.status === 429) {
+              addMsg(
+                'elle',
+                "I've hit a rate limit for now — please try again in a little while" +
+                  (authed ? '.' : ', or sign in for higher limits.'),
+                true
+              );
+              return;
+            }
+            if (!res.ok || res.d.error) {
+              addMsg('elle', res.d.error || 'Something interrupted the connection. Please try again.', true);
+              return;
+            }
+            const content = res.d.content || res.d.response || '';
+            if (res.d.session_id) {
+              session = res.d.session_id;
+              try {
+                localStorage.setItem('eip_elle_session', session);
+              } catch {
+                /* ignore */
+              }
+            }
+            addMsg('elle', content);
+            history.push({ role: 'assistant', content: content });
+          })
+          .catch(function () {
+            setTyping(false);
+            addMsg('elle', 'Connection failed. Please try again.', true);
+          })
+          .finally(function () {
+            loading = false;
+            sendBtn.disabled = false;
+            input.focus();
+          });
+      }
+
+      // ── wire ────────────────────────────────────────────────
+      sendBtn.addEventListener('click', function () {
+        send();
+      });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          send();
+        }
+      });
+      input.addEventListener('input', function () {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+      });
+      const chips = document.getElementById('elle-chips');
+      if (chips)
+        chips.addEventListener('click', function (e) {
+          if (e.target.classList.contains('chip')) send(e.target.textContent);
+        });
+
+      acctEl.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (token) logout();
+        else openAuth();
+      });
+      document.getElementById('elle-auth-x').addEventListener('click', closeAuth);
+      document.getElementById('elle-guest').addEventListener('click', function () {
+        closeAuth();
+        input.focus();
+      });
+      goEl.addEventListener('click', doAuth);
+      pwEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') doAuth();
+      });
+      toggleEl.addEventListener('click', function (e) {
+        if (e.target.tagName === 'B') setMode(mode === 'signup' ? 'signin' : 'signup');
+      });
+      auth.addEventListener('click', function (e) {
+        if (e.target === auth) closeAuth();
+      });
+
+      setMode('signin');
+      refreshChrome();
+      initGoogle();
+      input.focus();
+    })();
+  </script>
+</Layout>
