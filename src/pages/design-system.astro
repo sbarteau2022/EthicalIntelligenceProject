@@ -10,7 +10,6 @@ const meta = {
 
 <Layout metadata={meta}>
   <main class="ds-root">
-
     <!-- ── Header ────────────────────────────────────────────────── -->
     <section class="ds-hero">
       <div class="ds-container">
@@ -30,61 +29,85 @@ const meta = {
 
         <h3 class="ds-subheading">Navy — Authority &amp; Trust</h3>
         <div class="ds-swatches">
-          {[
-            ['50',  '#EEF1F5'], ['100','#D5DCE8'], ['200','#AAB8D1'],
-            ['300','#7F94BA'], ['400','#5470A3'], ['500','#324E7A'],
-            ['600','#1E3560'], ['700','#152649'], ['800','#0D1B2A'],
-            ['900','#070E16'],
-          ].map(([step, hex]) => (
-            <div class="ds-swatch">
-              <div class="ds-swatch-color" style={`background:${hex}`}></div>
-              <span class="ds-swatch-step">{step}</span>
-              <span class="ds-swatch-hex">{hex}</span>
-            </div>
-          ))}
+          {
+            [
+              ['50', '#EEF1F5'],
+              ['100', '#D5DCE8'],
+              ['200', '#AAB8D1'],
+              ['300', '#7F94BA'],
+              ['400', '#5470A3'],
+              ['500', '#324E7A'],
+              ['600', '#1E3560'],
+              ['700', '#152649'],
+              ['800', '#0D1B2A'],
+              ['900', '#070E16'],
+            ].map(([step, hex]) => (
+              <div class="ds-swatch">
+                <div class="ds-swatch-color" style={`background:${hex}`} />
+                <span class="ds-swatch-step">{step}</span>
+                <span class="ds-swatch-hex">{hex}</span>
+              </div>
+            ))
+          }
         </div>
 
         <h3 class="ds-subheading">Amber — Wisdom &amp; Warmth</h3>
         <div class="ds-swatches">
-          {[
-            ['100','#FEEECE'], ['200','#FCDB9E'], ['300','#FAC76D'],
-            ['400','#F8B43C'], ['500','#E8A020'], ['600','#C4841A'],
-            ['700','#9A6714'],
-          ].map(([step, hex]) => (
-            <div class="ds-swatch">
-              <div class="ds-swatch-color" style={`background:${hex}`}></div>
-              <span class="ds-swatch-step">{step}</span>
-              <span class="ds-swatch-hex">{hex}</span>
-            </div>
-          ))}
+          {
+            [
+              ['100', '#FEEECE'],
+              ['200', '#FCDB9E'],
+              ['300', '#FAC76D'],
+              ['400', '#F8B43C'],
+              ['500', '#E8A020'],
+              ['600', '#C4841A'],
+              ['700', '#9A6714'],
+            ].map(([step, hex]) => (
+              <div class="ds-swatch">
+                <div class="ds-swatch-color" style={`background:${hex}`} />
+                <span class="ds-swatch-step">{step}</span>
+                <span class="ds-swatch-hex">{hex}</span>
+              </div>
+            ))
+          }
         </div>
 
         <h3 class="ds-subheading">Teal — Clarity &amp; Intelligence</h3>
         <div class="ds-swatches">
-          {[
-            ['100','#CBF2EE'], ['300','#63D8CB'], ['400','#30CBBA'],
-            ['500','#0E9F8E'], ['600','#0B8275'],
-          ].map(([step, hex]) => (
-            <div class="ds-swatch">
-              <div class="ds-swatch-color" style={`background:${hex}`}></div>
-              <span class="ds-swatch-step">{step}</span>
-              <span class="ds-swatch-hex">{hex}</span>
-            </div>
-          ))}
+          {
+            [
+              ['100', '#CBF2EE'],
+              ['300', '#63D8CB'],
+              ['400', '#30CBBA'],
+              ['500', '#0E9F8E'],
+              ['600', '#0B8275'],
+            ].map(([step, hex]) => (
+              <div class="ds-swatch">
+                <div class="ds-swatch-color" style={`background:${hex}`} />
+                <span class="ds-swatch-step">{step}</span>
+                <span class="ds-swatch-hex">{hex}</span>
+              </div>
+            ))
+          }
         </div>
 
         <h3 class="ds-subheading">Stone — Warmth &amp; Ground</h3>
         <div class="ds-swatches">
-          {[
-            ['50','#FDFCFA'], ['100','#F5F1EB'], ['200','#EBE5D8'],
-            ['300','#D9D0C0'], ['400','#C4B9A5'],
-          ].map(([step, hex]) => (
-            <div class="ds-swatch">
-              <div class="ds-swatch-color ds-swatch-color--bordered" style={`background:${hex}`}></div>
-              <span class="ds-swatch-step">{step}</span>
-              <span class="ds-swatch-hex">{hex}</span>
-            </div>
-          ))}
+          {
+            [
+              ['50', '#FDFCFA'],
+              ['100', '#F5F1EB'],
+              ['200', '#EBE5D8'],
+              ['300', '#D9D0C0'],
+              ['400', '#C4B9A5'],
+            ].map(([step, hex]) => (
+              <div class="ds-swatch">
+                <div class="ds-swatch-color ds-swatch-color--bordered" style={`background:${hex}`} />
+                <span class="ds-swatch-step">{step}</span>
+                <span class="ds-swatch-hex">{hex}</span>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -105,13 +128,12 @@ const meta = {
         <div class="ds-type-block">
           <p class="ds-type-label">DM Sans · Body / UI</p>
           <p class="ds-type-body-lg">
-            We believe that intelligence, when guided by ethics, becomes a force for collective good.
-            Our mission is to build systems that are not only capable, but conscientious.
+            We believe that intelligence, when guided by ethics, becomes a force for collective good. Our mission is to
+            build systems that are not only capable, but conscientious.
           </p>
           <p class="ds-type-body">
-            The Observer Foundation creates frameworks, tools, and communities that place human values at the
-            center of artificial intelligence development. From policy to product, we work across every layer
-            of the stack.
+            The Observer Foundation creates frameworks, tools, and communities that place human values at the center of
+            artificial intelligence development. From policy to product, we work across every layer of the stack.
           </p>
           <p class="ds-type-body-sm ds-muted">
             Caption · UI label · Meta information · Supporting text at smaller scale
@@ -130,26 +152,35 @@ const meta = {
       <div class="ds-container">
         <h2 class="ds-heading">Spacing Scale</h2>
         <div class="ds-spacing-grid">
-          {[4,8,12,16,20,24,32,40,48,64,80,96].map(px => (
-            <div class="ds-spacing-row">
-              <span class="ds-spacing-label">{px}px</span>
-              <div class="ds-spacing-bar" style={`width:${px}px`}></div>
-            </div>
-          ))}
+          {
+            [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96].map((px) => (
+              <div class="ds-spacing-row">
+                <span class="ds-spacing-label">{px}px</span>
+                <div class="ds-spacing-bar" style={`width:${px}px`} />
+              </div>
+            ))
+          }
         </div>
 
         <h2 class="ds-heading" style="margin-top:3rem">Border Radius</h2>
         <div class="ds-radius-grid">
-          {[
-            ['sm','4px'], ['base','8px'], ['md','12px'],
-            ['lg','16px'], ['xl','24px'], ['2xl','32px'], ['full','9999px'],
-          ].map(([name, val]) => (
-            <div class="ds-radius-item">
-              <div class="ds-radius-box" style={`border-radius:${val}`}></div>
-              <span class="ds-radius-name">{name}</span>
-              <span class="ds-radius-val">{val}</span>
-            </div>
-          ))}
+          {
+            [
+              ['sm', '4px'],
+              ['base', '8px'],
+              ['md', '12px'],
+              ['lg', '16px'],
+              ['xl', '24px'],
+              ['2xl', '32px'],
+              ['full', '9999px'],
+            ].map(([name, val]) => (
+              <div class="ds-radius-item">
+                <div class="ds-radius-box" style={`border-radius:${val}`} />
+                <span class="ds-radius-name">{name}</span>
+                <span class="ds-radius-val">{val}</span>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -173,19 +204,25 @@ const meta = {
           <div class="cl-card">
             <div class="cl-card-icon">◈</div>
             <h4 class="cl-card-title">Ethical Framework</h4>
-            <p class="cl-card-body">Principled guidelines that govern how AI systems are designed, evaluated, and deployed within communities.</p>
+            <p class="cl-card-body">
+              Principled guidelines that govern how AI systems are designed, evaluated, and deployed within communities.
+            </p>
             <a class="cl-card-link">Learn more →</a>
           </div>
           <div class="cl-card cl-card--amber">
             <div class="cl-card-icon">⬡</div>
             <h4 class="cl-card-title">Community Intelligence</h4>
-            <p class="cl-card-body">Collective knowledge systems that surface insight from diverse lived experiences across the foundation.</p>
+            <p class="cl-card-body">
+              Collective knowledge systems that surface insight from diverse lived experiences across the foundation.
+            </p>
             <a class="cl-card-link">Explore →</a>
           </div>
           <div class="cl-card cl-card--teal">
             <div class="cl-card-icon">◎</div>
             <h4 class="cl-card-title">Observer Protocol</h4>
-            <p class="cl-card-body">Transparent audit mechanisms ensuring every AI decision can be traced, explained, and challenged.</p>
+            <p class="cl-card-body">
+              Transparent audit mechanisms ensuring every AI decision can be traced, explained, and challenged.
+            </p>
             <a class="cl-card-link">View protocol →</a>
           </div>
         </div>
@@ -214,25 +251,29 @@ const meta = {
 
         <h3 class="ds-subheading">Stat Cards</h3>
         <div class="cl-stats-grid">
-          {[
-            ['1.2M+', 'People reached', '↑ 18% YoY'],
-            ['94%',   'Ethics score',   'Across all models'],
-            ['3,800', 'Community members', 'Active this quarter'],
-          ].map(([val, label, sub]) => (
-            <div class="cl-stat">
-              <span class="cl-stat-value">{val}</span>
-              <span class="cl-stat-label">{label}</span>
-              <span class="cl-stat-sub">{sub}</span>
-            </div>
-          ))}
+          {
+            [
+              ['1.2M+', 'People reached', '↑ 18% YoY'],
+              ['94%', 'Ethics score', 'Across all models'],
+              ['3,800', 'Community members', 'Active this quarter'],
+            ].map(([val, label, sub]) => (
+              <div class="cl-stat">
+                <span class="cl-stat-value">{val}</span>
+                <span class="cl-stat-label">{label}</span>
+                <span class="cl-stat-sub">{sub}</span>
+              </div>
+            ))
+          }
         </div>
 
         <h3 class="ds-subheading">Dark Surface Preview</h3>
         <div class="cl-dark-preview">
           <div class="cl-dark-card">
             <p class="cl-dark-eyebrow">ElleAI · Observer Protocol</p>
-            <h4 class="cl-dark-title">Luminous Intelligence,<br/>Grounded in Ethics</h4>
-            <p class="cl-dark-body">Every interaction is auditable. Every decision is explicable. Community values shape every output.</p>
+            <h4 class="cl-dark-title">Luminous Intelligence,<br />Grounded in Ethics</h4>
+            <p class="cl-dark-body">
+              Every interaction is auditable. Every decision is explicable. Community values shape every output.
+            </p>
             <div class="cl-dark-actions">
               <button class="cl-btn cl-btn--amber">Get started</button>
               <button class="cl-btn cl-btn--ghost-light">Read the docs</button>
@@ -247,19 +288,21 @@ const meta = {
       <div class="ds-container">
         <h2 class="ds-heading">Elevation &amp; Shadow</h2>
         <div class="ds-shadow-grid">
-          {[
-            ['sm',  '0 1px 2px rgba(13,27,42,.08)'],
-            ['base','0 2px 8px rgba(13,27,42,.10)'],
-            ['md',  '0 4px 16px rgba(13,27,42,.12)'],
-            ['lg',  '0 8px 32px rgba(13,27,42,.14)'],
-            ['xl',  '0 16px 64px rgba(13,27,42,.18)'],
-            ['amber-glow','0 0 32px rgba(232,160,32,.22)'],
-            ['teal-glow', '0 0 32px rgba(14,159,142,.22)'],
-          ].map(([name, shadow]) => (
-            <div class="ds-shadow-card" style={`box-shadow:${shadow}`}>
-              <span class="ds-shadow-name">{name}</span>
-            </div>
-          ))}
+          {
+            [
+              ['sm', '0 1px 2px rgba(13,27,42,.08)'],
+              ['base', '0 2px 8px rgba(13,27,42,.10)'],
+              ['md', '0 4px 16px rgba(13,27,42,.12)'],
+              ['lg', '0 8px 32px rgba(13,27,42,.14)'],
+              ['xl', '0 16px 64px rgba(13,27,42,.18)'],
+              ['amber-glow', '0 0 32px rgba(232,160,32,.22)'],
+              ['teal-glow', '0 0 32px rgba(14,159,142,.22)'],
+            ].map(([name, shadow]) => (
+              <div class="ds-shadow-card" style={`box-shadow:${shadow}`}>
+                <span class="ds-shadow-name">{name}</span>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -272,22 +315,32 @@ const meta = {
           <div class="ds-export-card">
             <div class="ds-export-icon">◈</div>
             <h4>Figma — Token Studio</h4>
-            <p>Import <code>design-tokens.json</code> via the Token Studio plugin. Tokens are grouped into <code>global</code>, <code>light</code>, and <code>dark</code> sets. Map the <code>light</code> or <code>dark</code> set as your active theme.</p>
+            <p>
+              Import <code>design-tokens.json</code> via the Token Studio plugin. Tokens are grouped into <code
+                >global</code
+              >, <code>light</code>, and <code>dark</code> sets. Map the <code>light</code> or <code>dark</code> set as your
+              active theme.
+            </p>
           </div>
           <div class="ds-export-card">
             <div class="ds-export-icon">⬡</div>
             <h4>Framer — CSS Variables</h4>
-            <p>Paste the CSS custom properties from <code>CustomStyles.astro</code> into a Framer Code Override or global style block. All <code>--aw-*</code> variables map directly to Framer's CSS layer.</p>
+            <p>
+              Paste the CSS custom properties from <code>CustomStyles.astro</code> into a Framer Code Override or global style
+              block. All <code>--aw-*</code> variables map directly to Framer's CSS layer.
+            </p>
           </div>
           <div class="ds-export-card">
             <div class="ds-export-icon">◎</div>
             <h4>Figma — Variables API</h4>
-            <p>Use the W3C-compatible token format to feed into Figma Variables via any token pipeline tool (Style Dictionary, Amazon Style Dictionary, tokens-to-figma).</p>
+            <p>
+              Use the W3C-compatible token format to feed into Figma Variables via any token pipeline tool (Style
+              Dictionary, Amazon Style Dictionary, tokens-to-figma).
+            </p>
           </div>
         </div>
       </div>
     </section>
-
   </main>
 </Layout>
 
@@ -316,10 +369,13 @@ const meta = {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(232,160,32,0.12), transparent),
-                radial-gradient(ellipse 40% 60% at 20% 80%, rgba(14,159,142,0.10), transparent);
+    background:
+      radial-gradient(ellipse 60% 80% at 80% 50%, rgba(232, 160, 32, 0.12), transparent),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(14, 159, 142, 0.1), transparent);
   }
-  .ds-hero .ds-container { position: relative; }
+  .ds-hero .ds-container {
+    position: relative;
+  }
   .ds-label {
     font-family: var(--aw-font-mono);
     font-size: 0.75rem;
@@ -376,17 +432,35 @@ const meta = {
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-  .ds-swatch { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+  .ds-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
   .ds-swatch-color {
-    width: 64px; height: 64px;
+    width: 64px;
+    height: 64px;
     border-radius: 12px;
   }
-  .ds-swatch-color--bordered { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
-  .ds-swatch-step { font-size: 0.7rem; font-weight: 600; color: var(--aw-color-text-muted); }
-  .ds-swatch-hex  { font-family: var(--aw-font-mono); font-size: 0.65rem; color: var(--aw-color-text-muted); }
+  .ds-swatch-color--bordered {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+  .ds-swatch-step {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--aw-color-text-muted);
+  }
+  .ds-swatch-hex {
+    font-family: var(--aw-font-mono);
+    font-size: 0.65rem;
+    color: var(--aw-color-text-muted);
+  }
 
   /* ── Typography demo ───────────────────────────────────────────────── */
-  .ds-type-block { margin-bottom: 2.5rem; }
+  .ds-type-block {
+    margin-bottom: 2.5rem;
+  }
   .ds-type-label {
     font-family: var(--aw-font-mono);
     font-size: 0.7rem;
@@ -438,7 +512,9 @@ const meta = {
     font-size: 0.875rem;
     line-height: 1.5;
   }
-  .ds-muted { color: var(--aw-color-text-muted); }
+  .ds-muted {
+    color: var(--aw-color-text-muted);
+  }
   .ds-type-mono {
     font-family: var(--aw-font-mono);
     font-size: 1rem;
@@ -450,8 +526,16 @@ const meta = {
   }
 
   /* ── Spacing ───────────────────────────────────────────────────────── */
-  .ds-spacing-grid { display: flex; flex-direction: column; gap: 0.5rem; }
-  .ds-spacing-row { display: flex; align-items: center; gap: 1rem; }
+  .ds-spacing-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .ds-spacing-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
   .ds-spacing-label {
     font-family: var(--aw-font-mono);
     font-size: 0.75rem;
@@ -473,13 +557,27 @@ const meta = {
     gap: 1.5rem;
     margin-top: 1rem;
   }
-  .ds-radius-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .ds-radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
   .ds-radius-box {
-    width: 64px; height: 64px;
+    width: 64px;
+    height: 64px;
     background: var(--cl-navy-800);
   }
-  .ds-radius-name { font-size: 0.75rem; font-weight: 600; color: var(--aw-color-text-heading); }
-  .ds-radius-val  { font-family: var(--aw-font-mono); font-size: 0.65rem; color: var(--aw-color-text-muted); }
+  .ds-radius-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--aw-color-text-heading);
+  }
+  .ds-radius-val {
+    font-family: var(--aw-font-mono);
+    font-size: 0.65rem;
+    color: var(--aw-color-text-muted);
+  }
 
   /* ── Buttons ───────────────────────────────────────────────────────── */
   .cl-btn {
@@ -503,35 +601,47 @@ const meta = {
     color: #fff;
     border-color: var(--cl-navy-800);
   }
-  .cl-btn--primary:hover { background: var(--cl-navy-700); border-color: var(--cl-navy-700); }
+  .cl-btn--primary:hover {
+    background: var(--cl-navy-700);
+    border-color: var(--cl-navy-700);
+  }
 
   .cl-btn--secondary {
     background: var(--cl-stone-100);
     color: var(--cl-navy-800);
     border-color: var(--cl-stone-300);
   }
-  .cl-btn--secondary:hover { background: var(--cl-stone-200); }
+  .cl-btn--secondary:hover {
+    background: var(--cl-stone-200);
+  }
 
   .cl-btn--ghost {
     background: transparent;
     color: var(--cl-navy-700);
     border-color: var(--cl-navy-300);
   }
-  .cl-btn--ghost:hover { background: var(--cl-navy-50); }
+  .cl-btn--ghost:hover {
+    background: var(--cl-navy-50);
+  }
 
   .cl-btn--teal {
     background: var(--cl-teal-500);
     color: #fff;
     border-color: var(--cl-teal-500);
   }
-  .cl-btn--teal:hover { background: var(--cl-teal-600); border-color: var(--cl-teal-600); }
+  .cl-btn--teal:hover {
+    background: var(--cl-teal-600);
+    border-color: var(--cl-teal-600);
+  }
 
   .cl-btn--outline {
     background: transparent;
     color: var(--cl-amber-600);
     border-color: var(--cl-amber-500);
   }
-  .cl-btn--outline:hover { background: var(--cl-amber-100); }
+  .cl-btn--outline:hover {
+    background: var(--cl-amber-100);
+  }
 
   .cl-btn--amber {
     background: var(--cl-amber-500);
@@ -539,14 +649,19 @@ const meta = {
     border-color: var(--cl-amber-500);
     font-weight: 700;
   }
-  .cl-btn--amber:hover { background: var(--cl-amber-400); border-color: var(--cl-amber-400); }
+  .cl-btn--amber:hover {
+    background: var(--cl-amber-400);
+    border-color: var(--cl-amber-400);
+  }
 
   .cl-btn--ghost-light {
     background: transparent;
     color: var(--cl-stone-200);
-    border-color: rgba(245,241,235,0.25);
+    border-color: rgba(245, 241, 235, 0.25);
   }
-  .cl-btn--ghost-light:hover { background: rgba(245,241,235,0.08); }
+  .cl-btn--ghost-light:hover {
+    background: rgba(245, 241, 235, 0.08);
+  }
 
   .ds-component-row {
     display: flex;
@@ -571,21 +686,31 @@ const meta = {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    transition: box-shadow 200ms ease, transform 200ms ease;
+    transition:
+      box-shadow 200ms ease,
+      transform 200ms ease;
   }
   .cl-card:hover {
-    box-shadow: 0 8px 32px rgba(13,27,42,0.12);
+    box-shadow: 0 8px 32px rgba(13, 27, 42, 0.12);
     transform: translateY(-2px);
   }
-  .cl-card--amber { border-top: 3px solid var(--cl-amber-500); }
-  .cl-card--teal  { border-top: 3px solid var(--cl-teal-500); }
+  .cl-card--amber {
+    border-top: 3px solid var(--cl-amber-500);
+  }
+  .cl-card--teal {
+    border-top: 3px solid var(--cl-teal-500);
+  }
 
   .cl-card-icon {
     font-size: 1.5rem;
     color: var(--cl-navy-600);
   }
-  .cl-card--amber .cl-card-icon { color: var(--cl-amber-600); }
-  .cl-card--teal  .cl-card-icon { color: var(--cl-teal-500); }
+  .cl-card--amber .cl-card-icon {
+    color: var(--cl-amber-600);
+  }
+  .cl-card--teal .cl-card-icon {
+    color: var(--cl-teal-500);
+  }
 
   .cl-card-title {
     font-family: var(--aw-font-heading);
@@ -607,7 +732,9 @@ const meta = {
     cursor: pointer;
     text-decoration: none;
   }
-  .cl-card-link:hover { color: var(--cl-amber-600); }
+  .cl-card-link:hover {
+    color: var(--cl-amber-600);
+  }
 
   /* ── Badges ─────────────────────────────────────────────────────────── */
   .cl-badge {
@@ -619,11 +746,27 @@ const meta = {
     font-weight: 600;
     letter-spacing: 0.03em;
   }
-  .cl-badge--navy   { background: var(--cl-navy-100);  color: var(--cl-navy-700); }
-  .cl-badge--amber  { background: var(--cl-amber-100); color: var(--cl-amber-700); }
-  .cl-badge--teal   { background: var(--cl-teal-100);  color: var(--cl-teal-600); }
-  .cl-badge--outline{ background: transparent; color: var(--aw-color-text-muted); border: 1px solid var(--aw-border-default); }
-  .cl-badge--stone  { background: var(--cl-stone-200); color: var(--cl-navy-500); }
+  .cl-badge--navy {
+    background: var(--cl-navy-100);
+    color: var(--cl-navy-700);
+  }
+  .cl-badge--amber {
+    background: var(--cl-amber-100);
+    color: var(--cl-amber-700);
+  }
+  .cl-badge--teal {
+    background: var(--cl-teal-100);
+    color: var(--cl-teal-600);
+  }
+  .cl-badge--outline {
+    background: transparent;
+    color: var(--aw-color-text-muted);
+    border: 1px solid var(--aw-border-default);
+  }
+  .cl-badge--stone {
+    background: var(--cl-stone-200);
+    color: var(--cl-navy-500);
+  }
 
   /* ── Form ───────────────────────────────────────────────────────────── */
   .cl-form-demo {
@@ -632,7 +775,11 @@ const meta = {
     gap: 1rem;
     max-width: 480px;
   }
-  .cl-field { display: flex; flex-direction: column; gap: 0.375rem; }
+  .cl-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
   .cl-label {
     font-size: 0.875rem;
     font-weight: 600;
@@ -646,14 +793,19 @@ const meta = {
     font-size: 0.9375rem;
     background: var(--aw-color-bg-raised, #fff);
     color: var(--aw-color-text-default);
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
     outline: none;
   }
   .cl-input:focus {
     border-color: var(--cl-navy-600);
-    box-shadow: 0 0 0 3px rgba(13,27,42,0.10);
+    box-shadow: 0 0 0 3px rgba(13, 27, 42, 0.1);
   }
-  .cl-textarea { resize: vertical; min-height: 100px; }
+  .cl-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
 
   /* ── Stats ──────────────────────────────────────────────────────────── */
   .cl-stats-grid {
@@ -701,8 +853,9 @@ const meta = {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 50% 70% at 90% 30%, rgba(232,160,32,0.10), transparent),
-                radial-gradient(ellipse 40% 60% at 10% 80%, rgba(14,159,142,0.08), transparent);
+    background:
+      radial-gradient(ellipse 50% 70% at 90% 30%, rgba(232, 160, 32, 0.1), transparent),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(14, 159, 142, 0.08), transparent);
   }
   .cl-dark-card {
     position: relative;
@@ -733,7 +886,11 @@ const meta = {
     color: var(--cl-stone-300);
     margin: 0;
   }
-  .cl-dark-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .cl-dark-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
 
   /* ── Shadows ────────────────────────────────────────────────────────── */
   .ds-shadow-grid {
@@ -770,7 +927,10 @@ const meta = {
     flex-direction: column;
     gap: 0.75rem;
   }
-  .ds-export-icon { font-size: 1.5rem; color: var(--cl-navy-600); }
+  .ds-export-icon {
+    font-size: 1.5rem;
+    color: var(--cl-navy-600);
+  }
   .ds-export-card h4 {
     font-family: var(--aw-font-sans);
     font-size: 0.975rem;
