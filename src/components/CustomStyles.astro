@@ -1,63 +1,108 @@
 ---
-import '@fontsource-variable/inter';
-
-// 'DM Sans'
-// Nunito
-// Dosis
-// Outfit
-// Roboto
-// Literata
-// 'IBM Plex Sans'
-// Karla
-// Poppins
-// 'Fira Sans'
-// 'Libre Franklin'
-// Inconsolata
-// Raleway
-// Oswald
-// 'Space Grotesk'
-// Urbanist
+import '@fontsource/dm-sans/400.css';
+import '@fontsource/dm-sans/500.css';
+import '@fontsource/dm-sans/700.css';
+import '@fontsource/dm-serif-display/400.css';
+import '@fontsource/dm-mono/400.css';
+import '@fontsource/dm-mono/500.css';
 ---
 
 <style is:inline>
+  /* ─── Civic Luminance Design System ─────────────────────────────────── */
+
   :root {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    /* Typography */
+    --aw-font-sans:    'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    --aw-font-serif:   'DM Serif Display', Georgia, serif;
+    --aw-font-heading: 'DM Serif Display', Georgia, serif;
+    --aw-font-mono:    'DM Mono', ui-monospace, monospace;
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    /* Brand palette */
+    --cl-navy-50:  #EEF1F5;
+    --cl-navy-100: #D5DCE8;
+    --cl-navy-200: #AAB8D1;
+    --cl-navy-300: #7F94BA;
+    --cl-navy-400: #5470A3;
+    --cl-navy-500: #324E7A;
+    --cl-navy-600: #1E3560;
+    --cl-navy-700: #152649;
+    --cl-navy-800: #0D1B2A;
+    --cl-navy-900: #070E16;
 
-    --aw-color-text-heading: rgb(0 0 0);
-    --aw-color-text-default: rgb(16 16 16);
-    --aw-color-text-muted: rgb(16 16 16 / 66%);
-    --aw-color-bg-page: rgb(255 255 255);
+    --cl-amber-100: #FEEECE;
+    --cl-amber-200: #FCDB9E;
+    --cl-amber-300: #FAC76D;
+    --cl-amber-400: #F8B43C;
+    --cl-amber-500: #E8A020;
+    --cl-amber-600: #C4841A;
+    --cl-amber-700: #9A6714;
 
-    --aw-color-bg-page-dark: rgb(3 6 32);
+    --cl-teal-100: #CBF2EE;
+    --cl-teal-300: #63D8CB;
+    --cl-teal-400: #30CBBA;
+    --cl-teal-500: #0E9F8E;
+    --cl-teal-600: #0B8275;
+
+    --cl-stone-50:  #FDFCFA;
+    --cl-stone-100: #F5F1EB;
+    --cl-stone-200: #EBE5D8;
+    --cl-stone-300: #D9D0C0;
+
+    /* Semantic — light mode */
+    --aw-color-primary:   #0D1B2A;
+    --aw-color-secondary: #1E3560;
+    --aw-color-accent:    #E8A020;
+    --aw-color-accent-2:  #0E9F8E;
+
+    --aw-color-text-heading: #0D1B2A;
+    --aw-color-text-default: #1F2937;
+    --aw-color-text-muted:   #6B7280;
+    --aw-color-text-accent:  #C4841A;
+
+    --aw-color-bg-page:      #F5F1EB;
+    --aw-color-bg-raised:    #FFFFFF;
+    --aw-color-bg-overlay:   #EBE5D8;
+    --aw-color-bg-page-dark: #070E16;
+
+    --aw-border-subtle:  #D9D0C0;
+    --aw-border-default: #D1D5DB;
+    --aw-border-strong:  #9CA3AF;
+
+    /* Shadows */
+    --aw-shadow-sm:  0 1px 2px 0 rgba(13,27,42,0.08);
+    --aw-shadow-md:  0 4px 16px 0 rgba(13,27,42,0.12);
+    --aw-shadow-lg:  0 8px 32px 0 rgba(13,27,42,0.14);
+    --aw-shadow-amber-glow: 0 0 32px 0 rgba(232,160,32,0.20);
+    --aw-shadow-teal-glow:  0 0 32px 0 rgba(14,159,142,0.20);
 
     ::selection {
-      background-color: lavender;
+      background-color: #FCDB9E;
+      color: #0D1B2A;
     }
   }
 
   .dark {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    --aw-color-primary:   #F8B43C;
+    --aw-color-secondary: #30CBBA;
+    --aw-color-accent:    #5470A3;
+    --aw-color-accent-2:  #0E9F8E;
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    --aw-color-text-heading: #F5F1EB;
+    --aw-color-text-default: #D9D0C0;
+    --aw-color-text-muted:   #9CA3AF;
+    --aw-color-text-accent:  #F8B43C;
 
-    --aw-color-text-heading: rgb(247, 248, 248);
-    --aw-color-text-default: rgb(229 236 246);
-    --aw-color-text-muted: rgb(229 236 246 / 66%);
-    --aw-color-bg-page: rgb(3 6 32);
+    --aw-color-bg-page:    #070E16;
+    --aw-color-bg-raised:  #0D1B2A;
+    --aw-color-bg-overlay: #152649;
+
+    --aw-border-subtle:  rgba(245,241,235,0.08);
+    --aw-border-default: rgba(245,241,235,0.14);
+    --aw-border-strong:  rgba(245,241,235,0.24);
 
     ::selection {
-      background-color: black;
-      color: snow;
+      background-color: #E8A020;
+      color: #070E16;
     }
   }
 </style>
