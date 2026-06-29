@@ -21,9 +21,7 @@
 
   function getClientId() {
     return (
-      window.__RAPIDAI_GOOGLE_CLIENT_ID__ ||
-      document.querySelector('meta[name="rapidai-client-id"]')?.content ||
-      ''
+      window.__RAPIDAI_GOOGLE_CLIENT_ID__ || document.querySelector('meta[name="rapidai-client-id"]')?.content || ''
     );
   }
 
@@ -40,8 +38,11 @@
         window.location.reload();
         return;
       }
-      console.error('[RAPID²AI] Google Client ID not configured. Set window.__RAPIDAI_GOOGLE_CLIENT_ID__ or <meta name="rapidai-client-id">');
-      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0e0c;color:#c9a55c;font-family:sans-serif;text-align:center;padding:2rem;"><div><h2 style="margin-bottom:1rem">RAPID²AI</h2><p style="color:#7a8278">Google Client ID not configured.<br>Contact your administrator.</p></div></div>';
+      console.error(
+        '[RAPID²AI] Google Client ID not configured. Set window.__RAPIDAI_GOOGLE_CLIENT_ID__ or <meta name="rapidai-client-id">'
+      );
+      document.body.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0e0c;color:#c9a55c;font-family:sans-serif;text-align:center;padding:2rem;"><div><h2 style="margin-bottom:1rem">RAPID²AI</h2><p style="color:#7a8278">Google Client ID not configured.<br>Contact your administrator.</p></div></div>';
       return;
     }
 
