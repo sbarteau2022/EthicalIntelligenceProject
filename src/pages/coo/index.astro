@@ -2,465 +2,915 @@
 // RAPID²AI — COO Dashboard
 // Protected by Google OAuth gate (client-side)
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="rapidai-client-id" content={import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? ''}>
-  <title>RAPID²AI — COO Dashboard</title>
-  <script is:inline src="https://accounts.google.com/gsi/client" async defer></script>
-  <script is:inline src="/rapidai-auth.js"></script>
-  <style>
-    :root {
-      --gold: #c9a55c;
-      --gold-dim: #a07e3a;
-      --bg: #0a0e0c;
-      --surface: #111714;
-      --surface2: #192118;
-      --text: #e8ede9;
-      --text-dim: #7a8278;
-      --border: #2a332a;
-      --green: #4caf72;
-      --yellow: #e0b96a;
-      --red: #e05c5c;
-      --sidebar: 220px;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="rapidai-client-id" content={import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? ''} />
+    <title>RAPID²AI — COO Dashboard</title>
+    <script is:inline src="https://accounts.google.com/gsi/client" async defer></script>
+    <script is:inline src="/rapidai-auth.js"></script>
+    <style>
+      :root {
+        --gold: #c9a55c;
+        --gold-dim: #a07e3a;
+        --bg: #0a0e0c;
+        --surface: #111714;
+        --surface2: #192118;
+        --text: #e8ede9;
+        --text-dim: #7a8278;
+        --border: #2a332a;
+        --green: #4caf72;
+        --yellow: #e0b96a;
+        --red: #e05c5c;
+        --sidebar: 220px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        display: flex;
+        min-height: 100vh;
+      }
 
-    /* AUTH GATE */
-    #rapidai-gate {
-      display: none; position: fixed; inset: 0; background: var(--bg);
-      align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 1.5rem;
-    }
-    .gate-brand { font-family: Georgia, serif; font-style: italic; color: var(--gold); font-size: 1.4rem; }
-    .gate-sub { color: var(--text-dim); font-size: 0.85rem; }
-    .gate-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem 3rem; text-align: center; display: flex; flex-direction: column; gap: 1.25rem; align-items: center; }
-    .gate-title { color: var(--text); font-size: 1rem; font-weight: 600; }
-    .gate-desc { color: var(--text-dim); font-size: 0.82rem; max-width: 280px; line-height: 1.6; }
-    .btn-google { background: #fff; color: #3c4043; border: 1px solid #dadce0; border-radius: 6px;
-                  padding: 10px 20px; font-size: 0.875rem; font-weight: 500; cursor: pointer;
-                  display: flex; align-items: center; gap: 10px; transition: background 0.15s; }
-    .btn-google:hover { background: #f8f9fa; }
-    .btn-google svg { flex-shrink: 0; }
-    .gate-spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold);
-                    border-radius: 50%; animation: spin 0.7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+      /* AUTH GATE */
+      #rapidai-gate {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .gate-brand {
+        font-family: Georgia, serif;
+        font-style: italic;
+        color: var(--gold);
+        font-size: 1.4rem;
+      }
+      .gate-sub {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+      .gate-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2.5rem 3rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        align-items: center;
+      }
+      .gate-title {
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .gate-desc {
+        color: var(--text-dim);
+        font-size: 0.82rem;
+        max-width: 280px;
+        line-height: 1.6;
+      }
+      .btn-google {
+        background: #fff;
+        color: #3c4043;
+        border: 1px solid #dadce0;
+        border-radius: 6px;
+        padding: 10px 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.15s;
+      }
+      .btn-google:hover {
+        background: #f8f9fa;
+      }
+      .btn-google svg {
+        flex-shrink: 0;
+      }
+      .gate-spinner {
+        width: 28px;
+        height: 28px;
+        border: 2px solid var(--border);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-    /* SIDEBAR */
-    aside { width: var(--sidebar); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
-    .sidebar-brand { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid var(--border); }
-    .brand-wordmark { font-family: Georgia, serif; font-style: italic; color: var(--gold); font-size: 1.1rem; }
-    .brand-sub { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
-    .sidebar-section { padding: 1rem 0; }
-    .sidebar-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); padding: 0 1.25rem; margin-bottom: 0.5rem; }
-    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 8px 1.25rem; color: var(--text-dim); text-decoration: none; font-size: 0.85rem; transition: all 0.15s; border-left: 2px solid transparent; cursor: pointer; }
-    .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-    .sidebar-link.active { color: var(--gold); background: rgba(201,165,92,0.06); border-left-color: var(--gold); }
-    .sidebar-icon { font-size: 1rem; width: 18px; text-align: center; }
-    .sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
-    .role-badge { font-size: 0.7rem; color: var(--gold); background: rgba(201,165,92,0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; }
+      /* SIDEBAR */
+      aside {
+        width: var(--sidebar);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+      }
+      .sidebar-brand {
+        padding: 1.5rem 1.25rem 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand-wordmark {
+        font-family: Georgia, serif;
+        font-style: italic;
+        color: var(--gold);
+        font-size: 1.1rem;
+      }
+      .brand-sub {
+        font-size: 0.68rem;
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+      .sidebar-section {
+        padding: 1rem 0;
+      }
+      .sidebar-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        padding: 0 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 1.25rem;
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.15s;
+        border-left: 2px solid transparent;
+        cursor: pointer;
+      }
+      .sidebar-link:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .sidebar-link.active {
+        color: var(--gold);
+        background: rgba(201, 165, 92, 0.06);
+        border-left-color: var(--gold);
+      }
+      .sidebar-icon {
+        font-size: 1rem;
+        width: 18px;
+        text-align: center;
+      }
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+      .role-badge {
+        font-size: 0.7rem;
+        color: var(--gold);
+        background: rgba(201, 165, 92, 0.1);
+        padding: 3px 8px;
+        border-radius: 4px;
+        display: inline-block;
+      }
 
-    /* MAIN */
-    main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; }
-    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .header-title { font-size: 0.95rem; font-weight: 600; }
-    .header-right { display: flex; align-items: center; gap: 1.5rem; }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
-    .sync-label { font-size: 0.8rem; color: var(--text-dim); }
-    .date-chip { font-size: 0.8rem; color: var(--text-dim); background: var(--surface2); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); }
-    .signout-btn { font-size: 0.75rem; color: var(--text-dim); background: none; border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: color 0.15s; }
-    .signout-btn:hover { color: var(--text); }
+      /* MAIN */
+      main {
+        margin-left: var(--sidebar);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0 2rem;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .header-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .sync-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green);
+      }
+      .sync-label {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+      }
+      .date-chip {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        background: var(--surface2);
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+      }
+      .signout-btn {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        background: none;
+        border: 1px solid var(--border);
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: color 0.15s;
+      }
+      .signout-btn:hover {
+        color: var(--text);
+      }
 
-    .content { padding: 2rem; flex: 1; }
+      .content {
+        padding: 2rem;
+        flex: 1;
+      }
 
-    /* KPI ROW */
-    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; }
-    .kpi-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
-    .kpi-value { font-size: 1.75rem; font-weight: 700; color: var(--text); line-height: 1; }
-    .kpi-delta { font-size: 0.75rem; margin-top: 6px; }
-    .kpi-delta.up { color: var(--green); }
-    .kpi-delta.down { color: var(--red); }
-    .kpi-delta.neutral { color: var(--text-dim); }
+      /* KPI ROW */
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem 1.5rem;
+      }
+      .kpi-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+      }
+      .kpi-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+      }
+      .kpi-delta {
+        font-size: 0.75rem;
+        margin-top: 6px;
+      }
+      .kpi-delta.up {
+        color: var(--green);
+      }
+      .kpi-delta.down {
+        color: var(--red);
+      }
+      .kpi-delta.neutral {
+        color: var(--text-dim);
+      }
 
-    /* TWO-COL GRID */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+      /* TWO-COL GRID */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      @media (max-width: 1100px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
 
-    /* PANELS */
-    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .panel-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .panel-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
-    .panel-action { font-size: 0.75rem; color: var(--gold); text-decoration: none; cursor: pointer; background: none; border: none; }
-    .panel-body { padding: 1.25rem 1.5rem; }
+      /* PANELS */
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .panel-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .panel-action {
+        font-size: 0.75rem;
+        color: var(--gold);
+        text-decoration: none;
+        cursor: pointer;
+        background: none;
+        border: none;
+      }
+      .panel-body {
+        padding: 1.25rem 1.5rem;
+      }
 
-    /* TABLE */
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-    th { text-align: left; padding: 0.5rem 0.75rem; color: var(--text-dim); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-    td { padding: 0.65rem 0.75rem; border-bottom: 1px solid rgba(42,51,42,0.5); color: var(--text); vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        color: var(--text-dim);
+        font-weight: 500;
+        font-size: 0.7rem;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+      }
+      td {
+        padding: 0.65rem 0.75rem;
+        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        color: var(--text);
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
 
-    /* STATUS PILLS */
-    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 500; }
-    .pill-green { background: rgba(76,175,114,0.12); color: var(--green); }
-    .pill-yellow { background: rgba(224,185,106,0.12); color: var(--yellow); }
-    .pill-red { background: rgba(224,92,92,0.12); color: var(--red); }
-    .pill-dim { background: rgba(122,130,120,0.12); color: var(--text-dim); }
-    .pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+      /* STATUS PILLS */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 500;
+      }
+      .pill-green {
+        background: rgba(76, 175, 114, 0.12);
+        color: var(--green);
+      }
+      .pill-yellow {
+        background: rgba(224, 185, 106, 0.12);
+        color: var(--yellow);
+      }
+      .pill-red {
+        background: rgba(224, 92, 92, 0.12);
+        color: var(--red);
+      }
+      .pill-dim {
+        background: rgba(122, 130, 120, 0.12);
+        color: var(--text-dim);
+      }
+      .pill::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+      }
 
-    /* ENTITY TABS */
-    .entity-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .entity-tab { padding: 6px 16px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); transition: all 0.15s; }
-    .entity-tab.active { background: rgba(201,165,92,0.1); border-color: var(--gold-dim); color: var(--gold); }
+      /* ENTITY TABS */
+      .entity-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .entity-tab {
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text-dim);
+        transition: all 0.15s;
+      }
+      .entity-tab.active {
+        background: rgba(201, 165, 92, 0.1);
+        border-color: var(--gold-dim);
+        color: var(--gold);
+      }
 
-    /* SYNC STATUS */
-    .sync-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(42,51,42,0.5); }
-    .sync-row:last-child { border-bottom: none; }
-    .sync-venue { font-size: 0.85rem; }
-    .sync-meta { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+      /* SYNC STATUS */
+      .sync-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+      }
+      .sync-row:last-child {
+        border-bottom: none;
+      }
+      .sync-venue {
+        font-size: 0.85rem;
+      }
+      .sync-meta {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 2px;
+      }
 
-    /* INVOICE QUEUE */
-    .invoice-item { padding: 0.9rem 0; border-bottom: 1px solid rgba(42,51,42,0.5); }
-    .invoice-item:last-child { border-bottom: none; }
-    .inv-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .inv-doc { font-size: 0.85rem; font-weight: 500; }
-    .inv-total { font-size: 0.9rem; font-weight: 600; color: var(--gold); }
-    .inv-meta { font-size: 0.75rem; color: var(--text-dim); }
+      /* INVOICE QUEUE */
+      .invoice-item {
+        padding: 0.9rem 0;
+        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+      }
+      .invoice-item:last-child {
+        border-bottom: none;
+      }
+      .inv-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+      .inv-doc {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+      .inv-total {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--gold);
+      }
+      .inv-meta {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
 
-    /* ALERT FEED */
-    .alert-item { display: flex; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(42,51,42,0.5); align-items: flex-start; }
-    .alert-item:last-child { border-bottom: none; }
-    .alert-icon { font-size: 1rem; margin-top: 1px; }
-    .alert-text { font-size: 0.82rem; line-height: 1.55; }
-    .alert-time { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+      /* ALERT FEED */
+      .alert-item {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        align-items: flex-start;
+      }
+      .alert-item:last-child {
+        border-bottom: none;
+      }
+      .alert-icon {
+        font-size: 1rem;
+        margin-top: 1px;
+      }
+      .alert-text {
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .alert-time {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        margin-top: 2px;
+      }
 
-    /* VIEW SWITCHER — link to chef */
-    .view-switch { display: flex; gap: 0.5rem; align-items: center; }
-    .view-pill { font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; text-decoration: none; border: 1px solid var(--border); color: var(--text-dim); transition: all 0.15s; }
-    .view-pill.active { background: rgba(201,165,92,0.1); border-color: var(--gold-dim); color: var(--gold); }
-    .view-pill:hover { color: var(--text); }
-  </style>
-</head>
-<body>
-
-<!-- AUTH GATE OVERLAY -->
-<div id="rapidai-gate">
-  <div class="gate-brand">RAPID²AI</div>
-  <div class="gate-card">
-    <div class="gate-title">COO Dashboard — Restricted Access</div>
-    <div class="gate-desc">Sign in with your authorized Google account to continue.</div>
-    <div id="google-signin-btn"></div>
-    <button class="btn-google" id="manual-signin-btn">
-      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.566 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/></svg>
-      Sign in with Google
-    </button>
-    <div class="gate-desc" style="margin-top:0">
-      <a href="/" style="color:var(--text-dim);font-size:0.75rem;">← Back to site</a>
-    </div>
-  </div>
-</div>
-
-<aside>
-  <div class="sidebar-brand">
-    <div class="brand-wordmark">RAPID²AI</div>
-    <div class="brand-sub">COO · Estate View</div>
-  </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Overview</div>
-    <a class="sidebar-link active" href="/coo/"><span class="sidebar-icon">📊</span> Dashboard</a>
-    <a class="sidebar-link" href="/coo/entities"><span class="sidebar-icon">🏛️</span> Entities</a>
-    <a class="sidebar-link" href="/coo/venues"><span class="sidebar-icon">📍</span> Venues</a>
-  </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Financials</div>
-    <a class="sidebar-link" href="/coo/ledger"><span class="sidebar-icon">📒</span> Ledger</a>
-    <a class="sidebar-link" href="/coo/invoices"><span class="sidebar-icon">📄</span> Invoice Queue</a>
-    <a class="sidebar-link" href="/coo/journal"><span class="sidebar-icon">✏️</span> Journal Entries</a>
-    <a class="sidebar-link" href="/coo/vendors"><span class="sidebar-icon">🚚</span> Vendors</a>
-  </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Operations</div>
-    <a class="sidebar-link" href="/coo/pos"><span class="sidebar-icon">⚡</span> POS Summary</a>
-    <a class="sidebar-link" href="/coo/ingest"><span class="sidebar-icon">⬆️</span> Upload Docs</a>
-    <a class="sidebar-link" href="/coo/audit"><span class="sidebar-icon">🔍</span> Audit Log</a>
-  </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-label">Intelligence</div>
-    <a class="sidebar-link" href="/app/"><span class="sidebar-icon">🧠</span> RAPID²AI Chat</a>
-    <a class="sidebar-link" href="/coo/rpvi"><span class="sidebar-icon">📈</span> RPVI Index</a>
-  </div>
-
-  <div class="sidebar-footer">
-    <div class="role-badge">operator · estate</div>
-    <div style="font-size:0.72rem; color:var(--text-dim); margin-top:6px;" id="user-email-display">Hermannhof Group</div>
-  </div>
-</aside>
-
-<main>
-  <header>
-    <div class="header-title">COO Dashboard</div>
-    <div class="header-right">
-      <div class="view-switch">
-        <span class="view-pill active">COO View</span>
-        <a class="view-pill" href="/chef/">Chef View</a>
-        <a class="view-pill" href="/app/">Chat</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div class="sync-dot"></div>
-        <span class="sync-label">All systems current</span>
-      </div>
-      <div class="date-chip" id="dateChip">—</div>
-      <button class="signout-btn" onclick="RapidAIAuth.signOut()">Sign out</button>
-    </div>
-  </header>
-
-  <div class="content">
-
-    <div class="entity-tabs">
-      <button class="entity-tab active" onclick="setEntity(this,'all')">All Entities</button>
-      <button class="entity-tab" onclick="setEntity(this,'hermannhof-inc')">Hermannhof Inc.</button>
-      <button class="entity-tab" onclick="setEntity(this,'brewery')">Brewery LLC</button>
-      <button class="entity-tab" onclick="setEntity(this,'dierberg')">Dierberg Ed. Foundation</button>
-    </div>
-
-    <div class="kpi-row">
-      <div class="kpi">
-        <div class="kpi-label">Today's Net Sales</div>
-        <div class="kpi-value" id="kpi-sales">$4,612</div>
-        <div class="kpi-delta up">+12% vs last Tuesday</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Invoices Pending Review</div>
-        <div class="kpi-value" id="kpi-invoices">1</div>
-        <div class="kpi-delta neutral">Requires action</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">COGS MTD</div>
-        <div class="kpi-value" id="kpi-cogs">$18,240</div>
-        <div class="kpi-delta down">+3.1% vs last month</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Ledger Entries Today</div>
-        <div class="kpi-value" id="kpi-entries">8</div>
-        <div class="kpi-delta neutral">Auto-posted</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Gate Failures (7d)</div>
-        <div class="kpi-value" id="kpi-failures">0</div>
-        <div class="kpi-delta neutral">Clean week</div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Invoice Queue</span>
-          <a class="panel-action" href="/coo/invoices">View all →</a>
+      /* VIEW SWITCHER — link to chef */
+      .view-switch {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .view-pill {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        border-radius: 20px;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        transition: all 0.15s;
+      }
+      .view-pill.active {
+        background: rgba(201, 165, 92, 0.1);
+        border-color: var(--gold-dim);
+        color: var(--gold);
+      }
+      .view-pill:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AUTH GATE OVERLAY -->
+    <div id="rapidai-gate">
+      <div class="gate-brand">RAPID²AI</div>
+      <div class="gate-card">
+        <div class="gate-title">COO Dashboard — Restricted Access</div>
+        <div class="gate-desc">Sign in with your authorized Google account to continue.</div>
+        <div id="google-signin-btn"></div>
+        <button class="btn-google" id="manual-signin-btn">
+          <svg width="18" height="18" viewBox="0 0 18 18"
+            ><path
+              fill="#4285F4"
+              d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.566 2.684-3.875 2.684-6.615z"
+            ></path><path
+              fill="#34A853"
+              d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"
+            ></path><path
+              fill="#FBBC05"
+              d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"
+            ></path><path
+              fill="#EA4335"
+              d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"
+            ></path></svg
+          >
+          Sign in with Google
+        </button>
+        <div class="gate-desc" style="margin-top:0">
+          <a href="/" style="color:var(--text-dim);font-size:0.75rem;">← Back to site</a>
         </div>
-        <div class="panel-body">
-          <div class="invoice-item">
-            <div class="inv-top"><span class="inv-doc">USF-20240521-8847</span><span class="inv-total">$1,842.16</span></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="inv-meta">US Foods · Tin Mill · May 21</span>
-              <span class="pill pill-green">verified</span>
+      </div>
+    </div>
+
+    <aside>
+      <div class="sidebar-brand">
+        <div class="brand-wordmark">RAPID²AI</div>
+        <div class="brand-sub">COO · Estate View</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Overview</div>
+        <a class="sidebar-link active" href="/coo/"><span class="sidebar-icon">📊</span> Dashboard</a>
+        <a class="sidebar-link" href="/coo/entities"><span class="sidebar-icon">🏛️</span> Entities</a>
+        <a class="sidebar-link" href="/coo/venues"><span class="sidebar-icon">📍</span> Venues</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Financials</div>
+        <a class="sidebar-link" href="/coo/ledger"><span class="sidebar-icon">📒</span> Ledger</a>
+        <a class="sidebar-link" href="/coo/invoices"><span class="sidebar-icon">📄</span> Invoice Queue</a>
+        <a class="sidebar-link" href="/coo/journal"><span class="sidebar-icon">✏️</span> Journal Entries</a>
+        <a class="sidebar-link" href="/coo/vendors"><span class="sidebar-icon">🚚</span> Vendors</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Operations</div>
+        <a class="sidebar-link" href="/coo/pos"><span class="sidebar-icon">⚡</span> POS Summary</a>
+        <a class="sidebar-link" href="/coo/ingest"><span class="sidebar-icon">⬆️</span> Upload Docs</a>
+        <a class="sidebar-link" href="/coo/audit"><span class="sidebar-icon">🔍</span> Audit Log</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Intelligence</div>
+        <a class="sidebar-link" href="/app/"><span class="sidebar-icon">🧠</span> RAPID²AI Chat</a>
+        <a class="sidebar-link" href="/coo/rpvi"><span class="sidebar-icon">📈</span> RPVI Index</a>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="role-badge">operator · estate</div>
+        <div style="font-size:0.72rem; color:var(--text-dim); margin-top:6px;" id="user-email-display">
+          Hermannhof Group
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <header>
+        <div class="header-title">COO Dashboard</div>
+        <div class="header-right">
+          <div class="view-switch">
+            <span class="view-pill active">COO View</span>
+            <a class="view-pill" href="/chef/">Chef View</a>
+            <a class="view-pill" href="/app/">Chat</a>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="sync-dot"></div>
+            <span class="sync-label">All systems current</span>
+          </div>
+          <div class="date-chip" id="dateChip">—</div>
+          <button class="signout-btn" onclick="RapidAIAuth.signOut()">Sign out</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="entity-tabs">
+          <button class="entity-tab active" onclick="setEntity(this,'all')">All Entities</button>
+          <button class="entity-tab" onclick="setEntity(this,'hermannhof-inc')">Hermannhof Inc.</button>
+          <button class="entity-tab" onclick="setEntity(this,'brewery')">Brewery LLC</button>
+          <button class="entity-tab" onclick="setEntity(this,'dierberg')">Dierberg Ed. Foundation</button>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">Today's Net Sales</div>
+            <div class="kpi-value" id="kpi-sales">$4,612</div>
+            <div class="kpi-delta up">+12% vs last Tuesday</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Invoices Pending Review</div>
+            <div class="kpi-value" id="kpi-invoices">1</div>
+            <div class="kpi-delta neutral">Requires action</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">COGS MTD</div>
+            <div class="kpi-value" id="kpi-cogs">$18,240</div>
+            <div class="kpi-delta down">+3.1% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Ledger Entries Today</div>
+            <div class="kpi-value" id="kpi-entries">8</div>
+            <div class="kpi-delta neutral">Auto-posted</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Gate Failures (7d)</div>
+            <div class="kpi-value" id="kpi-failures">0</div>
+            <div class="kpi-delta neutral">Clean week</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Invoice Queue</span>
+              <a class="panel-action" href="/coo/invoices">View all →</a>
+            </div>
+            <div class="panel-body">
+              <div class="invoice-item">
+                <div class="inv-top">
+                  <span class="inv-doc">USF-20240521-8847</span><span class="inv-total">$1,842.16</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="inv-meta">US Foods · Tin Mill · May 21</span>
+                  <span class="pill pill-green">verified</span>
+                </div>
+              </div>
+              <div class="invoice-item">
+                <div class="inv-top">
+                  <span class="inv-doc">USF-CM-20240519</span><span class="inv-total">−$14.63</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="inv-meta">Credit Memo · Spoiled Product</span>
+                  <span class="pill pill-green">verified</span>
+                </div>
+              </div>
+              <div class="invoice-item">
+                <div class="inv-top">
+                  <span class="inv-doc">USF-20240518-8831</span><span class="inv-total">$2,104.50</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="inv-meta">US Foods · Tin Mill · May 18</span>
+                  <span class="pill pill-yellow">pending_review</span>
+                </div>
+              </div>
+              <div class="invoice-item">
+                <div class="inv-top">
+                  <span class="inv-doc">USF-20240516-8812</span><span class="inv-total">$988.74</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="inv-meta">US Foods · Tin Mill · May 16</span>
+                  <span class="pill pill-green">ingested</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="invoice-item">
-            <div class="inv-top"><span class="inv-doc">USF-CM-20240519</span><span class="inv-total">−$14.63</span></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="inv-meta">Credit Memo · Spoiled Product</span>
-              <span class="pill pill-green">verified</span>
-            </div>
-          </div>
-          <div class="invoice-item">
-            <div class="inv-top"><span class="inv-doc">USF-20240518-8831</span><span class="inv-total">$2,104.50</span></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="inv-meta">US Foods · Tin Mill · May 18</span>
-              <span class="pill pill-yellow">pending_review</span>
-            </div>
-          </div>
-          <div class="invoice-item">
-            <div class="inv-top"><span class="inv-doc">USF-20240516-8812</span><span class="inv-total">$988.74</span></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="inv-meta">US Foods · Tin Mill · May 16</span>
-              <span class="pill pill-green">ingested</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Ingestion Sync Status</span>
-          <a class="panel-action" href="/coo/audit">Audit log →</a>
-        </div>
-        <div class="panel-body">
-          <div class="sync-row">
-            <div><div class="sync-venue">Tin Mill — Square POS</div><div class="sync-meta">Last sync: today 06:00 AM</div></div>
-            <span class="pill pill-green">current</span>
-          </div>
-          <div class="sync-row">
-            <div><div class="sync-venue">Tin Mill — US Foods CSV</div><div class="sync-meta">Last sync: May 21, 2024</div></div>
-            <span class="pill pill-green">current</span>
-          </div>
-          <div class="sync-row">
-            <div><div class="sync-venue">Brewery — POS</div><div class="sync-meta">Not yet configured</div></div>
-            <span class="pill pill-dim">inactive</span>
-          </div>
-          <div class="sync-row">
-            <div><div class="sync-venue">Dierberg Ed. Foundation</div><div class="sync-meta">Pending entity setup</div></div>
-            <span class="pill pill-dim">inactive</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">POS — Daily Summary (Tin Mill)</span>
-          <a class="panel-action" href="/coo/pos">Details →</a>
-        </div>
-        <div class="panel-body">
-          <table>
-            <thead><tr><th>Date</th><th>Gross Sales</th><th>Net Sales</th><th>Tax</th><th>Covers</th></tr></thead>
-            <tbody>
-              <tr><td>Today</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-              <tr><td>Yesterday</td><td>$4,218</td><td>$3,890</td><td>$328</td><td>112</td></tr>
-              <tr><td>May 20</td><td>$5,104</td><td>$4,719</td><td>$385</td><td>138</td></tr>
-              <tr><td>May 19</td><td>$3,876</td><td>$3,582</td><td>$294</td><td>98</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Purveyor Intelligence Alerts</span>
-          <a class="panel-action" href="/coo/rpvi">RPVI →</a>
-        </div>
-        <div class="panel-body">
-          <div class="alert-item">
-            <span class="alert-icon">⚠️</span>
-            <div>
-              <div class="alert-text">Chicken breast (US Foods) up 8.4% vs. 6-week avg. Typical lead for broader poultry move: 2–3 weeks.</div>
-              <div class="alert-time">RPVI · Poultry · today</div>
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Ingestion Sync Status</span>
+              <a class="panel-action" href="/coo/audit">Audit log →</a>
             </div>
-          </div>
-          <div class="alert-item">
-            <span class="alert-icon">📈</span>
-            <div>
-              <div class="alert-text">Produce category showing volatility window — 3 of last 4 deliveries arrived with price adjustments ≥5%.</div>
-              <div class="alert-time">RPVI · Produce · 2 days ago</div>
-            </div>
-          </div>
-          <div class="alert-item">
-            <span class="alert-icon">✅</span>
-            <div>
-              <div class="alert-text">Fuel surcharge stable for 4 consecutive deliveries. No movement expected near-term.</div>
-              <div class="alert-time">RPVI · Freight · 3 days ago</div>
+            <div class="panel-body">
+              <div class="sync-row">
+                <div>
+                  <div class="sync-venue">Tin Mill — Square POS</div><div class="sync-meta">
+                    Last sync: today 06:00 AM
+                  </div>
+                </div>
+                <span class="pill pill-green">current</span>
+              </div>
+              <div class="sync-row">
+                <div>
+                  <div class="sync-venue">Tin Mill — US Foods CSV</div><div class="sync-meta">
+                    Last sync: May 21, 2024
+                  </div>
+                </div>
+                <span class="pill pill-green">current</span>
+              </div>
+              <div class="sync-row">
+                <div><div class="sync-venue">Brewery — POS</div><div class="sync-meta">Not yet configured</div></div>
+                <span class="pill pill-dim">inactive</span>
+              </div>
+              <div class="sync-row">
+                <div>
+                  <div class="sync-venue">Dierberg Ed. Foundation</div><div class="sync-meta">Pending entity setup</div>
+                </div>
+                <span class="pill pill-dim">inactive</span>
+              </div>
             </div>
           </div>
         </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">POS — Daily Summary (Tin Mill)</span>
+              <a class="panel-action" href="/coo/pos">Details →</a>
+            </div>
+            <div class="panel-body">
+              <table>
+                <thead><tr><th>Date</th><th>Gross Sales</th><th>Net Sales</th><th>Tax</th><th>Covers</th></tr></thead>
+                <tbody>
+                  <tr><td>Today</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td>Yesterday</td><td>$4,218</td><td>$3,890</td><td>$328</td><td>112</td></tr>
+                  <tr><td>May 20</td><td>$5,104</td><td>$4,719</td><td>$385</td><td>138</td></tr>
+                  <tr><td>May 19</td><td>$3,876</td><td>$3,582</td><td>$294</td><td>98</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Purveyor Intelligence Alerts</span>
+              <a class="panel-action" href="/coo/rpvi">RPVI →</a>
+            </div>
+            <div class="panel-body">
+              <div class="alert-item">
+                <span class="alert-icon">⚠️</span>
+                <div>
+                  <div class="alert-text">
+                    Chicken breast (US Foods) up 8.4% vs. 6-week avg. Typical lead for broader poultry move: 2–3 weeks.
+                  </div>
+                  <div class="alert-time">RPVI · Poultry · today</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <span class="alert-icon">📈</span>
+                <div>
+                  <div class="alert-text">
+                    Produce category showing volatility window — 3 of last 4 deliveries arrived with price adjustments
+                    ≥5%.
+                  </div>
+                  <div class="alert-time">RPVI · Produce · 2 days ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <span class="alert-icon">✅</span>
+                <div>
+                  <div class="alert-text">
+                    Fuel surcharge stable for 4 consecutive deliveries. No movement expected near-term.
+                  </div>
+                  <div class="alert-time">RPVI · Freight · 3 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:1.5rem;">
+          <div class="panel-header">
+            <span class="panel-title">Ledger Health — Hermannhof Inc.</span>
+            <a class="panel-action" href="/coo/ledger">Full ledger →</a>
+          </div>
+          <div class="panel-body">
+            <table>
+              <thead
+                ><tr><th>Account</th><th>Code</th><th>Type</th><th>MTD Debit</th><th>MTD Credit</th><th>Balance</th></tr
+                ></thead
+              >
+              <tbody>
+                <tr><td>Food — COGS</td><td>5000</td><td>Expense</td><td>$14,820</td><td>—</td><td>$14,820 Dr</td></tr>
+                <tr><td>Beverage — COGS</td><td>5100</td><td>Expense</td><td>$3,240</td><td>—</td><td>$3,240 Dr</td></tr
+                >
+                <tr
+                  ><td>Freight &amp; Fuel Surcharge</td><td>5800</td><td>Expense</td><td>$180</td><td>—</td><td
+                    >$180 Dr</td
+                  ></tr
+                >
+                <tr
+                  ><td>Sales Revenue — Food</td><td>4000</td><td>Revenue</td><td>—</td><td>$48,220</td><td
+                    >$48,220 Cr</td
+                  ></tr
+                >
+                <tr
+                  ><td>Accounts Payable — US Foods</td><td>2100</td><td>Liability</td><td>$14,820</td><td>$14,820</td
+                  ><td>$0</td></tr
+                >
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
 
-    <div class="panel" style="margin-bottom:1.5rem;">
-      <div class="panel-header">
-        <span class="panel-title">Ledger Health — Hermannhof Inc.</span>
-        <a class="panel-action" href="/coo/ledger">Full ledger →</a>
-      </div>
-      <div class="panel-body">
-        <table>
-          <thead><tr><th>Account</th><th>Code</th><th>Type</th><th>MTD Debit</th><th>MTD Credit</th><th>Balance</th></tr></thead>
-          <tbody>
-            <tr><td>Food — COGS</td><td>5000</td><td>Expense</td><td>$14,820</td><td>—</td><td>$14,820 Dr</td></tr>
-            <tr><td>Beverage — COGS</td><td>5100</td><td>Expense</td><td>$3,240</td><td>—</td><td>$3,240 Dr</td></tr>
-            <tr><td>Freight &amp; Fuel Surcharge</td><td>5800</td><td>Expense</td><td>$180</td><td>—</td><td>$180 Dr</td></tr>
-            <tr><td>Sales Revenue — Food</td><td>4000</td><td>Revenue</td><td>—</td><td>$48,220</td><td>$48,220 Cr</td></tr>
-            <tr><td>Accounts Payable — US Foods</td><td>2100</td><td>Liability</td><td>$14,820</td><td>$14,820</td><td>$0</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <script>
+      // @ts-nocheck
+      document.getElementById('dateChip').textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      });
 
-  </div>
-</main>
+      function setEntity(btn, entity) {
+        document.querySelectorAll('.entity-tab').forEach((t) => t.classList.remove('active'));
+        btn.classList.add('active');
+      }
 
-<script>
-  document.getElementById('dateChip').textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      // Auth gate
+      function initAuth() {
+        if (RapidAIAuth.isAuthed()) {
+          // Show content
+          document.getElementById('rapidai-gate').style.display = 'none';
+          // Show user email if stored
+          const email = sessionStorage.getItem('rapidai_email');
+          if (email) document.getElementById('user-email-display').textContent = email;
+          return;
+        }
+        // Show gate
+        document.getElementById('rapidai-gate').style.display = 'flex';
 
-  function setEntity(btn, entity) {
-    document.querySelectorAll('.entity-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-  }
+        const clientId = document.querySelector('meta[name="rapidai-client-id"]')?.content;
 
-  // Auth gate
-  function initAuth() {
-    if (RapidAIAuth.isAuthed()) {
-      // Show content
-      document.getElementById('rapidai-gate').style.display = 'none';
-      // Show user email if stored
-      const email = sessionStorage.getItem('rapidai_email');
-      if (email) document.getElementById('user-email-display').textContent = email;
-      return;
-    }
-    // Show gate
-    document.getElementById('rapidai-gate').style.display = 'flex';
+        if (clientId) {
+          // Initialize Google Identity Services
+          window.onload = function () {
+            /* GSI loads async */
+          };
+          function initGSI() {
+            if (!window.google?.accounts) return setTimeout(initGSI, 100);
+            google.accounts.id.initialize({
+              client_id: clientId,
+              callback: function (response) {
+                if (response.credential) {
+                  sessionStorage.setItem('rapidai_auth', response.credential);
+                  sessionStorage.setItem('rapidai_authed_at', Date.now().toString());
+                  // Decode email from JWT payload
+                  try {
+                    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                    if (payload.email) sessionStorage.setItem('rapidai_email', payload.email);
+                  } catch (e) {}
+                  window.location.reload();
+                }
+              },
+              auto_select: false,
+              cancel_on_tap_outside: false,
+            });
+            google.accounts.id.renderButton(document.getElementById('google-signin-btn'), {
+              theme: 'outline',
+              size: 'large',
+              text: 'signin_with',
+            });
+          }
+          initGSI();
+        }
 
-    const clientId = document.querySelector('meta[name="rapidai-client-id"]')?.content;
-
-    if (clientId) {
-      // Initialize Google Identity Services
-      window.onload = function() { /* GSI loads async */ };
-      function initGSI() {
-        if (!window.google?.accounts) return setTimeout(initGSI, 100);
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: function(response) {
-            if (response.credential) {
-              sessionStorage.setItem('rapidai_auth', response.credential);
-              sessionStorage.setItem('rapidai_authed_at', Date.now().toString());
-              // Decode email from JWT payload
-              try {
-                const payload = JSON.parse(atob(response.credential.split('.')[1]));
-                if (payload.email) sessionStorage.setItem('rapidai_email', payload.email);
-              } catch(e) {}
-              window.location.reload();
-            }
-          },
-          auto_select: false,
-          cancel_on_tap_outside: false,
+        // Manual button fallback (also used when no GSI)
+        document.getElementById('manual-signin-btn').addEventListener('click', function () {
+          if (!clientId) {
+            RapidAIAuth.signIn('/coo/');
+            return;
+          }
+          const redirectUri = window.location.origin + '/auth/callback';
+          const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20email%20profile&nonce=${Math.random().toString(36).slice(2)}`;
+          sessionStorage.setItem('rapidai_return', '/coo/');
+          window.location.href = authUrl;
         });
-        google.accounts.id.renderButton(
-          document.getElementById('google-signin-btn'),
-          { theme: 'outline', size: 'large', text: 'signin_with' }
-        );
       }
-      initGSI();
-    }
 
-    // Manual button fallback (also used when no GSI)
-    document.getElementById('manual-signin-btn').addEventListener('click', function() {
-      if (!clientId) {
-        RapidAIAuth.signIn('/coo/');
-        return;
-      }
-      const redirectUri = window.location.origin + '/auth/callback';
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20email%20profile&nonce=${Math.random().toString(36).slice(2)}`;
-      sessionStorage.setItem('rapidai_return', '/coo/');
-      window.location.href = authUrl;
-    });
-  }
-
-  initAuth();
-</script>
-</body>
+      initAuth();
+    </script>
+  </body>
 </html>

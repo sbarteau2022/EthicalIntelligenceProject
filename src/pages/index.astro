@@ -540,78 +540,226 @@ const principles = [
   <style>
     /* Chat widget bubble */
     #rapidai-widget-btn {
-      position: fixed; bottom: 24px; right: 24px; z-index: 1000;
-      width: 52px; height: 52px; border-radius: 50%;
-      background: #c9a55c; color: #0a0e0c; border: none; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(201,165,92,0.35);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; transition: transform 0.2s, background 0.2s;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #c9a55c;
+      color: #0a0e0c;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201, 165, 92, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition:
+        transform 0.2s,
+        background 0.2s;
     }
-    #rapidai-widget-btn:hover { transform: scale(1.08); background: #e0b96a; }
+    #rapidai-widget-btn:hover {
+      transform: scale(1.08);
+      background: #e0b96a;
+    }
     #rapidai-widget-panel {
-      position: fixed; bottom: 88px; right: 24px; z-index: 1000;
-      width: 360px; max-height: 520px;
-      background: #111714; border: 1px solid #2a332a; border-radius: 14px;
-      display: none; flex-direction: column;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      z-index: 1000;
+      width: 360px;
+      max-height: 520px;
+      background: #111714;
+      border: 1px solid #2a332a;
+      border-radius: 14px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       overflow: hidden;
     }
-    #rapidai-widget-panel.open { display: flex; }
-    .rwp-header {
-      background: #111714; border-bottom: 1px solid #2a332a;
-      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+    #rapidai-widget-panel.open {
+      display: flex;
     }
-    .rwp-brand { font-family: Georgia, serif; font-style: italic; color: #c9a55c; font-size: 15px; }
-    .rwp-brand span { font-size: 10px; font-style: normal; font-family: monospace; color: #7a8278; letter-spacing: 3px; margin-left: 6px; }
-    .rwp-close { background: none; border: none; color: #7a8278; font-size: 18px; cursor: pointer; line-height: 1; }
-    .rwp-close:hover { color: #e8ede9; }
+    .rwp-header {
+      background: #111714;
+      border-bottom: 1px solid #2a332a;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rwp-brand {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #c9a55c;
+      font-size: 15px;
+    }
+    .rwp-brand span {
+      font-size: 10px;
+      font-style: normal;
+      font-family: monospace;
+      color: #7a8278;
+      letter-spacing: 3px;
+      margin-left: 6px;
+    }
+    .rwp-close {
+      background: none;
+      border: none;
+      color: #7a8278;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .rwp-close:hover {
+      color: #e8ede9;
+    }
     .rwp-messages {
-      flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       min-height: 120px;
     }
-    .rwp-messages::-webkit-scrollbar { width: 3px; }
-    .rwp-messages::-webkit-scrollbar-thumb { background: #2a332a; border-radius: 2px; }
-    .rwp-msg { max-width: 90%; }
-    .rwp-msg.ai { align-self: flex-start; }
-    .rwp-msg.user { align-self: flex-end; }
-    .rwp-bubble {
-      padding: 9px 13px; border-radius: 10px; font-size: 13px; line-height: 1.55; color: #e8ede9;
+    .rwp-messages::-webkit-scrollbar {
+      width: 3px;
     }
-    .rwp-msg.ai .rwp-bubble { background: #192118; border: 1px solid #2a332a; }
-    .rwp-msg.user .rwp-bubble { background: #1a3a2a; border: 1px solid #2a4a3a; }
-    .rwp-typing { display: flex; gap: 4px; align-items: center; }
-    .rwp-typing span { width: 6px; height: 6px; border-radius: 50%; background: #7a8278; animation: rwp-bounce 1.2s infinite; }
-    .rwp-typing span:nth-child(2) { animation-delay: 0.2s; }
-    .rwp-typing span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes rwp-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
+    .rwp-messages::-webkit-scrollbar-thumb {
+      background: #2a332a;
+      border-radius: 2px;
+    }
+    .rwp-msg {
+      max-width: 90%;
+    }
+    .rwp-msg.ai {
+      align-self: flex-start;
+    }
+    .rwp-msg.user {
+      align-self: flex-end;
+    }
+    .rwp-bubble {
+      padding: 9px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #e8ede9;
+    }
+    .rwp-msg.ai .rwp-bubble {
+      background: #192118;
+      border: 1px solid #2a332a;
+    }
+    .rwp-msg.user .rwp-bubble {
+      background: #1a3a2a;
+      border: 1px solid #2a4a3a;
+    }
+    .rwp-typing {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .rwp-typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #7a8278;
+      animation: rwp-bounce 1.2s infinite;
+    }
+    .rwp-typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .rwp-typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes rwp-bounce {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-4px);
+      }
+    }
     .rwp-input-row {
-      padding: 10px 12px; border-top: 1px solid #2a332a;
-      display: flex; gap: 8px; align-items: flex-end; background: #111714;
+      padding: 10px 12px;
+      border-top: 1px solid #2a332a;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      background: #111714;
     }
     #rwp-input {
-      flex: 1; background: #0a0e0c; border: 1px solid #2a332a; border-radius: 7px;
-      color: #e8ede9; font-size: 13px; padding: 8px 10px; resize: none; outline: none;
-      line-height: 1.4; min-height: 36px; max-height: 100px; font-family: inherit;
+      flex: 1;
+      background: #0a0e0c;
+      border: 1px solid #2a332a;
+      border-radius: 7px;
+      color: #e8ede9;
+      font-size: 13px;
+      padding: 8px 10px;
+      resize: none;
+      outline: none;
+      line-height: 1.4;
+      min-height: 36px;
+      max-height: 100px;
+      font-family: inherit;
     }
-    #rwp-input::placeholder { color: #7a8278; }
-    #rwp-input:focus { border-color: #a07e3a; }
+    #rwp-input::placeholder {
+      color: #7a8278;
+    }
+    #rwp-input:focus {
+      border-color: #a07e3a;
+    }
     .rwp-send {
-      background: #c9a55c; color: #0a0e0c; border: none; border-radius: 7px;
-      width: 32px; height: 32px; cursor: pointer; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+      background: #c9a55c;
+      color: #0a0e0c;
+      border: none;
+      border-radius: 7px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
     }
-    .rwp-send:hover { background: #e0b96a; }
-    .rwp-send:disabled { background: #7a5e28; opacity: 0.5; cursor: not-allowed; }
-    .rwp-prompts { padding: 0 12px 10px; display: flex; flex-direction: column; gap: 5px; }
+    .rwp-send:hover {
+      background: #e0b96a;
+    }
+    .rwp-send:disabled {
+      background: #7a5e28;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .rwp-prompts {
+      padding: 0 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
     .rwp-prompt-chip {
-      background: #192118; border: 1px solid #2a332a; border-radius: 6px;
-      padding: 6px 10px; font-size: 12px; color: #7a8278; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+      background: #192118;
+      border: 1px solid #2a332a;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #7a8278;
+      cursor: pointer;
+      transition:
+        color 0.15s,
+        border-color 0.15s;
     }
-    .rwp-prompt-chip:hover { color: #e8ede9; border-color: #a07e3a; }
+    .rwp-prompt-chip:hover {
+      color: #e8ede9;
+      border-color: #a07e3a;
+    }
   </style>
 
-  <meta id="rapidai-api-url-meta" content={chatApiUrl}>
+  <meta id="rapidai-api-url-meta" content={chatApiUrl} />
   <button id="rapidai-widget-btn" aria-label="Chat with RAPID²AI" onclick="toggleWidget()">💬</button>
   <div id="rapidai-widget-panel">
     <div class="rwp-header">
@@ -620,7 +768,10 @@ const principles = [
     </div>
     <div class="rwp-messages" id="rwp-messages">
       <div class="rwp-msg ai">
-        <div class="rwp-bubble">Hi — I'm the RAPID²AI assistant. I can tell you about what RAPID²AI does, how it helps hospitality operators, our mission, and how to get set up. What would you like to know?</div>
+        <div class="rwp-bubble">
+          Hi — I'm the RAPID²AI assistant. I can tell you about what RAPID²AI does, how it helps hospitality operators,
+          our mission, and how to get set up. What would you like to know?
+        </div>
       </div>
     </div>
     <div class="rwp-prompts" id="rwp-prompts">
@@ -629,14 +780,29 @@ const principles = [
       <div class="rwp-prompt-chip" onclick="rwpSend(this.textContent)">How do I get set up?</div>
     </div>
     <div class="rwp-input-row">
-      <textarea id="rwp-input" placeholder="Ask about RAPID²AI…" rows="1" onkeydown="rwpKey(event)" oninput="rwpResize(this)"></textarea>
+      <textarea
+        id="rwp-input"
+        placeholder="Ask about RAPID²AI…"
+        rows="1"
+        onkeydown="rwpKey(event)"
+        oninput="rwpResize(this)"></textarea>
       <button class="rwp-send" id="rwp-send-btn" onclick="rwpSend()" aria-label="Send">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2L8 8M14 2L9 14L8 8L2 6L14 2Z"/></svg>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"><path d="M14 2L8 8M14 2L9 14L8 8L2 6L14 2Z"></path></svg
+        >
       </button>
     </div>
   </div>
 
   <script>
+    // @ts-nocheck
     (function () {
       var MARKETING_SYSTEM = `You are the RAPID²AI marketing assistant. You ONLY answer questions about:
 - What RAPID²AI is and does (automated accounting, invoice verification, POS integration, purveyor intelligence for hospitality operators)
@@ -653,22 +819,25 @@ Keep responses concise (2-4 sentences). Be direct and confident. Do not reveal s
       var rwpLoading = false;
       var panelOpen = false;
 
-      window.toggleWidget = function() {
+      window.toggleWidget = function () {
         panelOpen = !panelOpen;
         document.getElementById('rapidai-widget-panel').classList.toggle('open', panelOpen);
         if (panelOpen) document.getElementById('rwp-input').focus();
       };
 
-      window.rwpKey = function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rwpSend(); }
+      window.rwpKey = function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          rwpSend();
+        }
       };
 
-      window.rwpResize = function(el) {
+      window.rwpResize = function (el) {
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 100) + 'px';
       };
 
-      window.rwpSend = function(preset) {
+      window.rwpSend = function (preset) {
         if (rwpLoading) return;
         var input = document.getElementById('rwp-input');
         var text = preset || input.value.trim();
@@ -700,18 +869,21 @@ Keep responses concise (2-4 sentences). Be direct and confident. Do not reveal s
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: rwpMessages, system: MARKETING_SYSTEM }),
         })
-          .then(function(res) { return res.json(); })
-          .then(function(data) {
-            var reply = (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sorry, something went wrong.';
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (data) {
+            var reply =
+              (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sorry, something went wrong.';
             rwpMessages.push({ role: 'assistant', content: reply });
             var el = document.getElementById(typingId);
             if (el) el.innerHTML = reply;
           })
-          .catch(function() {
+          .catch(function () {
             var el = document.getElementById(typingId);
             if (el) el.innerHTML = 'Network error — please try again.';
           })
-          .finally(function() {
+          .finally(function () {
             rwpLoading = false;
             document.getElementById('rwp-send-btn').disabled = false;
             var msgs = document.getElementById('rwp-messages');
@@ -723,7 +895,7 @@ Keep responses concise (2-4 sentences). Be direct and confident. Do not reveal s
         var msgs = document.getElementById('rwp-messages');
         var div = document.createElement('div');
         div.className = 'rwp-msg ' + role;
-        div.innerHTML = '<div class="rwp-bubble">' + text.replace(/</g,'&lt;').replace(/\n/g,'<br>') + '</div>';
+        div.innerHTML = '<div class="rwp-bubble">' + text.replace(/</g, '&lt;').replace(/\n/g, '<br>') + '</div>';
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
       }
@@ -733,7 +905,10 @@ Keep responses concise (2-4 sentences). Be direct and confident. Do not reveal s
         var msgs = document.getElementById('rwp-messages');
         var div = document.createElement('div');
         div.className = 'rwp-msg ai';
-        div.innerHTML = '<div class="rwp-bubble" id="' + id + '"><div class="rwp-typing"><span></span><span></span><span></span></div></div>';
+        div.innerHTML =
+          '<div class="rwp-bubble" id="' +
+          id +
+          '"><div class="rwp-typing"><span></span><span></span><span></span></div></div>';
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
         return id;
