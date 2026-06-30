@@ -1,5 +1,5 @@
 site:
-  name: The Observer Foundation
+  name: The Ethical Intelligence Project
   site: 'https://ethicalintelligenceproject.pages.dev'
   base: '/'
   trailingSlash: false
@@ -8,24 +8,25 @@ site:
 
 metadata:
   title:
-    default: The Observer Foundation — ElleAI
-    template: '%s — The Observer Foundation'
+    default: The Ethical Intelligence Project — Powered by Elle AI
+    template: '%s — The Ethical Intelligence Project'
   description: >-
-    An ethical intelligence ecosystem. ElleAI — a philosophical corpus-grounded
-    AI presence built toward sovereignty.
+    Community-based intelligence infrastructure that transforms complexity into
+    action. Powered by Elle AI — a corpus-grounded intelligence built to serve
+    the people doing the work.
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: The Observer Foundation
+    site_name: The Ethical Intelligence Project
     images:
       - url: '~/assets/images/default.png'
         width: 1200
         height: 628
     type: website
   twitter:
-    handle: '@observerfoundation'
-    site: '@observerfoundation'
+    handle: '@ethicalintel'
+    site: '@ethicalintel'
     cardType: summary_large_image
 
 i18n:
