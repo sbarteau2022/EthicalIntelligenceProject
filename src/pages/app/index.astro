@@ -1,7 +1,12 @@
 ---
-// RAPID²AI — Standalone Chat Intelligence UI
+// RAPID²AI — Chat Intelligence UI
 // Protected by Google OAuth gate (client-side)
-const chatApiUrl = import.meta.env.PUBLIC_RAPIDAI_CHAT_API_URL ?? '/api/chat';
+// Talks to the elle-worker "atlas" consumer door, which runs the agentic
+// router scoped to the operator's hospitality data (US Foods invoices +
+// Square POS via query_rapid2ai / rapid_data). This replaces the old
+// standalone chat-api worker so all surfaces share one tool layer.
+const chatApiUrl =
+  import.meta.env.PUBLIC_RAPIDAI_CHAT_API_URL ?? 'https://elle-worker.sbarteau2022.workers.dev/api/atlas';
 const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
 ---
 
@@ -606,14 +611,33 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
 
     <script>
       // @ts-nocheck
-      const SYSTEM_PROMPT = `You are RAPID²AI, the operational intelligence layer for the Hermannhof Group. You have access to the operator's invoice history, POS sales data, ledger entries, and purveyor price trends. You answer questions about food cost, invoice analysis, price variance, vendor patterns, par recommendations, and operational decisions. You are precise, data-driven, and concise. You do not discuss topics outside of the operator's business operations. If asked something outside your scope, redirect politely to operational topics.`;
-
-      const CLAUDE_API_URL = document.querySelector('meta[name="rapidai-api-url"]')?.content || '/api/chat';
-      let messages = [];
+      // The elle-worker atlas door owns the system prompt + hospitality scope,
+      // so the client no longer ships its own. It is a single-question agentic
+      // endpoint; we keep multi-turn context via a persisted session_id.
+      const CHAT_API_URL =
+        document.querySelector('meta[name="rapidai-api-url"]')?.content ||
+        'https://elle-worker.sbarteau2022.workers.dev/api/atlas';
+      const SESSION_KEY = 'rapidai_session';
+      let sessionId = (function () {
+        try {
+          return localStorage.getItem(SESSION_KEY) || '';
+        } catch {
+          return '';
+        }
+      })();
       let isLoading = false;
 
       function timeStr() {
         return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
       function appendMsg(role, content, typing = false) {
@@ -626,7 +650,7 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         div.innerHTML = `
       <div class="msg-avatar ${role === 'user' ? 'msg-avatar-user' : 'msg-avatar-ai'}">${role === 'user' ? 'U' : 'R²'}</div>
       <div>
-        <div class="msg-body" id="${typing ? 'typing-bubble' : ''}">${typing ? '<div class="typing"><span></span><span></span><span></span></div>' : content.replace(/\n/g, '<br>')}</div>
+        <div class="msg-body" id="${typing ? 'typing-bubble' : ''}">${typing ? '<div class="typing"><span></span><span></span><span></span></div>' : escapeHtml(content).replace(/\n/g, '<br>')}</div>
         <div class="msg-time">${timeStr()}</div>
       </div>`;
         container.appendChild(div);
@@ -648,29 +672,41 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         input.value = '';
         autoResize(input);
         appendMsg('user', text);
-        messages.push({ role: 'user', content: text });
 
         isLoading = true;
         document.getElementById('send-btn').disabled = true;
         appendMsg('assistant', '', true);
 
         try {
-          const res = await fetch(CLAUDE_API_URL, {
+          const res = await fetch(CHAT_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages, system: SYSTEM_PROMPT }),
+            body: JSON.stringify({ query: text, session_id: sessionId || undefined }),
           });
 
           const bubble = document.getElementById('typing-bubble');
-          if (!res.ok) {
-            if (bubble) bubble.innerHTML = 'Sorry, something went wrong. Please try again.';
+          const data = await res.json().catch(() => ({}));
+
+          if (res.status === 429) {
+            if (bubble) bubble.innerHTML = "You've hit the rate limit — please try again in a little while.";
+          } else if (!res.ok || data.error) {
+            if (bubble) bubble.innerHTML = escapeHtml(data.error || 'Sorry, something went wrong. Please try again.');
           } else {
-            const data = await res.json();
-            const reply = data.content?.[0]?.text || data.reply || '';
-            messages.push({ role: 'assistant', content: reply });
+            // atlas returns { content, session_id }; tolerate the legacy
+            // Anthropic-style { content: [{ text }] } / { reply } shapes too.
+            const reply =
+              (typeof data.content === 'string' ? data.content : data.content?.[0]?.text) || data.reply || '';
+            if (data.session_id) {
+              sessionId = data.session_id;
+              try {
+                localStorage.setItem(SESSION_KEY, sessionId);
+              } catch {
+                /* ignore */
+              }
+            }
             if (bubble) {
               bubble.id = '';
-              bubble.innerHTML = reply.replace(/\n/g, '<br>');
+              bubble.innerHTML = escapeHtml(reply).replace(/\n/g, '<br>');
             }
           }
         } catch (e) {
@@ -696,7 +732,12 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       }
 
       function newChat() {
-        messages = [];
+        sessionId = '';
+        try {
+          localStorage.removeItem(SESSION_KEY);
+        } catch {
+          /* ignore */
+        }
         document.getElementById('messages').innerHTML = `
       <div class="empty-state" id="empty-state">
         <div class="empty-icon">🧠</div>
