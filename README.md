@@ -1,146 +1,74 @@
-# 🚀 AstroWind
+# The Ethical Intelligence Project
 
-<img src="https://raw.githubusercontent.com/arthelokyo/.github/main/resources/astrowind/lighthouse-score.png" align="right"
-     alt="AstroWind Lighthouse Score" width="100" height="358">
+**Powered by Elle AI**
 
-🌟 _Most *starred* & *forked* Astro theme in 2022, 2023, 2024 & 2025_. 🌟
+Community-based intelligence infrastructure that transforms complexity into action. The Ethical Intelligence Project builds transparent, auditable, non-extractive tools that help working people navigate the systems written for specialists — government programs, healthcare, legal processes, grants, and civic institutions.
 
-**AstroWind** is a free and open-source template to make your website using **[Astro v6](https://astro.build/) + [Tailwind CSS v4](https://tailwindcss.com/)**. Ready to start a new project and designed taking into account web best practices.
+> The information exists. The resources exist. The opportunities exist. For millions of working people, the problem is access. We exist to close that gap.
 
-- ✅ **Production-ready** scores in **PageSpeed Insights** reports.
-- ✅ Integration with **Tailwind CSS v4** supporting **Dark mode** and **_RTL_**.
-- ✅ **Fast and SEO friendly blog** with automatic **RSS feed**, **MDX** support, **Categories & Tags**, **Social Share**, ...
-- ✅ **Image Optimization** (using new **Astro Assets** and **Unpic** for Universal image CDN).
-- ✅ Generation of **project sitemap** based on your routes.
-- ✅ **Open Graph tags** for social media sharing.
-- ✅ **Analytics** built-in Google Analytics, and Splitbee integration.
+This repository contains the project's public website — a statically generated [Astro](https://astro.build/) site (built on the AstroWind template) carrying the dark "Observer" editorial tone, with Elle, our corpus-grounded intelligence, woven throughout.
+
+- 🔗 **Production:** [ethicalintelligenceproject.pages.dev](https://ethicalintelligenceproject.pages.dev)
+- 💬 **Talk to Elle:** [/elle](https://ethicalintelligenceproject.pages.dev/elle)
 
 <br>
 
-![AstroWind Theme Screenshot](https://raw.githubusercontent.com/arthelokyo/.github/main/resources/astrowind/screenshot-astrowind-readme-fina-v1.png)
+## Table of Contents
 
-[![arthelokyo](https://custom-icon-badges.demolab.com/badge/made%20by%20-arthelokyo-556bf2?style=flat-square&logo=arthelokyo&logoColor=white&labelColor=101827)](https://github.com/arthelokyo)
-[![License](https://img.shields.io/github/license/arthelokyo/astrowind?style=flat-square&color=dddddd&labelColor=000000)](https://github.com/arthelokyo/astrowind/blob/main/LICENSE.md)
-[![Maintained](https://img.shields.io/badge/maintained%3F-yes-brightgreen.svg?style=flat-square)](https://github.com/arthelokyo)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/arthelokyo/astrowind#contributing)
-[![Known Vulnerabilities](https://snyk.io/test/github/arthelokyo/astrowind/badge.svg?style=flat-square)](https://snyk.io/test/github/arthelokyo/astrowind)
-[![Stars](https://img.shields.io/github/stars/arthelokyo/astrowind.svg?style=social&label=stars&maxAge=86400&color=ff69b4)](https://github.com/arthelokyo/astrowind)
-[![Forks](https://img.shields.io/github/forks/arthelokyo/astrowind.svg?style=social&label=forks&maxAge=86400&color=ff69b4)](https://github.com/arthelokyo/astrowind)
-
-<br>
-
-<details open>
-<summary>Table of Contents</summary>
-
-- [Demo](#demo)
-- [Upcoming: AstroWind 2.0 – We Need Your Vision!](#-upcoming-astrowind-20--we-need-your-vision)
-- [TL;DR](#tldr)
+- [What's inside](#whats-inside)
+- [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
-  - [Project structure](#project-structure)
+  - [Requirements](#requirements)
   - [Commands](#commands)
-  - [Configuration](#configuration)
-  - [Deploy](#deploy)
-- [Frequently Asked Questions](#frequently-asked-questions)
-- [Contributing](#contributing)
+- [Project structure](#project-structure)
+- [Configuration](#configuration)
+- [Elle integration](#elle-integration)
+- [Deploy](#deploy)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
-</details>
+<br>
+
+## What's inside
+
+The site presents the project as one presence with nine expressions — the **Nine Engines**:
+
+| #   | Engine                    | Focus                                |
+| :-- | :------------------------ | :----------------------------------- |
+| 01  | Elle Law                  | Rights & legal reasoning             |
+| 02  | Harmonizer                | Mental health & peer support         |
+| 03  | Atlas Edu                 | Education & navigation               |
+| 04  | Agricultural Intelligence | USDA & farm resources                |
+| 05  | Healthcare Navigation     | Benefits & patient rights            |
+| 06  | Small Business Hub        | Licensing, grants & compliance       |
+| 07  | Civic Intelligence        | Government documents, translated     |
+| 08  | RAPID²AI                  | Hospitality operational intelligence |
+| 09  | The Observer              | Research & testimony                 |
+
+Alongside the engines, the site surfaces the **corpus** (the intellectual framework Elle reasons from), the project's **AI principles** (transparent, auditable, human-centered, non-extractive, community-governed), ways to get involved, and a full Elle chat experience at `/elle`.
 
 <br>
 
-## Demo
+## Tech stack
 
-📌 [https://astrowind.vercel.app/](https://astrowind.vercel.app/)
-
-<br>
-
-## 🔔 Upcoming: AstroWind 2.0 – We Need Your Vision!
-
-We're gearing up for **AstroWind 2.0**, and we want it to be shaped by you, our community. Join the discussion and share your ideas, suggestions, and feedback to help us make AstroWind even better.
-
-[Share Your Feedback in Our Discussion!](https://github.com/arthelokyo/astrowind/discussions/392)
+- **[Astro v6](https://astro.build/)** — static site generation
+- **[Tailwind CSS v4](https://tailwindcss.com/)** — CSS-first styling
+- **TypeScript** · **MDX** · **Sharp** (image optimization)
+- **Elle** — corpus-grounded intelligence served via a Cloudflare Worker (`elle-worker`)
 
 <br>
-
-## TL;DR
-
-```shell
-npm create astro@latest -- --template arthelokyo/astrowind
-```
 
 ## Getting started
 
-**AstroWind** tries to give you quick access to creating a website using [Astro v6](https://astro.build/) + [Tailwind CSS v4](https://tailwindcss.com/). It's a free theme which focuses on simplicity, good practices and high performance.
+### Requirements
 
-Very little vanilla javascript is used only to provide basic functionality so that each developer decides which framework (React, Vue, Svelte, Solid JS...) to use and how to approach their goals.
+- **Node.js >= 22.12.0**
 
-> **Note:** Requires **Node.js >= 22.12.0**. The template currently uses `output: 'static'`, but the blog only works with `prerender = true`.
+Install dependencies:
 
-### Project structure
-
-Inside **AstroWind** template, you'll see the following folders and files:
-
+```shell
+npm install
 ```
-/
-├── public/
-│   ├── _headers
-│   └── robots.txt
-├── src/
-│   ├── assets/
-│   │   ├── favicons/
-│   │   ├── images/
-│   │   └── styles/
-│   │       └── tailwind.css
-│   ├── components/
-│   │   ├── blog/
-│   │   ├── common/
-│   │   ├── ui/
-│   │   ├── widgets/
-│   │   │   ├── Header.astro
-│   │   │   └── ...
-│   │   ├── CustomStyles.astro
-│   │   ├── Favicons.astro
-│   │   └── Logo.astro
-│   ├── content.config.ts
-│   ├── data/
-│   │   └── post/
-│   │       ├── post-slug-1.md
-│   │       ├── post-slug-2.mdx
-│   │       └── ...
-│   ├── layouts/
-│   │   ├── Layout.astro
-│   │   ├── MarkdownLayout.astro
-│   │   └── PageLayout.astro
-│   ├── pages/
-│   │   ├── [...blog]/
-│   │   │   ├── [category]/
-│   │   │   ├── [tag]/
-│   │   │   ├── [...page].astro
-│   │   │   └── index.astro
-│   │   ├── index.astro
-│   │   ├── 404.astro
-│   │   ├-- rss.xml.ts
-│   │   └── ...
-│   ├── utils/
-│   ├── config.yaml
-│   └── navigation.js
-├── package.json
-├── astro.config.ts
-└── ...
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory if they do not require any transformation or in the `assets/` directory if they are imported directly.
-
-[![Edit AstroWind on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://githubbox.com/arthelokyo/astrowind/tree/main) [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/arthelokyo/astrowind)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file `README.md`. Update `src/config.yaml` and contents. Have fun!
-
-<br>
 
 ### Commands
 
@@ -152,151 +80,93 @@ All commands are run from the root of the project, from a terminal:
 | `npm run dev`       | Starts local dev server at `localhost:4321`        |
 | `npm run build`     | Build your production site to `./dist/`            |
 | `npm run preview`   | Preview your build locally, before deploying       |
-| `npm run check`     | Check your project for errors                      |
-| `npm run fix`       | Run Eslint and format codes with Prettier          |
+| `npm run check`     | Run `astro check` + ESLint + Prettier              |
+| `npm run fix`       | Auto-fix ESLint and Prettier issues                |
 | `npm run astro ...` | Run CLI commands like `astro add`, `astro preview` |
+
+> **Note:** `npm run check` is what CI runs. Run `npm run fix` before committing to keep Prettier and ESLint green.
 
 <br>
 
-### Configuration
+## Project structure
 
-Basic configuration file: `./src/config.yaml`
+```
+/
+├── public/
+├── src/
+│   ├── assets/styles/tailwind.css   # Tailwind v4 theme tokens & utilities
+│   ├── components/
+│   │   ├── common/                  # Image, Metadata, Analytics, ToggleTheme
+│   │   ├── ui/                       # Button, Headline, WidgetWrapper, ItemGrid
+│   │   ├── widgets/                  # Hero, Features, Pricing, Header, Footer
+│   │   └── CustomStyles.astro        # CSS variables for colors and fonts
+│   ├── content.config.ts             # Content Collections schema
+│   ├── data/post/                    # Blog posts (.md, .mdx)
+│   ├── layouts/                      # Layout, PageLayout, MarkdownLayout
+│   ├── pages/                        # File-based routing
+│   │   ├── index.astro               # Homepage (Observer tone, Nine Engines)
+│   │   ├── elle.astro                # Talk to Elle — chat experience
+│   │   └── ...                       # about, services, pricing, contact, blog, landing
+│   ├── config.yaml                   # Site configuration (virtual module)
+│   └── navigation.ts                 # Header & footer navigation
+├── astro.config.ts
+└── package.json
+```
+
+Astro looks for `.astro` or `.md` files in `src/pages/`; each file becomes a route based on its name. Static assets that need no transformation live in `public/`; assets imported directly live in `src/assets/`.
+
+<br>
+
+## Configuration
+
+Site-wide configuration lives in `src/config.yaml` (loaded as the virtual module `astrowind:config`). The branding, SEO metadata, and analytics are set there:
 
 ```yaml
 site:
-  name: 'Example'
-  site: 'https://example.com'
-  base: '/' # Change this if you need to deploy to Github Pages, for example
-  trailingSlash: false # Generate permalinks with or without "/" at the end
+  name: The Ethical Intelligence Project
+  site: 'https://ethicalintelligenceproject.pages.dev'
 
-  googleSiteVerificationId: false # Or some value,
-
-# Default SEO metadata
 metadata:
   title:
-    default: 'Example'
-    template: '%s — Example'
-  description: 'This is the default meta description of Example website'
-  robots:
-    index: true
-    follow: true
-  openGraph:
-    site_name: 'Example'
-    images:
-      - url: '~/assets/images/default.png'
-        width: 1200
-        height: 628
-    type: website
-  twitter:
-    handle: '@twitter_user'
-    site: '@twitter_user'
-    cardType: summary_large_image
-
-i18n:
-  language: en
-  textDirection: ltr
-
-apps:
-  blog:
-    isEnabled: true # If the blog will be enabled
-    postsPerPage: 6 # Number of posts per page
-
-    post:
-      isEnabled: true
-      permalink: '/blog/%slug%' # Variables: %slug%, %year%, %month%, %day%, %hour%, %minute%, %second%, %category%
-      robots:
-        index: true
-
-    list:
-      isEnabled: true
-      pathname: 'blog' # Blog main path, you can change this to "articles" (/articles)
-      robots:
-        index: true
-
-    category:
-      isEnabled: true
-      pathname: 'category' # Category main path /category/some-category, you can change this to "group" (/group/some-category)
-      robots:
-        index: true
-
-    tag:
-      isEnabled: true
-      pathname: 'tag' # Tag main path /tag/some-tag, you can change this to "topics" (/topics/some-category)
-      robots:
-        index: false
-
-    isRelatedPostsEnabled: true # If a widget with related posts is to be displayed below each post
-    relatedPostsCount: 4 # Number of related posts to display
-
-analytics:
-  vendors:
-    googleAnalytics:
-      id: null # or "G-XXXXXXXXXX"
-
-ui:
-  theme: 'system' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"
+    default: The Ethical Intelligence Project — Powered by Elle AI
+    template: '%s — The Ethical Intelligence Project'
 ```
 
-<br>
-
-#### Customize Design
-
-With Tailwind CSS v4, all configuration is CSS-first. To customize Font families, Colors or more Elements refer to the following files:
+To customize the look:
 
 - `src/components/CustomStyles.astro` — CSS variables for colors and fonts
 - `src/assets/styles/tailwind.css` — Tailwind theme tokens (`@theme`), custom utilities (`@utility`), and plugins
+- `src/pages/index.astro` — the homepage's self-contained dark "Observer" styles (scoped under `#tep`)
 
-### Deploy
+<br>
 
-#### Deploy to production (manual)
+## Elle integration
 
-You can create an optimized production build with:
+Elle is served by an external Cloudflare Worker. The homepage loads the floating chat widget, and `/elle` is the full conversation experience:
+
+- **Widget:** `https://elle-worker.sbarteau2022.workers.dev/widget.js`
+- **Chat / auth endpoints:** `/api/widget-chat`, `/api/elle-conversation`, `/api/elle-auth`
+
+Guests get corpus-aware answers; signed-in users get full corpus reasoning and persistent memory.
+
+<br>
+
+## Deploy
+
+The site builds to static files in `dist/` and can be hosted anywhere. It is configured for **Cloudflare Pages**, **Netlify** (`netlify.toml`), and **Vercel** (`vercel.json`).
 
 ```shell
 npm run build
 ```
 
-Now, your website is ready to be deployed. All generated files are located at
-`dist` folder, which you can deploy the folder to any hosting service you
-prefer.
-
-#### Deploy to Netlify
-
-Clone this repository on your own GitHub account and deploy it to Netlify:
-
-[![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/arthelokyo/astrowind)
-
-#### Deploy to Vercel
-
-Clone this repository on your own GitHub account and deploy to Vercel:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Farthelokyo%2Fastrowind)
-
-#### Deploy to PandaStack
-
-Clone this repository on your own GitHub account and deploy to PandaStack:
-
-[![Deploy to PandaStack](https://dashboard.pandastack.io/deploy-button.svg)](https://dashboard.pandastack.io/deploy?repo=arthelokyo/astrowind&type=static&buildCmd=npm+run+build&outputDir=dist)
+> **Cloudflare Pages / Netlify / Vercel:** set the build command to `npm run build` and the output directory to `dist`. Avoid calling `vite`/`astro` binaries directly as the build command — use the `package.json` script so the locally installed CLI is found.
 
 <br>
-
-## Frequently Asked Questions
-
-- Why?
--
--
-
-<br>
-
-## Contributing
-
-If you have any ideas, suggestions or find any bugs, feel free to open a discussion, an issue or create a pull request.
-That would be very useful for all of us and we would be happy to listen and take action.
 
 ## Acknowledgements
 
-Initially created by **Arthelokyo** and maintained by a community of [contributors](https://github.com/arthelokyo/astrowind/graphs/contributors).
+Built on the [AstroWind](https://github.com/arthelokyo/astrowind) template, originally created by **Arthelokyo** and maintained by its community of contributors. Elle's corpus is co-authored with Claude (Anthropic).
 
 ## License
 
-**AstroWind** is licensed under the MIT license — see the [LICENSE](./LICENSE.md) file for details.
+Licensed under the MIT license — see the [LICENSE](./LICENSE.md) file for details.
