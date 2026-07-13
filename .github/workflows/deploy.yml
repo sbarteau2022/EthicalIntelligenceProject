@@ -1,0 +1,58 @@
+name: Deploy Site
+
+# Deploys the Astro build to Cloudflare Pages (ethicalintelligenceproject.pages.dev).
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN  — API token with the "Cloudflare Pages — Edit" permission
+#   CLOUDFLARE_ACCOUNT_ID — the account ID shown on the Cloudflare dashboard
+#
+# Push to main   → production deploy
+# Pull request   → preview deploy (unique preview URL per branch)
+# Manual         → workflow_dispatch re-deploys production from main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time per ref. Prevents rapid merges (or a manual run racing a
+# push) from running two `wrangler pages deploy` calls against the same project.
+concurrency:
+  group: deploy-site-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Build & deploy to Cloudflare Pages
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Never ship a red build: the same gate CI runs (astro check + ESLint +
+      # Prettier), enforced again on the deploy path.
+      - run: npm run check
+
+      - run: npm run build
+
+      # Production on main / manual runs; branch-named preview on PRs.
+      # `--branch` controls which environment Pages targets: the production
+      # branch name deploys to production, anything else gets a preview URL.
+      - name: Deploy
+        run: >
+          npx wrangler pages deploy dist
+          --project-name=ethicalintelligenceproject
+          --branch=${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
