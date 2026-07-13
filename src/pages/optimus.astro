@@ -22,7 +22,7 @@ const metadata = {
 
     <!-- HERO -->
     <section class="hero wrap">
-      <div class="eyebrow">Free with sign-up · Rate-limited on the free tier</div>
+      <div class="eyebrow rv">Free with sign-up · Rate-limited on the free tier</div>
       <h1>A journal that never rewrites itself.</h1>
       <p class="lede">
         Every account gets an Optimus journal — a private, running record that works like a ship's log: entries are only
@@ -37,9 +37,9 @@ const metadata = {
 
     <!-- HOW IT WORKS -->
     <section class="wrap">
-      <div class="eyebrow">What you get</div>
-      <h2>Write. Elle responds. Nothing disappears.</h2>
-      <div class="cards">
+      <div class="eyebrow rv">What you get</div>
+      <h2 class="rv">Write. Elle responds. Nothing disappears.</h2>
+      <div class="cards rv stagger">
         <div class="card">
           <div class="n">01 · APPEND-ONLY</div>
           <h3>Your permanent record</h3>
@@ -362,7 +362,7 @@ const metadata = {
           if (!res.ok || res.d.error) {
             entriesEl.insertAdjacentHTML(
               'beforeend',
-              '<div class="empty-note" style="color:#e08585">' + esc(rateLimitMsg(res)) + '</div>'
+              '<div class="empty-note" style="color:#b3452e">' + esc(rateLimitMsg(res)) + '</div>'
             );
             return;
           }

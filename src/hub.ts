@@ -10,6 +10,7 @@ export const HUB_TABS = [
   { text: 'Optimus', href: '/optimus' },
   { text: 'Analysis Engine', href: '/engine' },
   { text: 'Small Business', href: '/business' },
+  { text: 'Learn', href: '/learn' },
   { text: 'The Observer', href: '/observer' },
 ];
 
