@@ -1,0 +1,172 @@
+---
+// Shared auth modal + window.EIH global for hub pages that talk to the worker.
+// Uses the SAME token key as /elle and /landing/product, so one sign-in works
+// across every surface of the site.
+---
+
+<div class="eih-auth" id="eih-auth">
+  <div class="card">
+    <button class="x" id="eih-auth-x" aria-label="Close">×</button>
+    <h2 id="eih-auth-title">Sign in</h2>
+    <div class="h-sub">One free account for Elle, your Optimus journal, and the analysis engine.</div>
+    <label>Email</label>
+    <input id="eih-email" type="email" autocomplete="email" placeholder="you@example.com" />
+    <label>Password</label>
+    <input id="eih-pw" type="password" autocomplete="current-password" placeholder="••••••••" />
+    <div class="err" id="eih-auth-err"></div>
+    <button class="primary" id="eih-auth-go">Sign in</button>
+    <div class="toggle" id="eih-auth-toggle">New here? <b>Create a free account</b></div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    if (window.EIH) return;
+
+    const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
+    const TOKEN_KEY = 'eip_elle_jwt';
+
+    let token = null;
+    try {
+      token = localStorage.getItem(TOKEN_KEY) || null;
+    } catch {
+      /* ignore */
+    }
+
+    const authEl = document.getElementById('eih-auth');
+    const emailEl = document.getElementById('eih-email');
+    const pwEl = document.getElementById('eih-pw');
+    const errEl = document.getElementById('eih-auth-err');
+    const goEl = document.getElementById('eih-auth-go');
+    const titleEl = document.getElementById('eih-auth-title');
+    const toggleEl = document.getElementById('eih-auth-toggle');
+    let mode = 'signin';
+    let onAuthed = null;
+
+    function emit() {
+      document.dispatchEvent(new CustomEvent('eih:auth', { detail: { token: token } }));
+      const acct = document.getElementById('eih-acct');
+      if (acct) acct.textContent = token ? 'Sign out' : 'Sign in';
+    }
+    function setMode(m) {
+      mode = m;
+      titleEl.textContent = m === 'signup' ? 'Create your free account' : 'Sign in';
+      goEl.textContent = m === 'signup' ? 'Create account' : 'Sign in';
+      toggleEl.innerHTML =
+        m === 'signup' ? 'Already have an account? <b>Sign in</b>' : 'New here? <b>Create a free account</b>';
+      pwEl.setAttribute('autocomplete', m === 'signup' ? 'new-password' : 'current-password');
+    }
+    function openAuth(startMode, cb) {
+      setMode(startMode || 'signin');
+      errEl.textContent = '';
+      onAuthed = cb || null;
+      authEl.classList.add('show');
+      setTimeout(function () {
+        emailEl.focus();
+      }, 60);
+    }
+    function closeAuth() {
+      authEl.classList.remove('show');
+    }
+    function logout() {
+      token = null;
+      try {
+        localStorage.removeItem(TOKEN_KEY);
+      } catch {
+        /* ignore */
+      }
+      emit();
+    }
+    function doAuth() {
+      const email = emailEl.value.trim(),
+        pw = pwEl.value;
+      if (!email || !pw) {
+        errEl.textContent = 'Email and password required.';
+        return;
+      }
+      goEl.disabled = true;
+      errEl.textContent = '';
+      fetch(WORKER + '/api/elle-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: mode === 'signup' ? 'signup' : 'login', email: email, password: pw }),
+      })
+        .then(function (r) {
+          return r.json().then(function (d) {
+            return { ok: r.ok, status: r.status, d: d };
+          });
+        })
+        .then(function (res) {
+          if (!res.ok || !res.d.access_token) {
+            errEl.textContent = res.d.error || 'Failed (' + res.status + ')';
+            return;
+          }
+          token = res.d.access_token;
+          try {
+            localStorage.setItem(TOKEN_KEY, token);
+          } catch {
+            /* ignore */
+          }
+          closeAuth();
+          emit();
+          if (onAuthed) onAuthed();
+        })
+        .catch(function () {
+          errEl.textContent = 'Connection failed. Try again.';
+        })
+        .finally(function () {
+          goEl.disabled = false;
+        });
+    }
+
+    document.getElementById('eih-auth-x').addEventListener('click', closeAuth);
+    goEl.addEventListener('click', doAuth);
+    pwEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doAuth();
+    });
+    toggleEl.addEventListener('click', function (e) {
+      if (e.target.tagName === 'B') setMode(mode === 'signup' ? 'signin' : 'signup');
+    });
+    authEl.addEventListener('click', function (e) {
+      if (e.target === authEl) closeAuth();
+    });
+
+    window.EIH = {
+      getToken: function () {
+        return token;
+      },
+      openAuth: openAuth,
+      logout: logout,
+      // Authenticated JSON POST to the worker. Resolves {ok, status, d}.
+      fetch: function (path, payload) {
+        return fetch(WORKER + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: JSON.stringify(payload || {}),
+        }).then(function (r) {
+          return r
+            .json()
+            .catch(function () {
+              return {};
+            })
+            .then(function (d) {
+              return { ok: r.ok, status: r.status, d: d };
+            });
+        });
+      },
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const acct = document.getElementById('eih-acct');
+      if (acct) {
+        acct.textContent = token ? 'Sign out' : 'Sign in';
+        acct.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (token) logout();
+          else openAuth('signin');
+        });
+      }
+      emit();
+    });
+  })();
+</script>

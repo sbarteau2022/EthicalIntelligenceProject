@@ -1,46 +1,37 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { getPermalink, getAsset } from './utils/permalinks';
 
 export const headerData = {
   links: [
     {
-      text: 'Homes',
-      links: [
-        {
-          text: 'SaaS',
-          href: getPermalink('/homes/saas'),
-        },
-        {
-          text: 'Startup',
-          href: getPermalink('/homes/startup'),
-        },
-        {
-          text: 'Mobile App',
-          href: getPermalink('/homes/mobile-app'),
-        },
-        {
-          text: 'Personal',
-          href: getPermalink('/homes/personal'),
-        },
-      ],
+      text: 'Optimus',
+      href: getPermalink('/optimus'),
     },
     {
-      text: 'Pages',
+      text: 'Analysis Engine',
+      href: getPermalink('/engine'),
+    },
+    {
+      text: 'Small Business',
+      href: getPermalink('/business'),
+    },
+    {
+      text: 'The Observer',
+      href: getPermalink('/observer'),
+    },
+    {
+      text: 'More',
       links: [
-        {
-          text: 'Features (Anchor Link)',
-          href: getPermalink('/#features'),
-        },
-        {
-          text: 'Services',
-          href: getPermalink('/services'),
-        },
         {
           text: 'Pricing',
           href: getPermalink('/pricing'),
         },
         {
-          text: 'About us',
+          text: 'About',
           href: getPermalink('/about'),
+        },
+        {
+          text: 'Services',
+          href: getPermalink('/services'),
         },
         {
           text: 'Contact',
@@ -56,112 +47,38 @@ export const headerData = {
         },
       ],
     },
-    {
-      text: 'Landing',
-      links: [
-        {
-          text: 'Lead Generation',
-          href: getPermalink('/landing/lead-generation'),
-        },
-        {
-          text: 'Long-form Sales',
-          href: getPermalink('/landing/sales'),
-        },
-        {
-          text: 'Click-Through',
-          href: getPermalink('/landing/click-through'),
-        },
-        {
-          text: 'Optimus & Elle',
-          href: getPermalink('/landing/product'),
-        },
-        {
-          text: 'Coming Soon or Pre-Launch',
-          href: getPermalink('/landing/pre-launch'),
-        },
-        {
-          text: 'Subscription',
-          href: getPermalink('/landing/subscription'),
-        },
-      ],
-    },
-    {
-      text: 'Blog',
-      links: [
-        {
-          text: 'Blog List',
-          href: getBlogPermalink(),
-        },
-        {
-          text: 'Article',
-          href: getPermalink('get-started-website-with-astro-tailwind-css', 'post'),
-        },
-        {
-          text: 'Article (with MDX)',
-          href: getPermalink('markdown-elements-demo-post', 'post'),
-        },
-        {
-          text: 'Category Page',
-          href: getPermalink('tutorials', 'category'),
-        },
-        {
-          text: 'Tag Page',
-          href: getPermalink('astro', 'tag'),
-        },
-      ],
-    },
-    {
-      text: 'Widgets',
-      href: '#',
-    },
   ],
-  actions: [{ text: 'Download', href: 'https://github.com/arthelokyo/astrowind', target: '_blank' }],
+  actions: [{ text: 'Talk to Elle →', href: '/elle' }],
 };
 
 export const footerData = {
   links: [
     {
-      title: 'Product',
+      title: 'The Hub',
       links: [
-        { text: 'Features', href: '#' },
-        { text: 'Security', href: '#' },
-        { text: 'Team', href: '#' },
-        { text: 'Enterprise', href: '#' },
-        { text: 'Customer stories', href: '#' },
-        { text: 'Pricing', href: '#' },
-        { text: 'Resources', href: '#' },
+        { text: 'Optimus Journal', href: getPermalink('/optimus') },
+        { text: 'Analysis Engine', href: getPermalink('/engine') },
+        { text: 'Small Business Hub', href: getPermalink('/business') },
+        { text: 'The Observer', href: getPermalink('/observer') },
+        { text: 'Talk to Elle', href: '/elle' },
       ],
     },
     {
       title: 'Platform',
       links: [
-        { text: 'Developer API', href: '#' },
-        { text: 'Partners', href: '#' },
-        { text: 'Atom', href: '#' },
-        { text: 'Electron', href: '#' },
-        { text: 'AstroWind Desktop', href: '#' },
-      ],
-    },
-    {
-      title: 'Support',
-      links: [
-        { text: 'Docs', href: '#' },
-        { text: 'Community Forum', href: '#' },
-        { text: 'Professional Services', href: '#' },
-        { text: 'Skills', href: '#' },
-        { text: 'Status', href: '#' },
+        { text: 'Harmonizer', href: 'https://harmonizer-two.vercel.app' },
+        { text: 'Elle Law', href: 'https://elle-law.pages.dev' },
+        { text: 'RAPID²AI', href: 'https://rapidai.pages.dev/coo/' },
+        { text: 'Corpus (PhilPeople)', href: 'https://philpeople.org/profiles/stewart-barteau' },
       ],
     },
     {
       title: 'Company',
       links: [
-        { text: 'About', href: '#' },
-        { text: 'Blog', href: '#' },
-        { text: 'Careers', href: '#' },
-        { text: 'Press', href: '#' },
-        { text: 'Inclusion', href: '#' },
-        { text: 'Social Impact', href: '#' },
-        { text: 'Shop', href: '#' },
+        { text: 'About', href: getPermalink('/about') },
+        { text: 'Pricing', href: getPermalink('/pricing') },
+        { text: 'Contact', href: getPermalink('/contact') },
+        { text: 'Donate', href: '/donate' },
       ],
     },
   ],
@@ -169,12 +86,18 @@ export const footerData = {
     { text: 'Terms', href: getPermalink('/terms') },
     { text: 'Privacy Policy', href: getPermalink('/privacy') },
   ],
+  // Profile URLs are platform roots until the real profiles exist — swap in
+  // the account URLs as they're created (PhilArchive already points at the
+  // live PhilPeople profile).
   socialLinks: [
-    { ariaLabel: 'X', icon: 'tabler:brand-x', href: '#' },
-    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: '#' },
-    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: '#' },
+    { ariaLabel: 'Substack', text: 'Substack', href: 'https://substack.com/' },
+    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: 'https://www.facebook.com/' },
+    { ariaLabel: 'LinkedIn', icon: 'tabler:brand-linkedin', href: 'https://www.linkedin.com/' },
+    { ariaLabel: 'Medium', icon: 'tabler:brand-medium', href: 'https://medium.com/' },
+    { ariaLabel: 'PhilArchive', text: 'PhilArchive', href: 'https://philpeople.org/profiles/stewart-barteau' },
+    { ariaLabel: 'Zenodo', text: 'Zenodo', href: 'https://zenodo.org/' },
+    { ariaLabel: 'SSRN', text: 'SSRN', href: 'https://www.ssrn.com/' },
     { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
-    { ariaLabel: 'Github', icon: 'tabler:brand-github', href: 'https://github.com/arthelokyo/astrowind' },
   ],
   footNote: `
     The Ethical Intelligence Project · Powered by Elle AI · Hermann, Missouri · All rights reserved.

@@ -1,0 +1,147 @@
+---
+// ============================================================
+// THE OBSERVER — research & testimony, folded into the hub.
+// Ports the observer-platform marketing surface (five axes,
+// credibility, corpus) so both projects live under one roof.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+
+const metadata = {
+  title: 'The Observer — Research & Testimony',
+  description:
+    'The research and testimony arm of The Ethical Intelligence Project: structural analysis with no side, published only when the analysis is ready. Five axes. Every claim sourced.',
+};
+
+const AXES = [
+  {
+    n: '1',
+    name: 'The Dominant Narrative',
+    body: 'What the mainstream account says is happening — stated as precisely and fairly as the mainstream itself would state it.',
+  },
+  {
+    n: '2',
+    name: 'The Counter-Narrative',
+    body: 'What the strongest opposition says is happening — stated with the same precision. No strawmen.',
+  },
+  {
+    n: '3',
+    name: 'The Structural Analysis',
+    body: 'What is actually happening beneath both stories, traced to the conditions that generate both motivated accounts.',
+  },
+  {
+    n: '4',
+    name: 'The Dissent',
+    body: "The strongest argument against the Observer's own analysis — what it might be missing, published alongside it with equal care.",
+  },
+  {
+    n: '5',
+    name: 'The Prediction',
+    body: 'What the historical pattern says comes next. Probability, not prophecy — with the base rate shown.',
+  },
+];
+
+const CREDIBILITY = [
+  { n: 'TOP 1%', label: 'Publication volume, PhilPapers' },
+  { n: 'TOP 2%', label: 'Downloads, PhilPapers' },
+  { n: '76+', label: 'Papers published' },
+  { n: '18+', label: 'Universities reading the work' },
+];
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/observer" />
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow">Research & Testimony</div>
+      <h1>The publication with no side.</h1>
+      <p class="lede">
+        The Observer applies genuine structural analysis to what is actually happening — beneath the dominant story and
+        beneath the counter-story. It publishes when the analysis is ready, never on a schedule. Every claim sourced.
+        Every revision documented. The dissent against its own conclusions printed right beside them.
+      </p>
+      <div class="cta-row">
+        <a href="https://philpeople.org/profiles/stewart-barteau" target="_blank" rel="noreferrer" class="btn">
+          Read the published work →
+        </a>
+        <a href="/optimus#reader" class="btn ghost">Open the manuscript reader</a>
+      </div>
+    </section>
+
+    <!-- CENTRAL CLAIM -->
+    <section class="wrap" style="text-align:center">
+      <div class="eyebrow">The discipline</div>
+      <blockquote
+        style="font-family:var(--font-display);font-size:1.7rem;font-style:italic;line-height:1.45;color:var(--ivory);max-width:760px;margin:0 auto"
+      >
+        "Neutrality is a position that refuses to see. The Observer sees everything — and has no stake in the outcome.
+        If the structural truth disrupts one camp today and the other tomorrow, both disruptions are published with
+        equal precision."
+      </blockquote>
+    </section>
+
+    <!-- FIVE AXES -->
+    <section class="wrap">
+      <div class="eyebrow">The method</div>
+      <h2>Five axes, applied to every piece.</h2>
+      <div class="cards">
+        {
+          AXES.map((a) => (
+            <div class="card">
+              <div class="n">AXIS {a.n}</div>
+              <h3>{a.name}</h3>
+              <p>{a.body}</p>
+            </div>
+          ))
+        }
+        <a class="card" href="/engine">
+          <div class="n">THE INSTRUMENT</div>
+          <h3>Run it yourself →</h3>
+          <p>The same structural method powers the analysis engine in your account — point it at your own question.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- CREDIBILITY -->
+    <section class="wrap">
+      <div class="split">
+        <div>
+          <div class="eyebrow">The record</div>
+          <h2>Not marketing standing in for rigor.</h2>
+          <p>
+            The framework behind the Observer is published where it can be checked — a corpus of philosophy, ethics, and
+            engineering built across fifteen years of work and co-authored with Claude (Anthropic). It's read, cited,
+            and taught: you don't have to trust it, you can go verify it.
+          </p>
+          <p>
+            The testimony side preserves public records and creates permanent space for witness accounts — sealed,
+            append-only, the same discipline as the Optimus journal, because a record that can be quietly rewritten
+            isn't a record.
+          </p>
+        </div>
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            {
+              CREDIBILITY.map((c) => (
+                <div class="card" style="text-align:center">
+                  <div style="font-family:var(--font-display);font-size:1.9rem;font-weight:600;color:var(--gold-l)">
+                    {c.n}
+                  </div>
+                  <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-top:6px;line-height:1.5">
+                    {c.label}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <HubFooter />
+  </div>
+</Layout>

@@ -1,0 +1,140 @@
+---
+// ============================================================
+// SMALL BUSINESS HUB — custom pipelines, an AI that learns
+// your business and optimizes for the stop-loss.
+// Grounded in what's shipped: RAPID²AI (hospitality) and the
+// binding-constraint method in the worker.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+
+const metadata = {
+  title: 'Small Business Hub — The Ethical Intelligence Project',
+  description:
+    'Custom-built intelligence pipelines for small operators: an AI that learns your business, watches where the money actually leaks, and optimizes for the stop-loss before the growth spend.',
+};
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/business" />
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow">The Small Business Hub</div>
+      <h1>An AI that learns your business — and stops the bleeding first.</h1>
+      <p class="lede">
+        Most tools sell you growth. We start at the other end: <strong>the stop-loss</strong>. Before you spend a dollar
+        chasing new revenue, a custom-built pipeline learns how your operation actually runs, finds where money is
+        quietly leaking, and closes that leak — because a dollar you stop losing is worth exactly as much as a dollar
+        you earn, and it's usually far easier to get.
+      </p>
+      <div class="cta-row">
+        <a href="/contact" class="btn">Talk to us about your operation</a>
+        <a href="#how" class="btn ghost">How the pipeline works</a>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how" class="wrap">
+      <div class="eyebrow">How it works</div>
+      <h2>Built for your operation. Not a template.</h2>
+      <div class="cards four">
+        <div class="card">
+          <div class="n">01 · LEARN</div>
+          <h3>It learns your business</h3>
+          <p>
+            Your invoices, your menu or product mix, your point-of-sale, your costs. The pipeline is built around the
+            data you already generate — nothing new to maintain.
+          </p>
+        </div>
+        <div class="card">
+          <div class="n">02 · WATCH</div>
+          <h3>It watches the variance</h3>
+          <p>
+            Every week it compares what things should cost with what they actually cost — price creep from suppliers,
+            portion drift, margin erosion — the leaks too small to see and too expensive to ignore.
+          </p>
+        </div>
+        <div class="card">
+          <div class="n">03 · NAME</div>
+          <h3>It names the one bottleneck</h3>
+          <p>
+            Not a dashboard with forty charts. One finding: the single constraint costing you the most right now, how
+            confident we are, and the smallest concrete move that fixes or tests it.
+          </p>
+        </div>
+        <div class="card">
+          <div class="n">04 · OPTIMIZE</div>
+          <h3>Then it compounds</h3>
+          <p>
+            Clear one constraint and the next one becomes visible. The pipeline keeps learning your rhythms, so the
+            stop-loss keeps tightening while you run the business.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROOF -->
+    <section class="wrap">
+      <div class="split">
+        <div>
+          <div class="eyebrow">Already running</div>
+          <h2>Proven inside the hardest margin business there is.</h2>
+          <p>
+            This isn't a pitch deck. The first of these pipelines — <strong>RAPID²AI</strong> — runs today in hospitality:
+            live food-cost tracking, price-variance alerts on every invoice line, menu and POS intelligence, built from inside
+            an industry that runs on margin and instinct.
+          </p>
+          <p>
+            The Small Business Hub takes the same architecture — learn the operation, watch the variance, name the
+            constraint — and builds it custom for yours: retail, trades, farm operations, professional services,
+            anywhere the books hide a leak.
+          </p>
+          <div class="cta-row" style="justify-content:flex-start">
+            <a href="https://rapidai.pages.dev/coo/" target="_blank" rel="noreferrer" class="btn ghost">
+              See RAPID²AI live →
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow">What a custom pipeline includes</div>
+          <div class="limit-list">
+            <div class="limit-row"><span class="k">Data intake</span><span class="v">your existing systems</span></div>
+            <div class="limit-row">
+              <span class="k">Variance watch</span><span class="v">continuous, automated</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">Constraint report</span><span class="v">one finding, weekly</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">Ask-anything access</span><span class="v">Elle, on your data</span>
+            </div>
+            <div class="limit-row"><span class="k">Pricing</span><span class="v">scoped to the operation</span></div>
+          </div>
+          <p style="font-size:0.85rem;margin-top:14px">
+            Custom builds are scoped per operation — tell us what you run and we'll tell you what the pipeline looks
+            like and what it costs. Beta-era clients keep their pricing indefinitely.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="wrap" style="text-align:center">
+      <h2>Start with the leak, not the pitch.</h2>
+      <p style="max-width:520px;margin:0 auto 26px">
+        Tell us what you run — a restaurant, a shop, a farm, a practice — and we'll show you where a pipeline would look
+        first.
+      </p>
+      <div class="cta-row">
+        <a href="/contact" class="btn">Get in touch</a>
+        <a href="/elle" class="btn ghost">Ask Elle about it first</a>
+      </div>
+    </section>
+
+    <HubFooter />
+  </div>
+</Layout>
