@@ -1,41 +1,1488 @@
 ---
-import Layout from '~/layouts/LandingLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+// ============================================================
+// OPTIMUS & ELLE — Product Page
+// Powered by Elle AI · The Ethical Intelligence Project
+// Same visual language as /elle: void black, one gold, hairline
+// borders. Cormorant Garamond for display, Instrument Sans for UI,
+// DM Mono for anything that is data.
+// ============================================================
+import Layout from '~/layouts/Layout.astro';
 
 const metadata = {
-  title: 'Product Details Landing Page Demo',
+  title: 'Optimus & Elle — The Ethical Intelligence Project',
+  description:
+    'Every account gets an append-only Optimus journal, free access to Elle during beta, an open shelf of working papers, and a structural analysis engine you can point at anything.',
 };
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero2 Widget ******************* -->
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
-  <Hero
-    tagline="Product Details Demo"
-    title="Product Landing Page: Showcase with Precision and Passion!"
-    subtitle="Step-by-step guide to designing a Landing Page that highlights every facet of your product or service."
-    actions={[
-      { variant: 'primary', text: 'Call to Action', href: '#', icon: 'tabler:square-rounded-arrow-right' },
-      { text: 'Learn more', href: '#' },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1473188588951-666fce8e7c68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2174&q=80',
-      alt: 'A spotlight on a product. Product Details Landing Page Demo',
-    }}
-  />
+    #op-page {
+      --void: #06060a;
+      --base: #0b0b11;
+      --raised: #101018;
+      --float: #16161f;
+      --overlay: #1c1c27;
+      --gold: #c9a84c;
+      --gold-l: #e8cc88;
+      --gold-d: #8b6b28;
+      --ivory: #f5f0e8;
+      --t1: #eee8d8;
+      --t2: #9a9480;
+      --t3: #5a5448;
+      --t4: #38342c;
+      --b1: rgba(201, 168, 76, 0.18);
+      --b2: rgba(255, 255, 255, 0.06);
+      --b3: rgba(255, 255, 255, 0.03);
+      --gold-gl: rgba(201, 168, 76, 0.12);
+      --gold-gb: rgba(201, 168, 76, 0.06);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-ui: 'Instrument Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      background: var(--void);
+      color: var(--t1);
+      font-family: var(--font-ui);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #op-page * {
+      box-sizing: border-box;
+    }
+    #op-page ::selection {
+      background: rgba(201, 168, 76, 0.18);
+    }
+    #op-page a {
+      color: inherit;
+      text-decoration: none;
+    }
+    #op-page .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    #op-page section {
+      padding: 88px 0;
+      border-bottom: 0.5px solid var(--b2);
+    }
+    #op-page section:last-of-type {
+      border-bottom: none;
+    }
+    #op-page .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    #op-page h1,
+    #op-page h2,
+    #op-page h3 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      color: var(--ivory);
+      letter-spacing: 0.005em;
+      margin: 0;
+    }
+    #op-page h2 {
+      font-size: 2.1rem;
+      margin-bottom: 20px;
+    }
+    #op-page h3 {
+      font-size: 1.3rem;
+      color: var(--gold-l);
+    }
+    #op-page p {
+      line-height: 1.75;
+      color: var(--t2);
+      font-size: 1.03rem;
+      margin: 0 0 1.1em;
+    }
+    #op-page p:last-child {
+      margin-bottom: 0;
+    }
+    #op-page strong {
+      color: var(--t1);
+      font-weight: 600;
+    }
+    #op-page .lede {
+      font-size: 1.18rem;
+      color: var(--t1);
+    }
 
-  <CallToAction
-    title="Coming soon"
-    subtitle="We are working on the content of these demo pages. You will see them very soon. Stay tuned Stay tuned!"
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Download Template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        icon: 'tabler:download',
-      },
-    ]}
-  />
+    /* nav */
+    #op-page .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 24px;
+      border-bottom: 0.5px solid var(--b2);
+      background: rgba(6, 6, 10, 0.86);
+      backdrop-filter: blur(10px);
+    }
+    #op-page .nav .mark {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+    #op-page .nav .word {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gold-l);
+      line-height: 1;
+    }
+    #op-page .nav .sub {
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--t2);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+    #op-page .nav-links {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 0.82rem;
+      color: var(--t2);
+    }
+    #op-page .nav-links a:hover {
+      color: var(--gold-l);
+    }
+    #op-page .nav-links .pill {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 0.5px solid var(--b1);
+      background: var(--gold-gb);
+      color: var(--gold-l);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+    }
+    #op-page .nav-links .pill:hover {
+      background: var(--gold-gl);
+    }
+    @media (max-width: 720px) {
+      #op-page .nav-links {
+        display: none;
+      }
+    }
+
+    /* hero */
+    #op-page .hero {
+      padding: 96px 0 72px;
+      text-align: center;
+    }
+    #op-page .hero h1 {
+      font-size: 3rem;
+      max-width: 780px;
+      margin: 0 auto 22px;
+      line-height: 1.14;
+    }
+    #op-page .hero .lede {
+      max-width: 620px;
+      margin: 0 auto 34px;
+    }
+    #op-page .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #op-page .btn {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.03em;
+      padding: 13px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 0.5px solid var(--gold-d);
+      background: var(--gold-gl);
+      color: var(--gold-l);
+      transition: 0.15s;
+      display: inline-block;
+    }
+    #op-page .btn:hover {
+      background: rgba(201, 168, 76, 0.26);
+    }
+    #op-page .btn.ghost {
+      background: transparent;
+      border-color: var(--b2);
+      color: var(--t1);
+    }
+    #op-page .btn.ghost:hover {
+      border-color: var(--b1);
+      color: var(--gold-l);
+    }
+    #op-page .btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    /* facts strip */
+    #op-page .facts {
+      padding: 40px 0;
+    }
+    #op-page .facts .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--b2);
+      border: 0.5px solid var(--b2);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    #op-page .facts .cell {
+      background: var(--raised);
+      padding: 22px 20px;
+    }
+    #op-page .facts .cell .k {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    #op-page .facts .cell p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    @media (max-width: 720px) {
+      #op-page .facts .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* card grid */
+    #op-page .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    #op-page .card {
+      background: var(--raised);
+      border: 0.5px solid var(--b2);
+      border-radius: 14px;
+      padding: 22px;
+      transition: 0.15s;
+    }
+    #op-page a.card:hover {
+      border-color: var(--b1);
+      background: var(--float);
+    }
+    #op-page .card .n {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    #op-page .card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+    #op-page .card p {
+      font-size: 0.88rem;
+      margin: 0;
+    }
+    @media (max-width: 900px) {
+      #op-page .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 560px) {
+      #op-page .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* two-col section */
+    #op-page .split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      #op-page .split {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    /* illustrative ledger */
+    #op-page .ledger {
+      background: var(--raised);
+      border: 0.5px solid var(--b2);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    #op-page .ledger .tag {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin-bottom: 14px;
+    }
+    #op-page .ledger .entry {
+      padding: 12px 0;
+      border-top: 0.5px solid var(--b2);
+    }
+    #op-page .ledger .entry:first-of-type {
+      border-top: none;
+    }
+    #op-page .ledger .entry .meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--t3);
+      margin-bottom: 6px;
+    }
+    #op-page .ledger .entry .meta .kappa {
+      color: var(--gold);
+    }
+    #op-page .ledger .entry p {
+      font-size: 0.86rem;
+      margin: 0;
+    }
+    #op-page .ledger .plus {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--t3);
+      padding-top: 10px;
+    }
+
+    /* lever diagram */
+    #op-page .lever-box {
+      background: var(--raised);
+      border: 0.5px solid var(--b2);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    #op-page .lever-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+    }
+    #op-page .lever-row .bar {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--b3);
+      overflow: hidden;
+    }
+    #op-page .lever-row .bar i {
+      display: block;
+      height: 100%;
+      background: var(--t4);
+      border-radius: 999px;
+    }
+    #op-page .lever-row.active .bar i {
+      background: linear-gradient(90deg, var(--gold-d), var(--gold-l));
+    }
+    #op-page .lever-row span.lbl {
+      width: 128px;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+      color: var(--t3);
+    }
+    #op-page .lever-row.active span.lbl {
+      color: var(--gold-l);
+      font-weight: 600;
+    }
+    #op-page .lever-note {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--t3);
+      border-top: 0.5px solid var(--b2);
+      padding-top: 14px;
+    }
+
+    /* workspace / tabs */
+    #op-page .ws-head {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+    #op-page .ws-head h2 {
+      margin-bottom: 10px;
+    }
+    #op-page .ws-head p {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    #op-page .tabs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+    #op-page .tab-btn {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 0.5px solid var(--b2);
+      background: transparent;
+      color: var(--t2);
+      cursor: pointer;
+    }
+    #op-page .tab-btn.on {
+      border-color: var(--b1);
+      background: var(--gold-gb);
+      color: var(--gold-l);
+    }
+    #op-page .panel {
+      display: none;
+      background: var(--raised);
+      border: 0.5px solid var(--b2);
+      border-radius: 16px;
+      padding: 26px;
+      min-height: 320px;
+    }
+    #op-page .panel.on {
+      display: block;
+    }
+    #op-page .gate {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    #op-page .gate p {
+      max-width: 420px;
+      margin: 0 auto 20px;
+    }
+
+    /* library */
+    #op-page .lib-tools {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    #op-page .lib-tools input,
+    #op-page .lib-tools select {
+      background: var(--float);
+      border: 0.5px solid var(--b2);
+      border-radius: 9px;
+      color: var(--t1);
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      padding: 9px 12px;
+      outline: none;
+    }
+    #op-page .lib-tools input:focus,
+    #op-page .lib-tools select:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+    #op-page .lib-tools input {
+      flex: 1;
+      min-width: 160px;
+    }
+    #op-page .lib-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      min-height: 260px;
+    }
+    @media (max-width: 720px) {
+      #op-page .lib-body {
+        grid-template-columns: 1fr;
+      }
+    }
+    #op-page .lib-list {
+      border-right: 0.5px solid var(--b2);
+      padding-right: 14px;
+      max-height: 460px;
+      overflow-y: auto;
+    }
+    #op-page .lib-item {
+      padding: 10px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.86rem;
+    }
+    #op-page .lib-item:hover,
+    #op-page .lib-item.sel {
+      background: var(--gold-gb);
+    }
+    #op-page .lib-item .t {
+      color: var(--t1);
+      display: block;
+      margin-bottom: 3px;
+    }
+    #op-page .lib-item .s {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    #op-page .reader {
+      max-height: 460px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    #op-page .reader .r-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--ivory);
+      margin-bottom: 4px;
+    }
+    #op-page .reader .r-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--t3);
+      margin-bottom: 16px;
+    }
+    #op-page .reader p {
+      font-size: 0.92rem;
+      color: var(--t1);
+    }
+    #op-page .empty-note {
+      color: var(--t3);
+      font-size: 0.86rem;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    /* engine */
+    #op-page .eng-input {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 8px;
+    }
+    #op-page .eng-input textarea {
+      flex: 1;
+      resize: none;
+      background: var(--float);
+      border: 0.5px solid var(--b2);
+      border-radius: 12px;
+      color: var(--t1);
+      font-family: var(--font-ui);
+      font-size: 0.94rem;
+      padding: 12px 14px;
+      outline: none;
+      min-height: 52px;
+    }
+    #op-page .eng-input textarea:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+    #op-page .eng-note {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--t3);
+      margin-bottom: 20px;
+    }
+    #op-page .eng-status {
+      text-align: center;
+      padding: 30px;
+      color: var(--t2);
+      font-size: 0.9rem;
+      display: none;
+    }
+    #op-page .eng-status.on {
+      display: block;
+    }
+    #op-page .eng-results {
+      display: none;
+    }
+    #op-page .eng-results.on {
+      display: block;
+    }
+    #op-page .axis-tier-label {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 22px 0 10px;
+    }
+    #op-page .axis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 720px) {
+      #op-page .axis-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    #op-page .axis-card {
+      background: var(--float);
+      border: 0.5px solid var(--b2);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    #op-page .axis-card .lbl {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      color: var(--t2);
+      margin-bottom: 6px;
+    }
+    #op-page .axis-card p {
+      font-size: 0.84rem;
+      margin: 0 0 8px;
+    }
+    #op-page .axis-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    #op-page .axis-card li {
+      font-size: 0.8rem;
+      color: var(--t2);
+      margin-bottom: 3px;
+    }
+    #op-page .rupture-box {
+      margin-top: 24px;
+      background: var(--gold-gb);
+      border: 0.5px solid var(--b1);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    #op-page .rupture-box .tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    #op-page .rupture-box h3 {
+      margin-bottom: 10px;
+    }
+
+    /* pricing */
+    #op-page .pricing-box {
+      background: var(--raised);
+      border: 0.5px solid var(--b1);
+      border-radius: 16px;
+      padding: 34px;
+      text-align: center;
+    }
+    #op-page .pricing-box .lede {
+      max-width: 620px;
+      margin: 0 auto 24px;
+    }
+
+    /* auth modal */
+    #op-auth {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 6, 10, 0.86);
+      backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      padding: 20px;
+    }
+    #op-auth.show {
+      display: flex;
+    }
+    #op-auth .card {
+      width: 380px;
+      max-width: 100%;
+      background: var(--float);
+      border: 0.5px solid var(--b1);
+      border-radius: 16px;
+      padding: 26px 24px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+    }
+    #op-auth h2 {
+      font-size: 1.55rem;
+      margin-bottom: 4px;
+    }
+    #op-auth .h-sub {
+      font-size: 0.82rem;
+      color: var(--t2);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    #op-auth label {
+      display: block;
+      font-size: 0.64rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--t2);
+      margin: 14px 0 5px;
+    }
+    #op-auth input {
+      width: 100%;
+      background: var(--raised);
+      border: 0.5px solid var(--b1);
+      border-radius: 9px;
+      color: var(--t1);
+      font-size: 0.95rem;
+      font-family: var(--font-ui);
+      padding: 10px 12px;
+      outline: none;
+    }
+    #op-auth input:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+    #op-auth .err {
+      color: #e08585;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      margin-top: 12px;
+      min-height: 1em;
+    }
+    #op-auth .primary {
+      width: 100%;
+      margin-top: 18px;
+      padding: 11px;
+      border-radius: 10px;
+      border: 0.5px solid var(--gold-d);
+      background: var(--gold-gl);
+      color: var(--gold-l);
+      font-size: 0.92rem;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #op-auth .primary:hover {
+      background: rgba(201, 168, 76, 0.26);
+    }
+    #op-auth .toggle {
+      font-size: 0.8rem;
+      color: var(--t2);
+      text-align: center;
+      margin-top: 14px;
+    }
+    #op-auth .toggle b {
+      color: var(--gold-l);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    #op-auth .x {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      color: var(--t3);
+      font-size: 1.3rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    #op-auth .x:hover {
+      color: var(--gold-l);
+    }
+    #op-auth .card {
+      position: relative;
+    }
+
+    #op-page .footer-cta {
+      text-align: center;
+      padding: 80px 0 100px;
+    }
+    #op-page .footer-cta p {
+      max-width: 480px;
+      margin: 0 auto 26px;
+    }
+    #op-page .foot-note {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--t3);
+      padding: 0 0 40px;
+    }
+  </style>
+
+  <div id="op-page">
+    <!-- NAV -->
+    <nav class="nav">
+      <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
+        <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <circle cx="21.5" cy="8.75" r="2" fill="#E8CC88"></circle>
+      </svg>
+      <div>
+        <div class="word">Optimus</div>
+        <div class="sub">Powered by Elle AI</div>
+      </div>
+      <div class="nav-links">
+        <a href="#journal">Journal</a>
+        <a href="#lever">The Lever</a>
+        <a href="#workspace">Try it</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/">← site</a>
+        <a href="/elle" class="pill" id="op-account-pill">Talk to Elle →</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow">The Ethical Intelligence Project · In Beta</div>
+      <h1>Every account gets a permanent record of its own thinking.</h1>
+      <p class="lede">
+        Optimus is the running, append-only journal behind everything Elle does. Elle herself is free to talk to right
+        now, during beta. Nothing about either one gets quietly rewritten after the fact — only added to.
+      </p>
+      <div class="cta-row">
+        <a href="/elle" class="btn">Talk to Elle — free →</a>
+        <button class="btn ghost" id="op-hero-signup">Create your account</button>
+      </div>
+    </section>
+
+    <!-- QUICK FACTS -->
+    <section class="facts">
+      <div class="wrap">
+        <div class="grid">
+          <div class="cell">
+            <div class="k">Free &amp; rate-limited</div>
+            <p>
+              Talk to Elle for free, right now, as a guest. During beta, free use has a fair-use cap so it stays free
+              for everyone — sign in and you get more room.
+            </p>
+          </div>
+          <div class="cell">
+            <div class="k">Append-only, always</div>
+            <p>
+              Your Optimus journal and your history with Elle are never rewritten after the fact. Only added to — the
+              same discipline a lab notebook or a ship's log follows.
+            </p>
+          </div>
+          <div class="cell">
+            <div class="k">Beta pricing, locked in</div>
+            <p>
+              Join during beta and keep the beta-era rate for as long as you keep your account — indefinitely, not just
+              for launch week.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT'S INCLUDED -->
+    <section class="wrap">
+      <div class="eyebrow">Every account includes</div>
+      <h2>Four things, one account.</h2>
+      <div class="cards">
+        <a href="/elle" class="card">
+          <div class="n">01</div>
+          <h3>Elle</h3>
+          <p>Corpus-grounded conversation. Free during beta, rate-limited for guests, more room once you sign in.</p>
+        </a>
+        <a href="#journal" class="card">
+          <div class="n">02</div>
+          <h3>The Optimus Journal</h3>
+          <p>A private, append-only running record of how Elle reasons with you — not just what she concludes.</p>
+        </a>
+        <a href="#workspace" class="card">
+          <div class="n">03</div>
+          <h3>Working Papers</h3>
+          <p>One open shelf for everything in progress and everything finished. Read the whole piece, not a snippet.</p>
+        </a>
+        <a href="#workspace" class="card">
+          <div class="n">04</div>
+          <h3>Structural Analysis Engine</h3>
+          <p>
+            Point it at any situation. It reads sixteen angles at once, checks itself, and hands you one honest read.
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <!-- OPTIMUS JOURNAL -->
+    <section id="journal" class="wrap">
+      <div class="split">
+        <div>
+          <div class="eyebrow">Every account, from day one</div>
+          <h2>The Optimus Journal</h2>
+          <p class="lede">
+            Every account that talks to Elle gets an Optimus Journal — a running, private record of <strong>how</strong> she
+            got to what she told you, not just what she told you.
+          </p>
+          <p>
+            It works like a ship's log or a lab notebook: entries only ever get <strong>added</strong>, never rewritten.
+            If something turns out to be wrong, the old entry isn't quietly fixed and hidden — a new entry gets added on
+            top of it, so the whole trail stays visible, in order, forever. That's what "append-only" means, and it's
+            not just the journal: it's how we treat your account's history with Elle, too.
+          </p>
+          <p>
+            Alongside each entry, Optimus tracks a simple signal for how the reasoning itself is moving — getting
+            steadier over time, or drifting — the same way a fever chart tracks a trend rather than one reading in
+            isolation. You can always open the log yourself. It isn't a black box you're asked to trust blindly.
+          </p>
+        </div>
+        <div class="ledger">
+          <div class="tag">Illustrative — your journal is private to your account</div>
+          <div class="entry">
+            <div class="meta"><span>Entry · Day 1</span><span class="kappa">κ 0.61</span></div>
+            <p>
+              Opened a thread on grant eligibility for a rural small business. Two open questions logged, unresolved.
+            </p>
+          </div>
+          <div class="entry">
+            <div class="meta"><span>Entry · Day 4</span><span class="kappa">κ 0.68 ▲</span></div>
+            <p>Advanced the thread — one open question resolved with a source, one still standing.</p>
+          </div>
+          <div class="entry">
+            <div class="meta"><span>Entry · Day 9</span><span class="kappa">κ 0.72 ▲</span></div>
+            <p>New entry added disputing an earlier claim. The earlier entry stays in the record, unedited.</p>
+          </div>
+          <div class="plus">+ every entry after this one, in order, forever</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COST OF STANDING STILL -->
+    <section id="lever" class="wrap">
+      <div class="split">
+        <div>
+          <div class="eyebrow">How we decide what to fix first</div>
+          <h2>The cost of standing still — and the one lever that matters</h2>
+          <p class="lede">
+            Most planning tools hand you a list: here are ten things you could improve. That's not actually useful — it
+            spreads your attention thin across everything that could theoretically be better, and nothing moves.
+          </p>
+          <p>
+            We built this differently, in code. Every stalled project, every plan that isn't moving, every business that
+            feels stuck is almost always limited by <strong>one</strong> thing at a time — the single bottleneck actually
+            holding it back. Everything else on the list is a distraction from that one thing. We call it the
+            <strong>binding constraint</strong>.
+          </p>
+          <p>
+            Standing idly by has a real cost: the plan doesn't move, the same conversation happens again next week, and
+            that cost keeps accruing for as long as the real bottleneck goes unnamed. So instead of asking "what could
+            be better," our engine asks a narrower question — of everything in your way right now, what is the one thing
+            actually stopping progress, how sure are we, and what's the smallest concrete step that tests or relieves
+            it?
+          </p>
+          <p>
+            That single answer is your <strong>optimization lever</strong>. Not a to-do list — the one place where
+            effort actually moves something, because it's the one place effort was actually being blocked.
+          </p>
+        </div>
+        <div class="lever-box">
+          <div class="lever-row">
+            <span class="lbl">Hire more staff</span>
+            <div class="bar"><i style="width:34%"></i></div>
+          </div>
+          <div class="lever-row">
+            <span class="lbl">New website</span>
+            <div class="bar"><i style="width:22%"></i></div>
+          </div>
+          <div class="lever-row">
+            <span class="lbl">More marketing</span>
+            <div class="bar"><i style="width:41%"></i></div>
+          </div>
+          <div class="lever-row active">
+            <span class="lbl">Missing permit ✦</span>
+            <div class="bar"><i style="width:92%"></i></div>
+          </div>
+          <div class="lever-row">
+            <span class="lbl">Better branding</span>
+            <div class="bar"><i style="width:18%"></i></div>
+          </div>
+          <div class="lever-note">
+            Illustrative — the binding constraint (gold) is the lever. Everything else is noise until it's cleared.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE -->
+    <section id="workspace" class="wrap">
+      <div class="ws-head">
+        <div class="eyebrow">Live, in your account</div>
+        <h2>Try it yourself</h2>
+        <p>
+          Two working parts of Optimus, right here. Sign in to use them — they're part of every account, and each run is
+          real.
+        </p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn on" data-tab="library">Manuscript Library</button>
+        <button class="tab-btn" data-tab="engine">Structural Analysis Engine</button>
+      </div>
+
+      <!-- LIBRARY PANEL -->
+      <div class="panel on" id="op-panel-library">
+        <div id="op-lib-gate" class="gate" style="display:none">
+          <h3>Sign in to browse the library</h3>
+          <p>
+            Every working paper and every finished piece — search by title, filter by series, and read the whole thing.
+            This is part of every account, free during beta.
+          </p>
+          <button class="btn" id="op-lib-signin">Sign in / Create account</button>
+        </div>
+        <div id="op-lib-body">
+          <div class="lib-tools">
+            <input id="op-lib-q" type="text" placeholder="Search titles…" />
+            <select id="op-lib-series">
+              <option value="">All series</option>
+            </select>
+          </div>
+          <div class="lib-body">
+            <div class="lib-list" id="op-lib-list">
+              <div class="empty-note">Loading…</div>
+            </div>
+            <div class="reader" id="op-lib-reader">
+              <div class="empty-note">Select a paper to read it here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENGINE PANEL -->
+      <div class="panel" id="op-panel-engine">
+        <div id="op-eng-gate" class="gate" style="display:none">
+          <h3>Sign in to run an analysis</h3>
+          <p>
+            Point the engine at a market, a decision, a policy, an institution — anything. This is part of every
+            account, free during beta.
+          </p>
+          <button class="btn" id="op-eng-signin">Sign in / Create account</button>
+        </div>
+        <div id="op-eng-body">
+          <p style="margin-bottom:14px">
+            Point it at a market, a decision, a policy, an institution — anything. It reads the situation sixteen ways
+            at once, checks its own conclusion for bias, and hands you the one thing that actually matters: what's
+            really going on, and what to build or do first.
+          </p>
+          <div class="eng-input">
+            <textarea id="op-eng-direction" rows="2" placeholder="Point it at something…"></textarea>
+            <button class="btn" id="op-eng-run">Run →</button>
+          </div>
+          <div class="eng-note">Beta note: each run is a real, sixteen-axis analysis and can take a minute or two.</div>
+          <div class="eng-status" id="op-eng-status">Running the sixteen axes…</div>
+          <div class="eng-results" id="op-eng-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="wrap">
+      <div class="pricing-box">
+        <div class="eyebrow">For the people helping us build this</div>
+        <h2>Beta pricing, locked in — indefinitely</h2>
+        <p class="lede">
+          We haven't set final pricing yet. What we can tell you now: everyone who's here during beta keeps whatever the
+          beta-era rate turns out to be, for as long as they keep their account — not just for a launch-week promo.
+          You're not just trying the tools early. You're one of the people helping shape what the Ethical Intelligence
+          Project becomes, and we intend to treat that the way it deserves: permanently.
+        </p>
+        <button class="btn" id="op-pricing-signup">Create your account</button>
+      </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <section class="footer-cta wrap">
+      <h2>Free during beta. Yours, permanently, if you're here now.</h2>
+      <p>Talk to Elle, open your Optimus journal, and see what's already on the shelf.</p>
+      <div class="cta-row">
+        <a href="/elle" class="btn">Talk to Elle →</a>
+        <a href="/" class="btn ghost">Back to the project</a>
+      </div>
+    </section>
+    <div class="foot-note">The Ethical Intelligence Project · Powered by Elle AI · Hermann, Missouri</div>
+
+    <!-- AUTH MODAL -->
+    <div id="op-auth">
+      <div class="card">
+        <button class="x" id="op-auth-x" aria-label="Close">×</button>
+        <h2 id="op-auth-title">Sign in</h2>
+        <div class="h-sub" id="op-auth-sub">One account for Elle, your Optimus journal, and everything below.</div>
+        <label>Email</label>
+        <input id="op-email" type="email" autocomplete="email" placeholder="you@example.com" />
+        <label>Password</label>
+        <input id="op-pw" type="password" autocomplete="current-password" placeholder="••••••••" />
+        <div class="err" id="op-auth-err"></div>
+        <button class="primary" id="op-auth-go">Sign in</button>
+        <div class="toggle" id="op-auth-toggle">New here? <b>Create an account</b></div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      if (window.__opInit) return;
+      window.__opInit = true;
+
+      const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
+      const TOKEN_KEY = 'eip_elle_jwt';
+
+      let token = null;
+      try {
+        token = localStorage.getItem(TOKEN_KEY) || null;
+      } catch {
+        /* ignore */
+      }
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+      function fmt(s) {
+        return esc(s)
+          .split(/\n\n+/)
+          .map(function (p) {
+            return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+          })
+          .join('');
+      }
+      function authedFetch(path, payload) {
+        return fetch(WORKER + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: JSON.stringify(payload || {}),
+        }).then(function (r) {
+          return r.json().then(function (d) {
+            return { ok: r.ok, status: r.status, d: d };
+          });
+        });
+      }
+
+      // ── auth modal ──────────────────────────────────────────
+      const authEl = document.getElementById('op-auth');
+      const emailEl = document.getElementById('op-email');
+      const pwEl = document.getElementById('op-pw');
+      const errEl = document.getElementById('op-auth-err');
+      const goEl = document.getElementById('op-auth-go');
+      const titleEl = document.getElementById('op-auth-title');
+      const toggleEl = document.getElementById('op-auth-toggle');
+      let mode = 'signin';
+      let onAuthed = null;
+
+      function setMode(m) {
+        mode = m;
+        if (m === 'signup') {
+          titleEl.textContent = 'Create your account';
+          goEl.textContent = 'Create account';
+          toggleEl.innerHTML = 'Already have an account? <b>Sign in</b>';
+          pwEl.setAttribute('autocomplete', 'new-password');
+        } else {
+          titleEl.textContent = 'Sign in';
+          goEl.textContent = 'Sign in';
+          toggleEl.innerHTML = 'New here? <b>Create an account</b>';
+          pwEl.setAttribute('autocomplete', 'current-password');
+        }
+      }
+      function openAuth(startMode, cb) {
+        setMode(startMode || 'signin');
+        errEl.textContent = '';
+        onAuthed = cb || null;
+        authEl.classList.add('show');
+        setTimeout(function () {
+          emailEl.focus();
+        }, 60);
+      }
+      function closeAuth() {
+        authEl.classList.remove('show');
+      }
+      function doAuth() {
+        const email = emailEl.value.trim(),
+          pw = pwEl.value;
+        if (!email || !pw) {
+          errEl.textContent = 'Email and password required.';
+          return;
+        }
+        goEl.disabled = true;
+        errEl.textContent = '';
+        fetch(WORKER + '/api/elle-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: mode === 'signup' ? 'signup' : 'login', email: email, password: pw }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, status: r.status, d: d };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok || !res.d.access_token) {
+              errEl.textContent = res.d.error || 'Failed (' + res.status + ')';
+              return;
+            }
+            token = res.d.access_token;
+            try {
+              localStorage.setItem(TOKEN_KEY, token);
+            } catch {
+              /* ignore */
+            }
+            closeAuth();
+            refreshGates();
+            if (onAuthed) onAuthed();
+          })
+          .catch(function () {
+            errEl.textContent = 'Connection failed. Try again.';
+          })
+          .finally(function () {
+            goEl.disabled = false;
+          });
+      }
+      document.getElementById('op-auth-x').addEventListener('click', closeAuth);
+      goEl.addEventListener('click', doAuth);
+      pwEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') doAuth();
+      });
+      toggleEl.addEventListener('click', function (e) {
+        if (e.target.tagName === 'B') setMode(mode === 'signup' ? 'signin' : 'signup');
+      });
+      authEl.addEventListener('click', function (e) {
+        if (e.target === authEl) closeAuth();
+      });
+      document.getElementById('op-hero-signup').addEventListener('click', function () {
+        openAuth('signup');
+      });
+      document.getElementById('op-pricing-signup').addEventListener('click', function () {
+        openAuth('signup');
+      });
+      document.getElementById('op-lib-signin').addEventListener('click', function () {
+        openAuth('signin', loadLibrary);
+      });
+      document.getElementById('op-eng-signin').addEventListener('click', function () {
+        openAuth('signin', refreshGates);
+      });
+
+      function refreshGates() {
+        const signedIn = !!token;
+        document.getElementById('op-lib-gate').style.display = signedIn ? 'none' : 'block';
+        document.getElementById('op-lib-body').style.display = signedIn ? 'block' : 'none';
+        document.getElementById('op-eng-gate').style.display = signedIn ? 'none' : 'block';
+        document.getElementById('op-eng-body').style.display = signedIn ? 'block' : 'none';
+        const pill = document.getElementById('op-account-pill');
+        if (signedIn) pill.textContent = 'Open Elle →';
+        if (signedIn) loadLibrary();
+      }
+
+      // ── tabs ────────────────────────────────────────────────
+      document.querySelectorAll('.tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.tab-btn').forEach(function (b) {
+            b.classList.remove('on');
+          });
+          document.querySelectorAll('.panel').forEach(function (p) {
+            p.classList.remove('on');
+          });
+          btn.classList.add('on');
+          document.getElementById('op-panel-' + btn.dataset.tab).classList.add('on');
+        });
+      });
+
+      // ── manuscript library ───────────────────────────────────
+      let libLoaded = false;
+      const libList = document.getElementById('op-lib-list');
+      const libReader = document.getElementById('op-lib-reader');
+      const libQ = document.getElementById('op-lib-q');
+      const libSeries = document.getElementById('op-lib-series');
+
+      function renderPapers(papers) {
+        if (!papers || !papers.length) {
+          libList.innerHTML = '<div class="empty-note">No papers found.</div>';
+          return;
+        }
+        libList.innerHTML = papers
+          .map(function (p) {
+            return (
+              '<div class="lib-item" data-id="' +
+              esc(p.id) +
+              '"><span class="t">' +
+              esc(p.title) +
+              '</span><span class="s">' +
+              esc(p.series || 'unsorted') +
+              '</span></div>'
+            );
+          })
+          .join('');
+        libList.querySelectorAll('.lib-item').forEach(function (el) {
+          el.addEventListener('click', function () {
+            libList.querySelectorAll('.lib-item').forEach(function (x) {
+              x.classList.remove('sel');
+            });
+            el.classList.add('sel');
+            openPaper(el.dataset.id);
+          });
+        });
+      }
+
+      function openPaper(id) {
+        libReader.innerHTML = '<div class="empty-note">Loading…</div>';
+        authedFetch('/api/corpus-paper', { id: id }).then(function (res) {
+          if (!res.ok || !res.d.paper) {
+            libReader.innerHTML = '<div class="empty-note">Could not open that paper.</div>';
+            return;
+          }
+          const p = res.d.paper;
+          libReader.innerHTML =
+            '<div class="r-title">' +
+            esc(p.title) +
+            '</div><div class="r-meta">' +
+            esc(p.series || 'unsorted') +
+            (p.word_count ? ' · ' + esc(p.word_count) + ' words' : '') +
+            '</div>' +
+            (p.abstract ? '<p><strong>' + esc(p.abstract) + '</strong></p>' : '') +
+            fmt(p.full_text || '(no text)');
+        });
+      }
+
+      function loadPapers() {
+        libList.innerHTML = '<div class="empty-note">Loading…</div>';
+        authedFetch('/api/corpus-papers', {
+          q: libQ.value.trim() || undefined,
+          series: libSeries.value || undefined,
+          limit: 200,
+        }).then(function (res) {
+          if (!res.ok) {
+            libList.innerHTML =
+              '<div class="empty-note">Sign-in required, or the library is unavailable right now.</div>';
+            return;
+          }
+          renderPapers(res.d.papers);
+        });
+      }
+
+      function loadLibrary() {
+        if (!token) return;
+        if (!libLoaded) {
+          libLoaded = true;
+          authedFetch('/api/corpus-series', {}).then(function (res) {
+            if (res.ok && res.d.series) {
+              res.d.series.forEach(function (s) {
+                const o = document.createElement('option');
+                o.value = s.series;
+                o.textContent = s.series + ' (' + s.count + ')';
+                libSeries.appendChild(o);
+              });
+            }
+          });
+        }
+        loadPapers();
+      }
+      let qTimer;
+      libQ.addEventListener('input', function () {
+        clearTimeout(qTimer);
+        qTimer = setTimeout(loadPapers, 350);
+      });
+      libSeries.addEventListener('change', loadPapers);
+
+      // ── structural analysis engine ───────────────────────────
+      const engDirection = document.getElementById('op-eng-direction');
+      const engRun = document.getElementById('op-eng-run');
+      const engStatus = document.getElementById('op-eng-status');
+      const engResults = document.getElementById('op-eng-results');
+
+      function axisCard(axis) {
+        const data = axis.data || {};
+        let main = '';
+        const keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+          const v = data[keys[i]];
+          if (typeof v === 'string' && v.length > 25) {
+            main = v;
+            break;
+          }
+        }
+        let lists = '';
+        keys.forEach(function (k) {
+          const v = data[k];
+          if (Array.isArray(v) && v.length) {
+            lists +=
+              '<ul>' +
+              v
+                .slice(0, 5)
+                .map(function (item) {
+                  return '<li>' + esc(typeof item === 'string' ? item : JSON.stringify(item)) + '</li>';
+                })
+                .join('') +
+              '</ul>';
+          }
+        });
+        return (
+          '<div class="axis-card"><div class="lbl">' +
+          esc(axis.label) +
+          '</div>' +
+          (main ? '<p>' + esc(main) + '</p>' : '') +
+          lists +
+          '</div>'
+        );
+      }
+
+      function renderFalcon(d) {
+        let html = '';
+        if (d.tier1 && d.tier1.length) {
+          html += '<div class="axis-tier-label">Tier 1 · Material Ground</div><div class="axis-grid">';
+          html += d.tier1.map(axisCard).join('');
+          html += '</div>';
+        }
+        if (d.tier2 && d.tier2.length) {
+          html += '<div class="axis-tier-label">Tier 2 · Observer Reading</div><div class="axis-grid">';
+          html += d.tier2.map(axisCard).join('');
+          html += '</div>';
+        }
+        if (d.validation) {
+          html +=
+            '<div class="axis-tier-label">Tier 3 · Validation (self-check)</div><div class="axis-card">' +
+            (d.validation.type6_check ? '<p>' + esc(d.validation.type6_check) + '</p>' : '') +
+            (d.validation.drift_check ? '<p>' + esc(d.validation.drift_check) + '</p>' : '') +
+            '</div>';
+        }
+        if (d.rupture) {
+          html +=
+            '<div class="rupture-box"><div class="tag">The Rupture — what this all points to</div>' +
+            (d.rupture.rupture ? '<h3>' + esc(d.rupture.rupture) + '</h3>' : '') +
+            (d.rupture.what_exists_after ? '<p>' + esc(d.rupture.what_exists_after) + '</p>' : '') +
+            (d.rupture.first_thing_to_build
+              ? '<p><strong>First thing to build:</strong> ' + esc(d.rupture.first_thing_to_build) + '</p>'
+              : '') +
+            '</div>';
+        }
+        engResults.innerHTML = html || '<div class="empty-note">No result.</div>';
+      }
+
+      engRun.addEventListener('click', function () {
+        const direction = engDirection.value.trim();
+        if (!direction || !token) return;
+        engRun.disabled = true;
+        engResults.classList.remove('on');
+        engStatus.classList.add('on');
+        authedFetch('/api/falcon', { action: 'run', direction: direction })
+          .then(function (res) {
+            engStatus.classList.remove('on');
+            if (!res.ok) {
+              engResults.innerHTML =
+                '<div class="empty-note">' +
+                esc(res.d.error || 'Could not complete the analysis. Try again.') +
+                '</div>';
+              engResults.classList.add('on');
+              return;
+            }
+            renderFalcon(res.d);
+            engResults.classList.add('on');
+          })
+          .catch(function () {
+            engStatus.classList.remove('on');
+            engResults.innerHTML = '<div class="empty-note">Connection failed. Try again.</div>';
+            engResults.classList.add('on');
+          })
+          .finally(function () {
+            engRun.disabled = false;
+          });
+      });
+
+      refreshGates();
+    })();
+  </script>
 </Layout>

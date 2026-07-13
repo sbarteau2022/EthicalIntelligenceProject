@@ -72,7 +72,7 @@ export const headerData = {
           href: getPermalink('/landing/click-through'),
         },
         {
-          text: 'Product Details (or Services)',
+          text: 'Optimus & Elle',
           href: getPermalink('/landing/product'),
         },
         {
