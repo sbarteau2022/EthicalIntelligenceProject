@@ -1,0 +1,475 @@
+---
+// ============================================================
+// OPTIMUS — your append-only journal + the manuscript reader
+// Free with sign-up · rate-limited on the free tier
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import HubAuth from '~/components/hub/HubAuth.astro';
+
+const metadata = {
+  title: 'Optimus Journal — The Ethical Intelligence Project',
+  description:
+    'Every account gets an append-only Optimus journal — a permanent, private record that is only ever added to. Free with sign-up, with a manuscript reader for the working papers.',
+};
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/optimus" showAccount={true} />
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow">Free with sign-up · Rate-limited on the free tier</div>
+      <h1>A journal that never rewrites itself.</h1>
+      <p class="lede">
+        Every account gets an Optimus journal — a private, running record that works like a ship's log: entries are only
+        ever <strong>added</strong>, never edited or quietly replaced. If something turns out to be wrong, a new entry
+        corrects it on top, and the whole trail stays visible, in order, forever.
+      </p>
+      <div class="cta-row">
+        <button class="btn" id="opt-cta">Open your journal</button>
+        <a href="#reader" class="btn ghost">Browse the manuscripts</a>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="wrap">
+      <div class="eyebrow">What you get</div>
+      <h2>Write. Elle responds. Nothing disappears.</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="n">01 · APPEND-ONLY</div>
+          <h3>Your permanent record</h3>
+          <p>
+            Start threads on anything you're working through. Every entry is stamped in order and kept forever — the
+            same discipline a lab notebook follows.
+          </p>
+        </div>
+        <div class="card">
+          <div class="n">02 · ELLE IN THE MARGINS</div>
+          <h3>Ask her to respond</h3>
+          <p>
+            On any thread, ask Elle to read what's on the record and write back. Her entries land in the same
+            append-only trail as yours.
+          </p>
+        </div>
+        <div class="card">
+          <div class="n">03 · THE PHASE STATE</div>
+          <h3>Watch the thinking move</h3>
+          <p>
+            Each entry carries a coherence reading (κ) — a simple signal for whether a line of thought is getting
+            steadier or drifting, tracked like a fever chart over time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE -->
+    <section id="workspace" class="wrap">
+      <div class="tabs">
+        <button class="tab-btn on" data-tab="journal">Your Journal</button>
+        <button class="tab-btn" data-tab="reader" id="reader-tab-btn">Manuscript Reader</button>
+      </div>
+
+      <!-- JOURNAL PANEL -->
+      <div class="panel on" id="opt-panel-journal">
+        <div id="opt-j-gate" class="gate">
+          <h3>Sign in to open your journal</h3>
+          <p>
+            Free with sign-up. Free accounts share a fair-use ceiling of 60 requests per hour across the journal, Elle,
+            and the analysis engine — plenty for daily writing, capped so it stays free for everyone.
+          </p>
+          <button class="btn" id="opt-j-signin">Sign in / Create free account</button>
+        </div>
+        <div id="opt-j-body" style="display:none">
+          <div style="display:grid;grid-template-columns:250px 1fr;gap:18px" class="opt-j-grid">
+            <div>
+              <button class="btn ghost" id="opt-new-thread" style="width:100%;margin-bottom:12px">+ New thread</button>
+              <div id="opt-threads" style="max-height:420px;overflow-y:auto"></div>
+            </div>
+            <div>
+              <div id="opt-entries" style="max-height:360px;overflow-y:auto;margin-bottom:14px">
+                <div class="empty-note">Select a thread, or start a new one.</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-end">
+                <textarea id="opt-entry-input" rows="3" placeholder="Write an entry…" style="flex:1"></textarea>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <button class="btn" id="opt-entry-send">Add entry</button>
+                  <button class="btn ghost" id="opt-elle-respond" title="Ask Elle to read the thread and write back">
+                    Ask Elle
+                  </button>
+                </div>
+              </div>
+              <div
+                style="font-family:var(--font-mono);font-size:0.68rem;color:var(--t3);margin-top:10px;letter-spacing:0.03em"
+              >
+                Append-only: entries can't be edited or deleted once written. Corrections go on top.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- READER PANEL -->
+      <div class="panel" id="opt-panel-reader">
+        <div id="opt-r-gate" class="gate">
+          <h3>Sign in to read the manuscripts</h3>
+          <p>
+            Every working paper and every finished piece, in one shelf — search by title, filter by series, read the
+            whole thing. Included free with every account.
+          </p>
+          <button class="btn" id="opt-r-signin">Sign in / Create free account</button>
+        </div>
+        <div id="opt-r-body" style="display:none">
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <input id="opt-lib-q" type="text" placeholder="Search titles…" style="flex:1;min-width:160px" />
+            <select id="opt-lib-series"><option value="">All series</option></select>
+          </div>
+          <div style="display:grid;grid-template-columns:280px 1fr;gap:18px" class="opt-r-grid">
+            <div
+              id="opt-lib-list"
+              style="max-height:460px;overflow-y:auto;border-right:0.5px solid var(--b2);padding-right:14px"
+            >
+              <div class="empty-note">Loading…</div>
+            </div>
+            <div id="opt-lib-reader" style="max-height:460px;overflow-y:auto;padding-right:6px">
+              <div class="empty-note">Select a paper to read it here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <HubAuth />
+
+  <style>
+    @media (max-width: 760px) {
+      .eih .opt-j-grid,
+      .eih .opt-r-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      if (window.__optInit) return;
+      window.__optInit = true;
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+      function fmt(s) {
+        return esc(s)
+          .split(/\n\n+/)
+          .map(function (p) {
+            return '<p style="margin:0 0 0.8em">' + p.replace(/\n/g, '<br>') + '</p>';
+          })
+          .join('');
+      }
+      function when(ts) {
+        try {
+          return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch {
+          return '';
+        }
+      }
+
+      // ── tabs ────────────────────────────────────────────────
+      document.querySelectorAll('.tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.tab-btn').forEach(function (b) {
+            b.classList.remove('on');
+          });
+          document.querySelectorAll('.panel').forEach(function (p) {
+            p.classList.remove('on');
+          });
+          btn.classList.add('on');
+          document.getElementById('opt-panel-' + btn.dataset.tab).classList.add('on');
+        });
+      });
+      // deep link #reader
+      if (location.hash === '#reader') document.getElementById('reader-tab-btn').click();
+
+      // ── gates ───────────────────────────────────────────────
+      function refreshGates() {
+        const signedIn = !!(window.EIH && window.EIH.getToken());
+        document.getElementById('opt-j-gate').style.display = signedIn ? 'none' : 'block';
+        document.getElementById('opt-j-body').style.display = signedIn ? 'block' : 'none';
+        document.getElementById('opt-r-gate').style.display = signedIn ? 'none' : 'block';
+        document.getElementById('opt-r-body').style.display = signedIn ? 'block' : 'none';
+        if (signedIn) {
+          loadThreads();
+          loadLibrary();
+        }
+      }
+      document.addEventListener('eih:auth', refreshGates);
+      document.getElementById('opt-cta').addEventListener('click', function () {
+        if (window.EIH && window.EIH.getToken())
+          document.getElementById('workspace').scrollIntoView({ behavior: 'smooth' });
+        else window.EIH.openAuth('signup');
+      });
+      document.getElementById('opt-j-signin').addEventListener('click', function () {
+        window.EIH.openAuth('signin');
+      });
+      document.getElementById('opt-r-signin').addEventListener('click', function () {
+        window.EIH.openAuth('signin');
+      });
+
+      // ── journal ─────────────────────────────────────────────
+      let currentThread = null;
+      const threadsEl = document.getElementById('opt-threads');
+      const entriesEl = document.getElementById('opt-entries');
+      const entryInput = document.getElementById('opt-entry-input');
+
+      function rateLimitMsg(res) {
+        return res.status === 429
+          ? 'Free-tier rate limit reached (60 requests/hour). It resets within the hour.'
+          : res.d && res.d.error
+            ? res.d.error
+            : 'Something went wrong (' + res.status + ').';
+      }
+
+      function loadThreads() {
+        window.EIH.fetch('/api/optimus-journal', { op: 'list' }).then(function (res) {
+          if (!res.ok) {
+            threadsEl.innerHTML = '<div class="empty-note">' + esc(rateLimitMsg(res)) + '</div>';
+            return;
+          }
+          const threads = res.d.threads || [];
+          if (!threads.length) {
+            threadsEl.innerHTML = '<div class="empty-note">No threads yet — write your first entry.</div>';
+            return;
+          }
+          threadsEl.innerHTML = threads
+            .map(function (t) {
+              return (
+                '<div class="opt-thread" data-id="' +
+                esc(t.id) +
+                '" style="padding:10px 8px;border-radius:8px;cursor:pointer;font-size:0.86rem;' +
+                (currentThread === t.id ? 'background:var(--gold-gb)' : '') +
+                '">' +
+                '<span style="color:var(--t1);display:block;margin-bottom:3px">' +
+                esc(t.title || '(untitled)') +
+                '</span>' +
+                '<span style="font-family:var(--font-mono);font-size:0.64rem;color:var(--t3)">' +
+                when(t.updated_at) +
+                '</span></div>'
+              );
+            })
+            .join('');
+          threadsEl.querySelectorAll('.opt-thread').forEach(function (el) {
+            el.addEventListener('click', function () {
+              currentThread = el.dataset.id;
+              loadThreads();
+              loadEntries();
+            });
+          });
+        });
+      }
+
+      function kappaBadge(e) {
+        if (e.kappa == null) return '';
+        return (
+          ' · <span style="color:var(--gold)">κ ' +
+          Number(e.kappa).toFixed(2) +
+          (e.velocity != null ? (Number(e.velocity) >= 0 ? ' ▲' : ' ▼') : '') +
+          '</span>'
+        );
+      }
+
+      function loadEntries() {
+        if (!currentThread) return;
+        entriesEl.innerHTML = '<div class="empty-note">Loading…</div>';
+        window.EIH.fetch('/api/optimus-journal', { op: 'thread', thread_id: currentThread }).then(function (res) {
+          if (!res.ok || res.d.error) {
+            entriesEl.innerHTML = '<div class="empty-note">' + esc(rateLimitMsg(res)) + '</div>';
+            return;
+          }
+          const entries = res.d.entries || [];
+          if (!entries.length) {
+            entriesEl.innerHTML = '<div class="empty-note">Empty thread — add the first entry.</div>';
+            return;
+          }
+          entriesEl.innerHTML = entries
+            .map(function (e) {
+              const who = e.role === 'elle' ? 'Elle' : 'you';
+              return (
+                '<div style="padding:12px 0;border-bottom:0.5px solid var(--b2)">' +
+                '<div style="font-family:var(--font-mono);font-size:0.66rem;color:' +
+                (e.role === 'elle' ? 'var(--gold)' : 'var(--t3)') +
+                ';margin-bottom:6px">' +
+                who +
+                ' · ' +
+                when(e.created_at) +
+                kappaBadge(e) +
+                '</div>' +
+                '<div style="font-size:0.92rem;line-height:1.7;color:var(--t1)">' +
+                fmt(e.content) +
+                '</div></div>'
+              );
+            })
+            .join('');
+          entriesEl.scrollTop = entriesEl.scrollHeight;
+        });
+      }
+
+      document.getElementById('opt-new-thread').addEventListener('click', function () {
+        currentThread = null;
+        entriesEl.innerHTML = '<div class="empty-note">New thread — your first entry names it.</div>';
+        loadThreads();
+        entryInput.focus();
+      });
+
+      document.getElementById('opt-entry-send').addEventListener('click', function () {
+        const content = entryInput.value.trim();
+        if (!content) return;
+        entryInput.value = '';
+        window.EIH.fetch('/api/optimus-journal', {
+          op: 'write',
+          thread_id: currentThread || undefined,
+          content: content,
+        }).then(function (res) {
+          if (!res.ok || res.d.error) {
+            entriesEl.innerHTML = '<div class="empty-note">' + esc(rateLimitMsg(res)) + '</div>';
+            return;
+          }
+          if (res.d.thread_id) currentThread = res.d.thread_id;
+          loadThreads();
+          loadEntries();
+        });
+      });
+
+      document.getElementById('opt-elle-respond').addEventListener('click', function () {
+        if (!currentThread) return;
+        entriesEl.insertAdjacentHTML(
+          'beforeend',
+          '<div id="opt-elle-typing" class="empty-note" style="padding:14px">Elle is reading the thread…</div>'
+        );
+        entriesEl.scrollTop = entriesEl.scrollHeight;
+        window.EIH.fetch('/api/optimus-journal', { op: 'respond', thread_id: currentThread }).then(function (res) {
+          const t = document.getElementById('opt-elle-typing');
+          if (t) t.remove();
+          if (!res.ok || res.d.error) {
+            entriesEl.insertAdjacentHTML(
+              'beforeend',
+              '<div class="empty-note" style="color:#e08585">' + esc(rateLimitMsg(res)) + '</div>'
+            );
+            return;
+          }
+          loadEntries();
+        });
+      });
+
+      // ── manuscript reader ───────────────────────────────────
+      let libLoaded = false;
+      const libList = document.getElementById('opt-lib-list');
+      const libReader = document.getElementById('opt-lib-reader');
+      const libQ = document.getElementById('opt-lib-q');
+      const libSeries = document.getElementById('opt-lib-series');
+
+      function loadPapers() {
+        libList.innerHTML = '<div class="empty-note">Loading…</div>';
+        window.EIH.fetch('/api/corpus-papers', {
+          q: libQ.value.trim() || undefined,
+          series: libSeries.value || undefined,
+          limit: 200,
+        }).then(function (res) {
+          if (!res.ok) {
+            libList.innerHTML = '<div class="empty-note">' + esc(rateLimitMsg(res)) + '</div>';
+            return;
+          }
+          const papers = res.d.papers || [];
+          if (!papers.length) {
+            libList.innerHTML = '<div class="empty-note">No papers found.</div>';
+            return;
+          }
+          libList.innerHTML = papers
+            .map(function (p) {
+              return (
+                '<div class="opt-paper" data-id="' +
+                esc(p.id) +
+                '" style="padding:10px 8px;border-radius:8px;cursor:pointer;font-size:0.86rem">' +
+                '<span style="color:var(--t1);display:block;margin-bottom:3px">' +
+                esc(p.title) +
+                '</span>' +
+                '<span style="font-family:var(--font-mono);font-size:0.64rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.06em">' +
+                esc(p.series || 'unsorted') +
+                '</span></div>'
+              );
+            })
+            .join('');
+          libList.querySelectorAll('.opt-paper').forEach(function (el) {
+            el.addEventListener('mouseenter', function () {
+              el.style.background = 'var(--gold-gb)';
+            });
+            el.addEventListener('mouseleave', function () {
+              el.style.background = '';
+            });
+            el.addEventListener('click', function () {
+              openPaper(el.dataset.id);
+            });
+          });
+        });
+      }
+
+      function openPaper(id) {
+        libReader.innerHTML = '<div class="empty-note">Loading…</div>';
+        window.EIH.fetch('/api/corpus-paper', { id: id }).then(function (res) {
+          if (!res.ok || !res.d.paper) {
+            libReader.innerHTML = '<div class="empty-note">Could not open that paper.</div>';
+            return;
+          }
+          const p = res.d.paper;
+          libReader.innerHTML =
+            '<div style="font-family:var(--font-display);font-size:1.5rem;color:var(--ivory);margin-bottom:4px">' +
+            esc(p.title) +
+            '</div>' +
+            '<div style="font-family:var(--font-mono);font-size:0.66rem;color:var(--t3);margin-bottom:16px">' +
+            esc(p.series || 'unsorted') +
+            (p.word_count ? ' · ' + esc(p.word_count) + ' words' : '') +
+            '</div>' +
+            (p.abstract ? '<p style="color:var(--t1)"><strong>' + esc(p.abstract) + '</strong></p>' : '') +
+            '<div style="font-size:0.92rem;line-height:1.75;color:var(--t1)">' +
+            fmt(p.full_text || '(no text)') +
+            '</div>';
+        });
+      }
+
+      function loadLibrary() {
+        if (!libLoaded) {
+          libLoaded = true;
+          window.EIH.fetch('/api/corpus-series', {}).then(function (res) {
+            if (res.ok && res.d.series) {
+              res.d.series.forEach(function (s) {
+                const o = document.createElement('option');
+                o.value = s.series;
+                o.textContent = s.series + ' (' + s.count + ')';
+                libSeries.appendChild(o);
+              });
+            }
+          });
+        }
+        loadPapers();
+      }
+      let qTimer;
+      libQ.addEventListener('input', function () {
+        clearTimeout(qTimer);
+        qTimer = setTimeout(loadPapers, 350);
+      });
+      libSeries.addEventListener('change', loadPapers);
+
+      // initial paint (EIH may already hold a token from another page)
+      setTimeout(refreshGates, 0);
+    })();
+  </script>
+</Layout>

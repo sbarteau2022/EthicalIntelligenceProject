@@ -1,0 +1,368 @@
+---
+// ============================================================
+// STRUCTURAL ANALYSIS ENGINE — upload docs, run the analysis
+// Methods overview + free-tier limits. Backed by /api/falcon
+// (16 axes · 3 tiers · ~17 model calls per run).
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import HubAuth from '~/components/hub/HubAuth.astro';
+
+const metadata = {
+  title: 'Structural Analysis Engine — The Ethical Intelligence Project',
+  description:
+    'Upload a document or describe a situation and run the structural analysis engine: sixteen readings across three tiers, an adversarial self-check, and one earned conclusion.',
+};
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/engine" showAccount={true} />
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow">The Structural Analysis Engine</div>
+      <h1>Sixteen readings. One honest conclusion.</h1>
+      <p class="lede">
+        Point it at anything — a market, a decision, a policy, a document, an institution. The engine reads the
+        situation sixteen different ways at once, checks its own conclusions for bias, and only then commits to an
+        answer: what's really going on, and the first thing to do about it.
+      </p>
+      <div class="cta-row">
+        <button class="btn" id="eng-cta">Run an analysis</button>
+        <a href="#methods" class="btn ghost">How it works</a>
+      </div>
+    </section>
+
+    <!-- METHODS OVERVIEW -->
+    <section id="methods" class="wrap">
+      <div class="split">
+        <div>
+          <div class="eyebrow">The method</div>
+          <h2>Three tiers, and a self-check before the verdict.</h2>
+          <p>
+            <strong>Tier 1 — the material ground.</strong> Six parallel readings of what is verifiably true: who controls
+            what, who pays and who benefits, who's actually connected to whom, how this situation came to be, and what effects
+            are already documented. No interpretation yet — just the ground.
+          </p>
+          <p>
+            <strong>Tier 2 — the structural reading.</strong> Nine more readings on top of that ground, looking for what the
+            surface story hides: what the dominant player can't admit, what the challenger story gets wrong, and — the load-bearing
+            question — <strong>what both sides avoid saying</strong>, because that's where the real opening usually
+            lives.
+          </p>
+          <p>
+            <strong>Tier 3 — validation, then the verdict.</strong> Before any conclusion is allowed, an adversarial pass
+            attacks the first fifteen readings: where did the analysis see what it wanted to see? Only after that correction
+            does the engine commit to its final synthesis — the moment of breakthrough it sees, and the single first thing
+            to build or do.
+          </p>
+          <p>
+            The engine presents what the structure demands. It never tells you what to want — that part stays yours.
+          </p>
+        </div>
+        <div>
+          <div class="eyebrow">Free-tier limits</div>
+          <div class="limit-list">
+            <div class="limit-row">
+              <span class="k">Document length per run</span>
+              <span class="v">2,000 characters</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">Depth per query</span>
+              <span class="v">16 axes · 3 tiers (standard)</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">Token cost per run</span>
+              <span class="v">~17 model calls, metered</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">Queries per hour</span>
+              <span class="v">shares the 60/hr account ceiling</span>
+            </div>
+          </div>
+          <p style="font-size:0.85rem;margin-top:14px">
+            Each run is a real, full-depth analysis — the free tier limits how much you feed it and how often, not how
+            carefully it thinks. Longer documents, deeper multi-run studies, and higher volume come with paid tiers
+            (beta users keep beta pricing indefinitely).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RUN IT -->
+    <section id="run" class="wrap">
+      <div class="eyebrow" style="text-align:center">Run the engine</div>
+      <h2 style="text-align:center;margin-bottom:30px">Upload a document, or just describe the situation.</h2>
+
+      <div class="panel on" style="max-width:860px;margin:0 auto">
+        <div id="eng-gate" class="gate">
+          <h3>Sign in to run an analysis</h3>
+          <p>Free with sign-up — every account includes the engine, rate-limited on the free tier as listed above.</p>
+          <button class="btn" id="eng-signin">Sign in / Create free account</button>
+        </div>
+
+        <div id="eng-body" style="display:none">
+          <!-- upload window -->
+          <div
+            id="eng-drop"
+            style="border:1px dashed var(--b1);border-radius:14px;padding:26px;text-align:center;cursor:pointer;margin-bottom:14px;transition:0.15s"
+          >
+            <div style="font-size:0.95rem;color:var(--t1);margin-bottom:6px">
+              Drop a document here, or click to choose a file
+            </div>
+            <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--t3)">
+              .txt / .md — extracted in your browser; the free tier reads the first 2,000 characters
+            </div>
+            <input
+              id="eng-file"
+              type="file"
+              accept=".txt,.md,.markdown,text/plain,text/markdown"
+              style="display:none"
+            />
+          </div>
+
+          <textarea
+            id="eng-direction"
+            rows="5"
+            placeholder="…or describe it: a market you're weighing, a decision in front of you, a policy, an institution, an idea."
+            style="width:100%"></textarea>
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:16px;flex-wrap:wrap;gap:10px"
+          >
+            <span id="eng-count" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--t3)">0 / 2,000</span>
+            <button class="btn" id="eng-run">Run the analysis →</button>
+          </div>
+
+          <div id="eng-status" class="empty-note" style="display:none">
+            Running the sixteen axes — a full run takes a minute or two…
+          </div>
+          <div id="eng-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <HubAuth />
+
+  <script is:inline>
+    (function () {
+      if (window.__engInit) return;
+      window.__engInit = true;
+
+      const MAX = 2000;
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      function refreshGates() {
+        const signedIn = !!(window.EIH && window.EIH.getToken());
+        document.getElementById('eng-gate').style.display = signedIn ? 'none' : 'block';
+        document.getElementById('eng-body').style.display = signedIn ? 'block' : 'none';
+      }
+      document.addEventListener('eih:auth', refreshGates);
+      document.getElementById('eng-signin').addEventListener('click', function () {
+        window.EIH.openAuth('signin');
+      });
+      document.getElementById('eng-cta').addEventListener('click', function () {
+        if (window.EIH && window.EIH.getToken()) document.getElementById('run').scrollIntoView({ behavior: 'smooth' });
+        else window.EIH.openAuth('signup');
+      });
+
+      // ── upload window ───────────────────────────────────────
+      const drop = document.getElementById('eng-drop');
+      const fileInput = document.getElementById('eng-file');
+      const direction = document.getElementById('eng-direction');
+      const count = document.getElementById('eng-count');
+
+      function updateCount() {
+        const n = direction.value.length;
+        count.textContent = n.toLocaleString() + ' / ' + MAX.toLocaleString();
+        count.style.color = n > MAX ? '#e08585' : 'var(--t3)';
+      }
+      direction.addEventListener('input', updateCount);
+
+      function readFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          let text = String(reader.result || '')
+            .replace(/\r/g, '')
+            .trim();
+          const truncated = text.length > MAX;
+          if (truncated) text = text.slice(0, MAX);
+          direction.value = text;
+          updateCount();
+          drop.querySelector('div').textContent =
+            file.name + (truncated ? ' — trimmed to the free-tier 2,000 characters' : ' — loaded');
+        };
+        reader.readAsText(file);
+      }
+      drop.addEventListener('click', function () {
+        fileInput.click();
+      });
+      fileInput.addEventListener('change', function () {
+        readFile(fileInput.files[0]);
+      });
+      drop.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        drop.style.borderColor = 'rgba(201,168,76,0.6)';
+      });
+      drop.addEventListener('dragleave', function () {
+        drop.style.borderColor = '';
+      });
+      drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.style.borderColor = '';
+        readFile(e.dataTransfer.files[0]);
+      });
+
+      // ── run ─────────────────────────────────────────────────
+      const runBtn = document.getElementById('eng-run');
+      const statusEl = document.getElementById('eng-status');
+      const resultsEl = document.getElementById('eng-results');
+
+      function axisCard(axis) {
+        const data = axis.data || {};
+        let main = '';
+        const keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+          const v = data[keys[i]];
+          if (typeof v === 'string' && v.length > 25) {
+            main = v;
+            break;
+          }
+        }
+        let lists = '';
+        keys.forEach(function (k) {
+          const v = data[k];
+          if (Array.isArray(v) && v.length) {
+            lists +=
+              '<ul style="margin:0;padding-left:18px">' +
+              v
+                .slice(0, 5)
+                .map(function (item) {
+                  return (
+                    '<li style="font-size:0.8rem;color:var(--t2);margin-bottom:3px">' +
+                    esc(typeof item === 'string' ? item : JSON.stringify(item)) +
+                    '</li>'
+                  );
+                })
+                .join('') +
+              '</ul>';
+          }
+        });
+        return (
+          '<div style="background:var(--float);border:0.5px solid var(--b2);border-radius:10px;padding:14px">' +
+          '<div style="font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.06em;color:var(--t2);margin-bottom:6px">' +
+          esc(axis.label) +
+          '</div>' +
+          (main ? '<p style="font-size:0.84rem;margin:0 0 8px">' + esc(main) + '</p>' : '') +
+          lists +
+          '</div>'
+        );
+      }
+      function tierLabel(t) {
+        return (
+          '<div style="font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin:22px 0 10px">' +
+          t +
+          '</div>'
+        );
+      }
+      function grid(cards) {
+        return (
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px">' +
+          cards +
+          '</div>'
+        );
+      }
+
+      function render(d) {
+        let html = '';
+        if (d.tier1 && d.tier1.length)
+          html += tierLabel('Tier 1 · Material Ground') + grid(d.tier1.map(axisCard).join(''));
+        if (d.tier2 && d.tier2.length)
+          html += tierLabel('Tier 2 · Structural Reading') + grid(d.tier2.map(axisCard).join(''));
+        if (d.validation) {
+          html +=
+            tierLabel('Tier 3 · Validation (the self-check)') +
+            '<div style="background:var(--float);border:0.5px solid var(--b2);border-radius:10px;padding:14px">' +
+            (d.validation.type6_check
+              ? '<p style="font-size:0.84rem;margin:0 0 8px">' + esc(d.validation.type6_check) + '</p>'
+              : '') +
+            (d.validation.drift_check
+              ? '<p style="font-size:0.84rem;margin:0">' + esc(d.validation.drift_check) + '</p>'
+              : '') +
+            '</div>';
+        }
+        if (d.rupture) {
+          html +=
+            '<div style="margin-top:24px;background:var(--gold-gb);border:0.5px solid var(--b1);border-radius:14px;padding:22px">' +
+            '<div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">The conclusion</div>' +
+            (d.rupture.rupture
+              ? '<h3 style="font-family:var(--font-display);font-size:1.3rem;color:var(--gold-l);margin:0 0 10px">' +
+                esc(d.rupture.rupture) +
+                '</h3>'
+              : '') +
+            (d.rupture.what_exists_after
+              ? '<p style="margin:0 0 10px">' + esc(d.rupture.what_exists_after) + '</p>'
+              : '') +
+            (d.rupture.first_thing_to_build
+              ? '<p style="margin:0"><strong>First thing to do:</strong> ' +
+                esc(d.rupture.first_thing_to_build) +
+                '</p>'
+              : '') +
+            '</div>';
+        }
+        resultsEl.innerHTML = html || '<div class="empty-note">No result.</div>';
+      }
+
+      runBtn.addEventListener('click', function () {
+        const text = direction.value.trim();
+        if (!text || !(window.EIH && window.EIH.getToken())) return;
+        if (text.length > MAX) {
+          resultsEl.innerHTML =
+            '<div class="empty-note" style="color:#e08585">Over the free-tier limit — trim to 2,000 characters and run again.</div>';
+          return;
+        }
+        runBtn.disabled = true;
+        resultsEl.innerHTML = '';
+        statusEl.style.display = 'block';
+        window.EIH.fetch('/api/falcon', { action: 'run', direction: text })
+          .then(function (res) {
+            statusEl.style.display = 'none';
+            if (res.status === 429) {
+              resultsEl.innerHTML =
+                '<div class="empty-note" style="color:#e08585">Free-tier rate limit reached (60 requests/hour). It resets within the hour.</div>';
+              return;
+            }
+            if (!res.ok || res.d.error) {
+              resultsEl.innerHTML =
+                '<div class="empty-note" style="color:#e08585">' +
+                esc(res.d.error || 'The analysis failed — try again.') +
+                '</div>';
+              return;
+            }
+            render(res.d);
+          })
+          .catch(function () {
+            statusEl.style.display = 'none';
+            resultsEl.innerHTML = '<div class="empty-note" style="color:#e08585">Connection failed. Try again.</div>';
+          })
+          .finally(function () {
+            runBtn.disabled = false;
+          });
+      });
+
+      setTimeout(refreshGates, 0);
+    })();
+  </script>
+</Layout>
