@@ -1,6 +1,7 @@
 ---
 // Sticky hub nav shared by all hub pages. `current` highlights the active tab;
 // `showAccount` renders the sign-in/out link wired up by HubAuth's script.
+// Includes a mobile burger + drawer under 900px.
 import { HUB_TABS } from '~/hub';
 
 export interface Props {
@@ -12,11 +13,11 @@ const { current = '', showAccount = false } = Astro.props;
 
 <nav class="hub-nav">
   <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
-    <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
-    <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
-    <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
-    <circle cx="21.5" cy="8.75" r="2" fill="#E8CC88"></circle>
+    <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#9A7524"></rect>
+    <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
+    <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#9A7524" opacity=".6"></rect>
+    <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
+    <circle cx="21.5" cy="8.75" r="2" fill="#C9A84C"></circle>
   </svg>
   <a href="/">
     <div class="word">The Ethical Intelligence Project</div>
@@ -39,4 +40,22 @@ const { current = '', showAccount = false } = Astro.props;
     }
     <a href="/elle" class="pill">Talk to Elle →</a>
   </div>
+  <button class="hub-burger" id="eih-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="hub-drawer" id="eih-drawer">
+    {HUB_TABS.map((tab) => <a href={tab.href}>{tab.text}</a>)}
+    <a href="/elle">Talk to Elle →</a>
+  </div>
 </nav>
+
+<script is:inline>
+  (function () {
+    const burger = document.getElementById('eih-burger');
+    const drawer = document.getElementById('eih-drawer');
+    if (burger && drawer && !burger.dataset.wired) {
+      burger.dataset.wired = '1';
+      burger.addEventListener('click', function () {
+        drawer.classList.toggle('open');
+      });
+    }
+  })();
+</script>

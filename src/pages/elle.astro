@@ -973,6 +973,18 @@ const metadata = {
       setMode('signin');
       refreshChrome();
       initGoogle();
+      // Deep link support: /elle?ask=<question> prefills the composer (used by
+      // the Learn courses' "Ask Elle about this" links).
+      try {
+        const ask = new URLSearchParams(location.search).get('ask');
+        if (ask) {
+          input.value = ask.slice(0, 500);
+          input.style.height = 'auto';
+          input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+        }
+      } catch {
+        /* ignore */
+      }
       input.focus();
     })();
   </script>

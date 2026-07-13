@@ -23,7 +23,7 @@ const metadata = {
 
     <!-- HERO -->
     <section class="hero wrap">
-      <div class="eyebrow">The Structural Analysis Engine</div>
+      <div class="eyebrow rv">The Structural Analysis Engine</div>
       <h1>Sixteen readings. One honest conclusion.</h1>
       <p class="lede">
         Point it at anything — a market, a decision, a policy, a document, an institution. The engine reads the
@@ -38,10 +38,10 @@ const metadata = {
 
     <!-- METHODS OVERVIEW -->
     <section id="methods" class="wrap">
-      <div class="split">
+      <div class="split rv">
         <div>
-          <div class="eyebrow">The method</div>
-          <h2>Three tiers, and a self-check before the verdict.</h2>
+          <div class="eyebrow rv">The method</div>
+          <h2 class="rv">Three tiers, and a self-check before the verdict.</h2>
           <p>
             <strong>Tier 1 — the material ground.</strong> Six parallel readings of what is verifiably true: who controls
             what, who pays and who benefits, who's actually connected to whom, how this situation came to be, and what effects
@@ -64,8 +64,8 @@ const metadata = {
           </p>
         </div>
         <div>
-          <div class="eyebrow">Free-tier limits</div>
-          <div class="limit-list">
+          <div class="eyebrow rv">Free-tier limits</div>
+          <div class="limit-list rv">
             <div class="limit-row">
               <span class="k">Document length per run</span>
               <span class="v">2,000 characters</span>
@@ -186,7 +186,7 @@ const metadata = {
       function updateCount() {
         const n = direction.value.length;
         count.textContent = n.toLocaleString() + ' / ' + MAX.toLocaleString();
-        count.style.color = n > MAX ? '#e08585' : 'var(--t3)';
+        count.style.color = n > MAX ? '#b3452e' : 'var(--t3)';
       }
       direction.addEventListener('input', updateCount);
 
@@ -330,7 +330,7 @@ const metadata = {
         if (!text || !(window.EIH && window.EIH.getToken())) return;
         if (text.length > MAX) {
           resultsEl.innerHTML =
-            '<div class="empty-note" style="color:#e08585">Over the free-tier limit — trim to 2,000 characters and run again.</div>';
+            '<div class="empty-note" style="color:#b3452e">Over the free-tier limit — trim to 2,000 characters and run again.</div>';
           return;
         }
         runBtn.disabled = true;
@@ -341,12 +341,12 @@ const metadata = {
             statusEl.style.display = 'none';
             if (res.status === 429) {
               resultsEl.innerHTML =
-                '<div class="empty-note" style="color:#e08585">Free-tier rate limit reached (60 requests/hour). It resets within the hour.</div>';
+                '<div class="empty-note" style="color:#b3452e">Free-tier rate limit reached (60 requests/hour). It resets within the hour.</div>';
               return;
             }
             if (!res.ok || res.d.error) {
               resultsEl.innerHTML =
-                '<div class="empty-note" style="color:#e08585">' +
+                '<div class="empty-note" style="color:#b3452e">' +
                 esc(res.d.error || 'The analysis failed — try again.') +
                 '</div>';
               return;
@@ -355,7 +355,7 @@ const metadata = {
           })
           .catch(function () {
             statusEl.style.display = 'none';
-            resultsEl.innerHTML = '<div class="empty-note" style="color:#e08585">Connection failed. Try again.</div>';
+            resultsEl.innerHTML = '<div class="empty-note" style="color:#b3452e">Connection failed. Try again.</div>';
           })
           .finally(function () {
             runBtn.disabled = false;

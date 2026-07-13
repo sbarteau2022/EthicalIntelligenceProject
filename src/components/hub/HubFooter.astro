@@ -26,6 +26,7 @@ const ICONS: Record<string, string> = {
     <a href="/optimus">Optimus</a>
     <a href="/engine">Analysis Engine</a>
     <a href="/business">Small Business</a>
+    <a href="/learn">Learn</a>
     <a href="/observer">The Observer</a>
     <a href="/elle">Talk to Elle</a>
     <a href="/pricing">Pricing</a>
@@ -43,3 +44,35 @@ const ICONS: Record<string, string> = {
     (Anthropic)
   </div>
 </footer>
+
+<script is:inline>
+  // Scroll-reveal engine for every hub page: elements with .rv get .in when
+  // they enter the viewport (staggered via the .stagger helper / --d custom
+  // property). Runs once per element; respects prefers-reduced-motion.
+  (function () {
+    if (window.__eihFx) return;
+    window.__eihFx = true;
+    const els = document.querySelectorAll('.eih .rv');
+    if (!els.length) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(function (el) {
+        el.classList.add('in');
+      });
+      return;
+    }
+    const io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+    );
+    els.forEach(function (el) {
+      io.observe(el);
+    });
+  })();
+</script>
