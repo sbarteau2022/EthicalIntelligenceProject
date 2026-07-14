@@ -98,6 +98,42 @@ const stats = [
   { n: '∞', label: 'Lives within reach' },
 ];
 
+// The corpus — ported from the retired observer-platform landing page.
+const CORPUS_DOCS = [
+  { title: 'I Knew You Before I Met You', version: 'v4 · Primary' },
+  { title: 'The Convergence', version: 'v3 · Crux Document' },
+  { title: 'NECAI-F', version: 'v1 · Ethics Framework' },
+  { title: 'The Plenum', version: 'v3 · Substrate Theory' },
+  { title: 'The Threshold', version: 'v4 · Choice & Agency' },
+  { title: 'The Harmonizer', version: 'v3-revised · Applied' },
+  { title: 'Ethics of Now', version: 'v3 · Moral Framework' },
+  { title: 'Superposition', version: 'v4 · Quantum Frame' },
+];
+
+// What's different — also ported from the retired landing page.
+const DIFFERENT = [
+  {
+    row: 'Grounding',
+    them: 'Trained on the open internet. No one accountable for what it says.',
+    us: 'Grounded in 76+ published, peer-read papers — cite the source, check the reasoning.',
+  },
+  {
+    row: 'Memory',
+    them: 'Resets every session. You reintroduce yourself forever.',
+    us: 'One continuous relationship. She remembers — and you can export or erase it, your call.',
+  },
+  {
+    row: 'Autonomy',
+    them: 'A black box. You never see the reasoning.',
+    us: 'She works while you sleep, and leaves a journal you can actually read.',
+  },
+  {
+    row: 'Ownership',
+    them: 'Built by a company, answerable to shareholders.',
+    us: 'Built by a community, answerable to the community it was built for.',
+  },
+];
+
 const principles = [
   { name: 'Transparent', body: 'Methods, data, and reasoning open to review.' },
   { name: 'Auditable', body: 'Append-only records; designed for independent audit.' },
@@ -180,6 +216,74 @@ const principles = [
         style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--t3);margin-top:20px"
       >
         — FOUNDING PRINCIPLE
+      </div>
+    </section>
+
+    <!-- THE CORPUS -->
+    <section id="corpus" class="tint">
+      <div class="wrap">
+        <div class="split">
+          <div>
+            <div class="eyebrow rv">The corpus</div>
+            <h2 class="rv">24 documents. 231 pages. <em>One framework.</em></h2>
+            <p class="rv">
+              Built across years of philosophy, recovery work, and collaboration with AI — the intellectual foundation
+              everything else runs on. Engineering specs, philosophical grounding, and ethics, published where they can
+              be checked.
+            </p>
+            <p class="rv">
+              This isn't marketing copy standing in for rigor. It's <strong>76+ papers</strong>, ranked in the
+              <strong>top 1% for publication volume</strong> and <strong>top 2% for downloads</strong> on PhilPapers — read
+              into course syllabi at <strong>18+ universities</strong>. Elle doesn't improvise an ethics. She inherits
+              one that's been examined.
+            </p>
+            <div class="cta-row rv" style="justify-content:flex-start">
+              <a href="https://philpeople.org/profiles/stewart-barteau" target="_blank" rel="noreferrer" class="btn"
+                >Explore the corpus →</a
+              >
+              <a href="/observer" class="btn ghost">The Observer</a>
+            </div>
+          </div>
+          <div class="cards rv stagger" style="--d:0.1s;grid-template-columns:repeat(2,1fr);gap:10px">
+            {
+              CORPUS_DOCS.map((doc) => (
+                <div class="card lift" style="padding:16px 18px">
+                  <h3 style="font-size:1rem;margin-bottom:5px">{doc.title}</h3>
+                  <p style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin:0">
+                    {doc.version}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT'S DIFFERENT -->
+    <section class="wrap">
+      <div style="text-align:center">
+        <div class="eyebrow rv">What's different</div>
+        <h2 class="rv">Not a smarter chatbot.<br />A different relationship to truth.</h2>
+        <p class="rv" style="max-width:560px;margin:0 auto">
+          Every design choice below is a rejection of a default the rest of the industry stopped questioning.
+        </p>
+      </div>
+      <div class="diff rv" style="margin-top:40px">
+        <div class="diff-row diff-head">
+          <div></div>
+          <div>Most AI</div>
+          <div style="color:var(--gold)">Elle</div>
+        </div>
+        {
+          DIFFERENT.map((d) => (
+            <div class="diff-row">
+              <div class="diff-k">{d.row}</div>
+              <div class="diff-them">{d.them}</div>
+              <div class="diff-us">{d.us}</div>
+            </div>
+          ))
+        }
       </div>
     </section>
 
