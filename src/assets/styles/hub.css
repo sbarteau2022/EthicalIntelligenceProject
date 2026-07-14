@@ -561,6 +561,273 @@
   }
 }
 
+/* ── bento (Ramp-style interactive cards) ────────────────── */
+.eih .bento {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+.eih .bento-card {
+  position: relative;
+  grid-column: span var(--span, 2);
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--b2);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s;
+}
+.eih .bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), var(--gold-gl), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.eih .bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--b1);
+}
+.eih .bento-card:hover::before {
+  opacity: 1;
+}
+.eih .bento-card.gold {
+  border-color: var(--gold-bright);
+  background: var(--gold-wash);
+}
+.eih .bento-card > * {
+  position: relative;
+}
+.eih .bento-card .n {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.eih .bento-card h3 {
+  font-size: 1.12rem;
+  margin-bottom: 8px;
+}
+.eih .bento-card p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+.eih .bento-card .go {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+.eih .bento-card:hover .go,
+.eih .bento-card:focus-visible .go {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* mini product vignettes inside bento cards */
+.eih .mock {
+  margin-top: auto;
+  padding-top: 16px;
+}
+.eih .mock .mline {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: 0.8rem;
+  color: var(--t2);
+}
+.eih .mock .mline .mk {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--t3);
+  white-space: nowrap;
+}
+.eih .mock .mline.gold .mk,
+.eih .mock .mline.gold {
+  color: var(--gold);
+}
+.eih .mock .ticks {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 22px;
+  margin-bottom: 6px;
+}
+.eih .mock .ticks i {
+  width: 4px;
+  height: var(--h, 10px);
+  background: var(--gold-bright);
+  opacity: 0.45;
+  border-radius: 2px;
+  transition: opacity 0.2s;
+}
+.eih .bento-card:hover .ticks i {
+  opacity: 0.85;
+}
+.eih .mock-spark {
+  width: 100%;
+  height: 34px;
+  margin-bottom: 6px;
+}
+.eih .mock-spark polyline {
+  fill: none;
+  stroke: var(--gold-bright);
+  stroke-width: 1.5;
+}
+.eih .mock-spark circle {
+  fill: var(--gold-bright);
+}
+.eih .mock-dots {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.eih .mock-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--b1);
+  background: var(--card);
+}
+.eih .mock-dots i.on {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+.eih .mock-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 520px;
+}
+.eih .mock-chat .bub {
+  padding: 9px 14px;
+  border-radius: 14px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  width: fit-content;
+}
+.eih .mock-chat .bub.you {
+  background: var(--ink);
+  color: #f7f3e8;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.eih .mock-chat .bub.elle {
+  background: var(--card);
+  border: 1px solid var(--b1);
+  color: var(--t1);
+  border-bottom-left-radius: 4px;
+}
+@media (max-width: 900px) {
+  .eih .bento-card {
+    grid-column: span 3;
+  }
+}
+@media (max-width: 560px) {
+  .eih .bento-card {
+    grid-column: span 6;
+  }
+}
+
+/* ── work pillars (research · corpus · philosophy · notes) ── */
+.eih .work {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.eih .work-pillar {
+  background: var(--card);
+  border: 1px solid var(--b2);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+.eih .work-pillar:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--b1);
+}
+.eih .work-pillar .n {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+.eih .work-pillar h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+.eih .work-pillar p {
+  font-size: 0.84rem;
+  margin: 0 0 12px;
+}
+.eih .work-pillar .go {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+@media (max-width: 900px) {
+  .eih .work {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .eih .work {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── follow-the-work socials strip ───────────────────────── */
+.eih .follow-strip {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.eih .follow-strip a {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--b2);
+  background: var(--card);
+  color: var(--t2);
+  box-shadow: var(--shadow-sm);
+  transition: 0.18s;
+}
+.eih .follow-strip a:hover {
+  border-color: var(--gold-bright);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
 /* ── what's-different comparison ─────────────────────────── */
 .eih .diff {
   max-width: 900px;
