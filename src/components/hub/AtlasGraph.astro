@@ -38,6 +38,27 @@ const STARS = Array.from({ length: 70 }, (_, i) => ({
 
 // Latitude ellipses across the globe body.
 const LATS = [-56, -28, 0, 28, 56];
+
+// Activity arcs across the globe surface (the GitHub-globe move, in gold):
+// quadratic curves between surface points, bulging outward. Angles are
+// degrees on the circle; bulge is how far past the surface the arc peaks.
+const ARCS = [
+  { a1: 150, a2: 20, bulge: 1.45 },
+  { a1: 200, a2: 330, bulge: 1.35 },
+  { a1: 120, a2: 300, bulge: 1.6 },
+  { a1: 170, a2: 350, bulge: 1.5 },
+].map((arc, i) => {
+  const r1 = (arc.a1 * Math.PI) / 180;
+  const r2 = (arc.a2 * Math.PI) / 180;
+  const x1 = CX + GLOBE_R * Math.cos(r1);
+  const y1 = CY + GLOBE_R * Math.sin(r1);
+  const x2 = CX + GLOBE_R * Math.cos(r2);
+  const y2 = CY + GLOBE_R * Math.sin(r2);
+  const rm = ((arc.a1 + arc.a2) / 2 + (Math.abs(arc.a1 - arc.a2) > 180 ? 180 : 0)) * (Math.PI / 180);
+  const mx = CX + GLOBE_R * arc.bulge * Math.cos(rm);
+  const my = CY + GLOBE_R * arc.bulge * Math.sin(rm);
+  return { d: `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`, i, x1, y1, x2, y2 };
+});
 ---
 
 <div class="atlas-wrap rv" style="--d:0.2s">
@@ -86,6 +107,22 @@ const LATS = [-56, -28, 0, 28, 56];
       <ellipse cx={CX} cy={CY} rx={GLOBE_R * 0.38} ry={GLOBE_R} class="atlas-lon"></ellipse>
       <ellipse cx={CX} cy={CY} rx={GLOBE_R * 0.74} ry={GLOBE_R} class="atlas-lon"></ellipse>
       <line x1={CX} y1={CY - GLOBE_R} x2={CX} y2={CY + GLOBE_R} class="atlas-lon"></line>
+    </g>
+
+    <!-- atmosphere halo (rim glow) -->
+    <circle cx={CX} cy={CY} r={GLOBE_R + 4} class="atlas-halo"></circle>
+
+    <!-- activity arcs across the surface -->
+    <g class="atlas-arcs">
+      {
+        ARCS.map((arc) => (
+          <>
+            <path d={arc.d} class="atlas-arc" style={`--i:${arc.i}`} />
+            <circle cx={arc.x1} cy={arc.y1} r="2" class="atlas-arc-pt" style={`--i:${arc.i}`} />
+            <circle cx={arc.x2} cy={arc.y2} r="2" class="atlas-arc-pt" style={`--i:${arc.i}`} />
+          </>
+        ))
+      }
     </g>
 
     <!-- links from globe out to each door -->
@@ -185,6 +222,32 @@ const LATS = [-56, -28, 0, 28, 56];
     stroke: var(--gold);
     stroke-width: 0.6;
     opacity: 0.4;
+  }
+
+  .atlas-halo {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 3;
+    opacity: 0.28;
+    filter: blur(4px);
+  }
+
+  .atlas-arc {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    opacity: 0;
+    animation: atlas-arc-draw 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation-delay: calc(var(--i) * 1.7s);
+  }
+  .atlas-arc-pt {
+    fill: var(--gold-bright);
+    opacity: 0;
+    animation: atlas-arc-pt 7s ease infinite;
+    animation-delay: calc(var(--i) * 1.7s);
   }
 
   .atlas-link {
@@ -304,14 +367,55 @@ const LATS = [-56, -28, 0, 28, 56];
       transform: scale(1);
     }
   }
+  @keyframes atlas-arc-draw {
+    0% {
+      stroke-dashoffset: 260;
+      opacity: 0;
+    }
+    12% {
+      opacity: 0.85;
+    }
+    45% {
+      stroke-dashoffset: 0;
+      opacity: 0.85;
+    }
+    60%,
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+  @keyframes atlas-arc-pt {
+    0% {
+      opacity: 0;
+    }
+    12%,
+    50% {
+      opacity: 0.9;
+    }
+    62%,
+    100% {
+      opacity: 0;
+    }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .atlas-ring,
     .atlas-globe,
     .atlas-link,
+    .atlas-arc,
+    .atlas-arc-pt,
     .atlas-node {
       animation: none !important;
       opacity: 1;
+    }
+    /* show the arcs as static curves when the draw animation is off */
+    .atlas-arc {
+      stroke-dashoffset: 0;
+      opacity: 0.5;
+    }
+    .atlas-arc-pt {
+      opacity: 0.6;
     }
   }
 
