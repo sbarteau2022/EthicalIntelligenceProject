@@ -55,6 +55,7 @@
 }
 .eih section {
   padding: 84px 0;
+  scroll-margin-top: 76px;
 }
 .eih section.tint {
   background: var(--wash);

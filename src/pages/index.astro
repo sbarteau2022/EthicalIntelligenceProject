@@ -9,6 +9,7 @@ import '~/assets/styles/hub.css';
 import Layout from '~/layouts/Layout.astro';
 import HubNav from '~/components/hub/HubNav.astro';
 import HubFooter from '~/components/hub/HubFooter.astro';
+import AtlasGraph from '~/components/hub/AtlasGraph.astro';
 
 const metadata = {
   title: 'The Ethical Intelligence Project — Powered by Elle AI',
@@ -70,6 +71,26 @@ const engines = [
   { id: '09', name: 'The Observer', tag: 'Research & Testimony', href: '/observer' },
 ];
 
+// The three proof lines that used to fan out over the hero — now a
+// compact strip under the Atlas graph.
+const PROOF = [
+  {
+    tag: 'Optimus Journal · Append-only',
+    quote: '"Entry 47 stands. Entry 63 corrects it. Both stay in the record, forever."',
+    meta: 'κ 0.72 ▲ · nothing rewritten',
+  },
+  {
+    tag: 'Analysis Engine · The conclusion',
+    quote: '"Both sides avoid the permit backlog — that\'s the real opening. Build the checklist first."',
+    meta: '16 axes · self-checked · verdict earned',
+  },
+  {
+    tag: 'Pipeline · Variance watch',
+    quote: '"Dairy invoice line up 11% in 3 weeks — one supplier. Smallest move: call before Friday\'s order."',
+    meta: 'one finding · not forty charts',
+  },
+];
+
 const stats = [
   { n: '9', label: 'Intelligence engines' },
   { n: '76+', label: 'Papers published' },
@@ -90,42 +111,44 @@ const principles = [
   <div class="eih">
     <HubNav current="/" />
 
-    <!-- HERO -->
-    <section class="hero wrap" style="padding-bottom:30px">
-      <div class="eyebrow rv">The Ethical Intelligence Project · Powered by Elle AI</div>
-      <h1 class="rv" style="--d:0.06s">
-        Intelligence for the people<br />doing the work.
-      </h1>
-      <p class="lede rv" style="--d:0.12s">
-        The information exists. The resources exist. The opportunities exist. For millions of working people, the
-        problem is access. We build community-based intelligence that turns complexity into action — corpus-grounded,
-        transparent, and answerable to the people it serves.
-      </p>
-      <div class="cta-row rv" style="--d:0.18s">
-        <a href="/elle" class="btn">Talk to Elle →</a>
-        <a href="#hub" class="btn ghost">Explore the hub</a>
-      </div>
+    <!-- HERO — full-bleed dark band, Atlas at its center -->
+    <section class="hero atlas-hero">
+      <div class="wrap" style="padding-bottom:30px">
+        <div class="eyebrow rv">The Ethical Intelligence Project · Powered by Elle AI</div>
+        <h1 class="rv" style="--d:0.06s">
+          Intelligence for the people<br />doing the work.
+        </h1>
+        <p class="lede rv" style="--d:0.12s">
+          The information exists. The resources exist. The opportunities exist. For millions of working people, the
+          problem is access. We build community-based intelligence that turns complexity into action — corpus-grounded,
+          transparent, and answerable to the people it serves.
+        </p>
+        <div class="cta-row rv" style="--d:0.18s">
+          <a href="/elle" class="btn">Talk to Elle →</a>
+          <a href="#hub" class="btn ghost">Explore the hub</a>
+        </div>
 
-      <!-- layered proof cards -->
-      <div class="layers rv" style="--d:0.25s">
-        <div class="layer l1">
-          <div class="tag">Optimus Journal · Append-only</div>
-          <div class="big">"Entry 47 stands. Entry 63 corrects it. Both stay in the record, forever."</div>
-          <div class="meta">κ 0.72 ▲ · nothing rewritten</div>
+        <!-- ATLAS — the one interactive map of everything Elle is -->
+        <AtlasGraph />
+        <div class="rv" style="--d:0.3s;text-align:center;max-width:480px;margin:6px auto 0">
+          <p style="font-size:0.86rem;color:var(--t3)">
+            Atlas is the map — one core, five doors. The chat, the corpus, the journal, the mission, the engines. Click
+            any node.
+          </p>
         </div>
-        <div class="layer l2">
-          <div class="tag">Analysis Engine · The conclusion</div>
-          <div class="big">
-            "Both sides avoid the permit backlog — that's the real opening. Build the checklist first."
-          </div>
-          <div class="meta">16 axes · self-checked · verdict earned</div>
-        </div>
-        <div class="layer l3">
-          <div class="tag">Pipeline · Variance watch</div>
-          <div class="big">
-            "Dairy invoice line up 11% in 3 weeks — one supplier. Smallest move: call before Friday's order."
-          </div>
-          <div class="meta">one finding · not forty charts</div>
+
+        <div class="cards rv stagger" style="--d:0.4s;margin-top:46px">
+          {
+            PROOF.map((p) => (
+              <div class="card">
+                <div class="n">{p.tag}</div>
+                <p style="font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--t1);line-height:1.35">
+                  {p.quote}
+                </p>
+                <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--t3);margin-top:8px">{p.meta}</div>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -142,9 +165,9 @@ const principles = [
       >
     </div>
 
-    <!-- CENTRAL CLAIM -->
-    <section class="wrap" style="text-align:center">
-      <div class="eyebrow rv">The central claim</div>
+    <!-- CENTRAL CLAIM / MISSION -->
+    <section id="mission" class="wrap" style="text-align:center">
+      <div class="eyebrow rv">The mission · the central claim</div>
       <blockquote
         class="rv"
         style="font-family:var(--font-display);font-size:1.8rem;font-style:italic;line-height:1.45;color:var(--ink);max-width:780px;margin:0 auto"
@@ -212,7 +235,7 @@ const principles = [
     </section>
 
     <!-- NINE ENGINES -->
-    <section class="tint">
+    <section id="engines" class="tint">
       <div class="wrap">
         <div class="eyebrow rv">Nine engines</div>
         <h2 class="rv">One presence. Nine expressions.</h2>
@@ -328,3 +351,54 @@ const principles = [
     data-accent="#9a7524"
     defer></script>
 </Layout>
+
+<style>
+  /* ATLAS HERO — a dark, space-lit band for the homepage only. Redefines
+     the shared hub tokens locally so every existing .eyebrow/h1/.btn/.card
+     component renders correctly on black without a second stylesheet. */
+  .eih .hero.atlas-hero {
+    --paper: #05060a;
+    --card: #0d0f16;
+    --wash: #0d0f16;
+    --ink: #f5f0e8;
+    --t1: #e8e4dc;
+    --t2: #9ca3af;
+    --t3: #6b7280;
+    --gold: #c9902f;
+    --gold-bright: #f5b942;
+    --gold-wash: rgba(245, 185, 66, 0.12);
+    --b1: rgba(245, 185, 66, 0.22);
+    --b2: rgba(255, 255, 255, 0.1);
+    --line-soft: rgba(255, 255, 255, 0.07);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse 90% 70% at 50% 20%, #10131c 0%, #05060a 60%);
+    padding: 88px 0 64px;
+    text-align: center;
+  }
+  /* .btn's solid fill is normally --ink-on-light; on the dark hero that
+     token is light text, so the primary/ghost buttons need their own
+     dark-appropriate treatment rather than inheriting it. */
+  .eih .hero.atlas-hero .btn {
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+    color: #191509;
+  }
+  .eih .hero.atlas-hero .btn:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--gold-bright);
+  }
+  .eih .hero.atlas-hero .btn.ghost {
+    background: transparent;
+    border-color: var(--b2);
+    color: var(--t1);
+  }
+  .eih .hero.atlas-hero .btn.ghost:hover {
+    background: transparent;
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+</style>
