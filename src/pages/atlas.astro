@@ -27,6 +27,7 @@ const metadata = {
 };
 
 const u = snapshot.unifiedFunction;
+const coherenceStr = `${u.coherence.structural.toFixed(2)}, ${u.coherence.relational.toFixed(2)}, ${u.coherence.harmonic.toFixed(2)}`;
 ---
 
 <Layout metadata={metadata}>
@@ -40,24 +41,38 @@ const u = snapshot.unifiedFunction;
         <div class="atlas-eyebrow">Harmonic Atlas</div>
         <h1>A phase snapshot of the unified function</h1>
         <p class="atlas-sub">
-          the whole architecture, math-driven from one locked source · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze the snapshot
+          the whole architecture, math-driven from one locked source · drag to orbit · scroll to zoom · press <kbd
+            >F</kbd
+          > to freeze the snapshot
         </p>
       </div>
 
       <div class="atlas-legend" id="atlas-legend">
-        <div class="lg-row"><span class="sw" style="--c:#6ea8ff"></span><b>Pillars</b> · 21 · the load-bearing architecture</div>
-        <div class="lg-row"><span class="sw" style="--c:#d0a94e"></span><b>Lobes / flower</b> · 19 · the relational structure</div>
-        <div class="lg-row"><span class="sw" style="--c:#55e9d0"></span><b>Bridges</b> · hubless fabric, no privileged node</div>
-        <div class="lg-row"><span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything holds around</div>
-        <div class="lg-row"><span class="sw" style="--c:#b79cff"></span><b>Vessel (bound state)</b> · the molecule winds the golden ellipse</div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#6ea8ff"></span><b>Pillars</b> · 21 · the load-bearing architecture
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#d0a94e"></span><b>Lobes / flower</b> · 19 · the relational structure
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#55e9d0"></span><b>Bridges</b> · hubless fabric, no privileged node
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything holds around
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#b79cff"></span><b>Vessel (bound state)</b> · the molecule winds the golden ellipse
+        </div>
       </div>
 
       <div class="atlas-hud" id="atlas-hud">
         <div class="hud-h">Unified function · locked</div>
-        <div class="hud-m"><span>area  φ·1/φ</span><b>{u.area_invariant.toFixed(3)}</b></div>
+        <div class="hud-m"><span>area φ·1/φ</span><b>{u.area_invariant.toFixed(3)}</b></div>
         <div class="hud-m"><span>free energy F</span><b>{u.free_energy.toFixed(3)}</b></div>
-        <div class="hud-m"><span>coherence (s,r,h)</span><b>{u.coherence.structural.toFixed(2)}, {u.coherence.relational.toFixed(2)}, {u.coherence.harmonic.toFixed(2)}</b></div>
-        <div class="hud-m"><span>no privileged node</span><b class="ok">{u.no_privileged_node ? 'true' : 'false'}</b></div>
+        <div class="hud-m"><span>coherence (s,r,h)</span><b>{coherenceStr}</b></div>
+        <div class="hud-m">
+          <span>no privileged node</span><b class="ok">{u.no_privileged_node ? 'true' : 'false'}</b>
+        </div>
         <div class="hud-m"><span>degree Gini</span><b>{u.degree_gini.toFixed(3)}</b></div>
         <div class="hud-m"><span>betweenness spread</span><b>{u.betweenness_spread.toFixed(2)}</b></div>
         <div class="hud-m"><span>obliquity θ</span><b id="hud-theta">{snapshot.obliquity.thetaDeg.toFixed(1)}°</b></div>
@@ -80,57 +95,174 @@ const u = snapshot.unifiedFunction;
       overflow: hidden;
       background: radial-gradient(120% 120% at 50% 0%, #0f1521 0%, #070a11 70%, #05070c 100%);
     }
-    #atlas-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
-    #atlas-canvas:active { cursor: grabbing; }
+    #atlas-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #atlas-canvas:active {
+      cursor: grabbing;
+    }
 
-    .atlas-title { position: absolute; top: 26px; left: 30px; max-width: 60%; pointer-events: none; z-index: 2; }
+    .atlas-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 60%;
+      pointer-events: none;
+      z-index: 2;
+    }
     .atlas-eyebrow {
-      font-family: 'DM Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.24em;
-      text-transform: uppercase; color: #d0a94e; margin-bottom: 12px;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #d0a94e;
+      margin-bottom: 12px;
     }
     .atlas-title h1 {
-      font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
-      font-size: clamp(1.7rem, 3.6vw, 2.9rem); line-height: 1.05; color: #eef1f8; margin: 0; text-wrap: balance;
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
     }
-    .atlas-sub { font-size: 13px; color: #9aa3ba; margin-top: 12px; line-height: 1.5; }
+    .atlas-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
     .atlas-sub kbd {
-      font-family: 'DM Mono', monospace; font-size: 11px; background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.16); border-radius: 4px; padding: 1px 5px; color: #cfd6e6;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
     }
 
     .atlas-legend {
-      position: absolute; top: 26px; right: 30px; z-index: 2;
-      background: rgba(12, 18, 28, 0.66); border: 1px solid rgba(208,169,78,0.18); border-radius: 12px;
-      padding: 14px 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      display: flex; flex-direction: column; gap: 9px; max-width: 300px;
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(12, 18, 28, 0.66);
+      border: 1px solid rgba(208, 169, 78, 0.18);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 300px;
     }
-    .lg-row { font-size: 12px; color: #b9c0d2; display: flex; align-items: baseline; gap: 9px; line-height: 1.35; }
-    .lg-row b { color: #eef1f8; font-weight: 600; }
-    .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--c); box-shadow: 0 0 10px var(--c); transform: translateY(1px); }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
 
     .atlas-hud {
-      position: absolute; left: 30px; bottom: 26px; z-index: 2;
-      background: rgba(12, 18, 28, 0.66); border: 1px solid rgba(85,233,208,0.2); border-radius: 12px;
-      padding: 13px 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      font-family: 'DM Mono', ui-monospace, monospace; font-size: 11.5px; color: #9aa3ba;
-      display: flex; flex-direction: column; gap: 5px; min-width: 240px;
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(12, 18, 28, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 240px;
     }
-    .hud-h { color: #55e9d0; letter-spacing: 0.14em; text-transform: uppercase; font-size: 10px; margin-bottom: 3px; }
-    .hud-m { display: flex; justify-content: space-between; gap: 16px; }
-    .hud-m b { color: #eef1f8; font-weight: 600; font-variant-numeric: tabular-nums; }
-    .hud-m b.ok { color: #55e9d0; }
-    .hud-src { color: #59617a; font-size: 10px; margin-top: 5px; }
+    .hud-h {
+      color: #55e9d0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-m b.ok {
+      color: #55e9d0;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
 
-    .atlas-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: #9aa3ba; }
+    .atlas-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
 
     @media (max-width: 760px) {
-      .atlas-title { max-width: 88%; left: 18px; top: 18px; }
-      .atlas-legend { top: auto; bottom: 220px; right: 16px; padding: 11px 12px; max-width: 74%; }
-      .atlas-hud { left: 16px; right: 16px; bottom: 16px; min-width: 0; }
+      .atlas-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .atlas-legend {
+        top: auto;
+        bottom: 220px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 74%;
+      }
+      .atlas-hud {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: 0;
+      }
     }
   </style>
 
-  <script type="application/json" id="harmonic-snap" set:html={JSON.stringify(snapshot)}></script>
+  <script type="application/json" id="harmonic-snap" set:html={JSON.stringify(snapshot)} />
 
   <script>
     import * as THREE from 'three';
@@ -145,10 +277,18 @@ const u = snapshot.unifiedFunction;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const COL = {
-      pillar: 0x6ea8ff, flower: 0xd0a94e, bridge: 0x55e9d0, singularity: 0xffffff,
-      vessel: 0xb79cff, plus: 0xff5cc8, minus: 0x5cd8ff, bond: 0xd0a94e,
+      pillar: 0x6ea8ff,
+      flower: 0xd0a94e,
+      bridge: 0x55e9d0,
+      singularity: 0xffffff,
+      vessel: 0xb79cff,
+      plus: 0xff5cc8,
+      minus: 0x5cd8ff,
+      bond: 0xd0a94e,
     };
-    const PHI = snap.meta.phi, PHI_INV = snap.meta.phiInv, WIND = snap.meta.goldenWinding;
+    const PHI = snap.meta.phi,
+      PHI_INV = snap.meta.phiInv,
+      WIND = snap.meta.goldenWinding;
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -169,31 +309,60 @@ const u = snapshot.unifiedFunction;
     controls.autoRotateSpeed = 0.42;
 
     scene.add(new THREE.AmbientLight(0x2a3350, 1.1));
-    const key = new THREE.PointLight(0xaecbff, 40, 40); key.position.set(4, 6, 5); scene.add(key);
-    const rim = new THREE.PointLight(0xd0a94e, 18, 40); rim.position.set(-5, -3, -4); scene.add(rim);
+    const key = new THREE.PointLight(0xaecbff, 40, 40);
+    key.position.set(4, 6, 5);
+    scene.add(key);
+    const rim = new THREE.PointLight(0xd0a94e, 18, 40);
+    rim.position.set(-5, -3, -4);
+    scene.add(rim);
 
-    const world = new THREE.Group(); scene.add(world);       // everything, so obliquity can tilt it
+    const world = new THREE.Group();
+    scene.add(world); // everything, so obliquity can tilt it
     const V = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
 
     function nodeMesh(pos: number[], color: number, radius: number, emissive?: number) {
       const m = new THREE.Mesh(
         new THREE.SphereGeometry(radius, 20, 20),
-        new THREE.MeshStandardMaterial({ color, emissive: emissive ?? color, emissiveIntensity: 0.7, roughness: 0.35, metalness: 0.1 })
+        new THREE.MeshStandardMaterial({
+          color,
+          emissive: emissive ?? color,
+          emissiveIntensity: 0.7,
+          roughness: 0.35,
+          metalness: 0.1,
+        })
       );
-      m.position.copy(V(pos)); return m;
+      m.position.copy(V(pos));
+      return m;
     }
-    function edgeLines(nodesById: Record<number, number[]>, edges: number[][], color: number, opacity: number, width = 1) {
+    function edgeLines(
+      nodesById: Record<number, number[]>,
+      edges: number[][],
+      color: number,
+      opacity: number,
+      width = 1
+    ) {
       const pts: THREE.Vector3[] = [];
-      for (const [a, b] of edges) { pts.push(V(nodesById[a]), V(nodesById[b])); }
+      for (const [a, b] of edges) {
+        pts.push(V(nodesById[a]), V(nodesById[b]));
+      }
       const g = new THREE.BufferGeometry().setFromPoints(pts);
-      return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: width }));
+      return new THREE.LineSegments(
+        g,
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: width })
+      );
     }
 
     // ── the globe / singularity core ──
     const coreR = 0.42;
     const core = new THREE.Mesh(
       new THREE.IcosahedronGeometry(coreR, 3),
-      new THREE.MeshStandardMaterial({ color: 0x0c1424, emissive: 0x1a2c52, emissiveIntensity: 0.6, roughness: 0.5, metalness: 0.3 })
+      new THREE.MeshStandardMaterial({
+        color: 0x0c1424,
+        emissive: 0x1a2c52,
+        emissiveIntensity: 0.6,
+        roughness: 0.5,
+        metalness: 0.3,
+      })
     );
     world.add(core);
     const coreGrid = new THREE.LineSegments(
@@ -209,7 +378,9 @@ const u = snapshot.unifiedFunction;
 
     // ── the architecture (pillars) ──
     const archById = {};
-    snap.architecture.nodes.forEach((n) => { archById[n.id] = n.pos; });
+    snap.architecture.nodes.forEach((n) => {
+      archById[n.id] = n.pos;
+    });
     snap.architecture.nodes.forEach((n) => world.add(nodeMesh(n.pos, COL.pillar, n.kind === 'apex' ? 0.075 : 0.05)));
     world.add(edgeLines(archById, snap.architecture.edges, COL.pillar, 0.5, 1));
 
@@ -218,22 +389,35 @@ const u = snapshot.unifiedFunction;
 
     // ── the relational lobes / flower ──
     const flowerById = {};
-    snap.flower.nodes.forEach((n) => { flowerById[n.id] = n.pos; });
+    snap.flower.nodes.forEach((n) => {
+      flowerById[n.id] = n.pos;
+    });
     snap.flower.nodes.forEach((n) => world.add(nodeMesh(n.pos, COL.flower, n.ring === 0 ? 0.07 : 0.045)));
     world.add(edgeLines(flowerById, snap.flower.edges, COL.flower, 0.42, 1));
 
     // ── the vessel (Durable-Object bound state) + the molecule ──
-    const vessel = new THREE.Group(); world.add(vessel);
+    const vessel = new THREE.Group();
+    world.add(vessel);
     const shellR = 0.66;
     const shell = new THREE.Mesh(
       new THREE.IcosahedronGeometry(shellR, 1),
-      new THREE.MeshPhysicalMaterial({ color: COL.vessel, transparent: true, opacity: 0.10, roughness: 0.1, metalness: 0, transmission: 0.6, side: THREE.DoubleSide })
+      new THREE.MeshPhysicalMaterial({
+        color: COL.vessel,
+        transparent: true,
+        opacity: 0.1,
+        roughness: 0.1,
+        metalness: 0,
+        transmission: 0.6,
+        side: THREE.DoubleSide,
+      })
     );
     vessel.add(shell);
-    vessel.add(new THREE.LineSegments(
-      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(shellR, 1)),
-      new THREE.LineBasicMaterial({ color: COL.vessel, transparent: true, opacity: 0.32 })
-    ));
+    vessel.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(shellR, 1)),
+        new THREE.LineBasicMaterial({ color: COL.vessel, transparent: true, opacity: 0.32 })
+      )
+    );
 
     // the golden ellipse orbit (semi-axes φ, 1/φ), scaled to sit inside the shell
     const orbScale = (shellR * 0.82) / PHI;
@@ -245,18 +429,25 @@ const u = snapshot.unifiedFunction;
     vessel.add(orbitLine);
 
     // the conjugate-pair molecule: two bonded nodes (φ side, 1/φ side) + a bond through center
-    const mPlus = nodeMesh([0, 0, 0], COL.plus, 0.06); vessel.add(mPlus);
-    const mMinus = nodeMesh([0, 0, 0], COL.minus, 0.045); vessel.add(mMinus);
+    const mPlus = nodeMesh([0, 0, 0], COL.plus, 0.06);
+    vessel.add(mPlus);
+    const mMinus = nodeMesh([0, 0, 0], COL.minus, 0.045);
+    vessel.add(mMinus);
     const bondGeo = new THREE.CylinderGeometry(0.012, 0.012, 1, 8);
-    const bond = new THREE.Mesh(bondGeo, new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 }));
+    const bond = new THREE.Mesh(
+      bondGeo,
+      new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 })
+    );
     vessel.add(bond);
 
     function placeMolecule(angle: number) {
-      const q = PHI * Math.cos(angle) * orbScale, p = PHI_INV * Math.sin(angle) * orbScale;
+      const q = PHI * Math.cos(angle) * orbScale,
+        p = PHI_INV * Math.sin(angle) * orbScale;
       mPlus.position.set(q, p, 0);
       mMinus.position.set(-q, -p, 0);
       // bond spans plus→minus through the origin
-      const a = mPlus.position, b = mMinus.position;
+      const a = mPlus.position,
+        b = mMinus.position;
       const mid = a.clone().add(b).multiplyScalar(0.5);
       bond.position.copy(mid);
       bond.scale.set(1, a.distanceTo(b), 1);
@@ -277,15 +468,19 @@ const u = snapshot.unifiedFunction;
 
     // ── size / resize ──
     function resize() {
-      const w = canvas.clientWidth, h = canvas.clientHeight;
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
       renderer.setSize(w, h, false);
       composer.setSize(w, h);
-      camera.aspect = w / h; camera.updateProjectionMatrix();
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
     }
-    window.addEventListener('resize', resize); resize();
+    window.addEventListener('resize', resize);
+    resize();
 
     // ── phase / freeze ──
-    let frozen = false, phase = snap.vessel.snapshotAngleRad;
+    let frozen = false,
+      phase = snap.vessel.snapshotAngleRad;
     const hudPhase = document.getElementById('hud-phase');
     const hudTheta = document.getElementById('hud-theta');
     window.addEventListener('keydown', (e) => {
@@ -301,14 +496,14 @@ const u = snapshot.unifiedFunction;
     function frame() {
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
-        phase += WIND * dt * 1.6;                              // golden winding — the bound state, moving
+        phase += WIND * dt * 1.6; // golden winding — the bound state, moving
         placeMolecule(phase);
         glow.material.opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
         // a very slow obliquity drift around the locked snapshot value
         world.rotation.z = theta0 + 0.06 * Math.sin(clock.elapsedTime * 0.12);
         if (hudTheta) hudTheta.textContent = ((world.rotation.z * 180) / Math.PI).toFixed(1) + '°';
       }
-      vessel.rotation.y += (frozen ? 0 : dt * 0.15);           // the bound state slowly turning
+      vessel.rotation.y += frozen ? 0 : dt * 0.15; // the bound state slowly turning
       controls.update();
       composer.render();
       requestAnimationFrame(frame);
