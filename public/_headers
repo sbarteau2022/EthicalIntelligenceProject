@@ -1,2 +1,20 @@
+# Security headers — the static site's contribution to the adversarial
+# security network. The backend (elle-worker) classifies and escalates;
+# this layer denies the browser-side tactics outright: no framing
+# (clickjacking), no MIME sniffing, no script/connect origins beyond the
+# ones the site actually uses. CSP origins inventory:
+#   scripts   — Astro inlines its own (hence 'unsafe-inline'), plus GSI,
+#               Google Tag Manager, Splitbee
+#   connect   — elle-worker + the RAPID²AI workers, analytics beacons, GSI
+#   styles/fonts — Google Fonts
+#   images    — kept open over https: (blog/content hotlinks), never http:
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://www.googletagmanager.com https://cdn.splitbee.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.workers.dev https://accounts.google.com https://hive.splitbee.io https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,433 @@
+---
+// ATLAS — the homepage's central visual: a wireframe globe wrapped in
+// orbital rings, with five clickable doors (chat, corpus, journal,
+// mission, engines) in orbit around it. Pure SVG + CSS, no client JS.
+// Colors read the --gold/--ink tokens set by the dark .atlas-hero scope
+// in index.astro, so this component has no hardcoded palette of its own.
+const CX = 300;
+const CY = 300;
+const R = 235; // door orbit radius
+const GLOBE_R = 92;
+
+const RAW_NODES = [
+  { label: 'Talk to Elle', sub: 'Atlas · Chat', href: '/elle', angle: -90, gold: true },
+  { label: 'The Observer', sub: 'Research & Corpus', href: '/observer', angle: -18 },
+  { label: 'Optimus Journal', sub: 'The Record', href: '/optimus', angle: 54 },
+  { label: 'The Mission', sub: 'Founding Principle', href: '#mission', angle: 126 },
+  { label: 'Nine Engines', sub: 'One Presence', href: '#engines', angle: 198 },
+];
+
+const NODES = RAW_NODES.map((n, i) => {
+  const rad = (n.angle * Math.PI) / 180;
+  const x = CX + R * Math.cos(rad);
+  const y = CY + R * Math.sin(rad);
+  return { ...n, i, x, y, below: y > CY + 4 };
+});
+
+// Deterministic scattered starfield — same build every time, no client JS.
+function seeded(n: number) {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+const STARS = Array.from({ length: 70 }, (_, i) => ({
+  x: seeded(i * 3 + 1) * 600,
+  y: seeded(i * 3 + 2) * 600,
+  r: 0.4 + seeded(i * 3 + 3) * 1.1,
+  o: 0.25 + seeded(i * 7 + 5) * 0.55,
+}));
+
+// Latitude ellipses across the globe body.
+const LATS = [-56, -28, 0, 28, 56];
+
+// Activity arcs across the globe surface (the GitHub-globe move, in gold):
+// quadratic curves between surface points, bulging outward. Angles are
+// degrees on the circle; bulge is how far past the surface the arc peaks.
+const ARCS = [
+  { a1: 150, a2: 20, bulge: 1.45 },
+  { a1: 200, a2: 330, bulge: 1.35 },
+  { a1: 120, a2: 300, bulge: 1.6 },
+  { a1: 170, a2: 350, bulge: 1.5 },
+].map((arc, i) => {
+  const r1 = (arc.a1 * Math.PI) / 180;
+  const r2 = (arc.a2 * Math.PI) / 180;
+  const x1 = CX + GLOBE_R * Math.cos(r1);
+  const y1 = CY + GLOBE_R * Math.sin(r1);
+  const x2 = CX + GLOBE_R * Math.cos(r2);
+  const y2 = CY + GLOBE_R * Math.sin(r2);
+  const rm = ((arc.a1 + arc.a2) / 2 + (Math.abs(arc.a1 - arc.a2) > 180 ? 180 : 0)) * (Math.PI / 180);
+  const mx = CX + GLOBE_R * arc.bulge * Math.cos(rm);
+  const my = CY + GLOBE_R * arc.bulge * Math.sin(rm);
+  return { d: `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`, i, x1, y1, x2, y2 };
+});
+---
+
+<div class="atlas-wrap rv" style="--d:0.2s">
+  <svg class="atlas-graph" viewBox="0 0 600 600" role="img" aria-labelledby="atlas-title atlas-desc">
+    <title id="atlas-title">Atlas</title>
+    <desc id="atlas-desc"
+      >The MadMind DHNG — an interactive map linking Elle's chat, the research corpus, the Optimus Journal, the mission,
+      and the nine engines.</desc
+    >
+
+    <!-- starfield -->
+    <g class="atlas-stars">
+      {STARS.map((s) => <circle cx={s.x} cy={s.y} r={s.r} opacity={s.o} />)}
+    </g>
+
+    <!-- ambient glow behind the globe -->
+    <circle cx={CX} cy={CY} r={GLOBE_R * 2.4} class="atlas-glow"></circle>
+
+    <!-- orbital rings (Saturn-style), tilted -->
+    <g class="atlas-rings">
+      <ellipse class="atlas-ring ring-a" cx={CX} cy={CY} rx={GLOBE_R * 1.85} ry={GLOBE_R * 0.5}></ellipse>
+      <ellipse
+        class="atlas-ring ring-b"
+        cx={CX}
+        cy={CY}
+        rx={GLOBE_R * 1.55}
+        ry={GLOBE_R * 0.62}
+        transform={`rotate(-14 ${CX} ${CY})`}></ellipse>
+    </g>
+
+    <!-- globe body -->
+    <g class="atlas-globe">
+      <circle cx={CX} cy={CY} r={GLOBE_R} class="atlas-globe-fill"></circle>
+      <circle cx={CX} cy={CY} r={GLOBE_R} class="atlas-globe-edge"></circle>
+      {
+        LATS.map((dy) => (
+          <ellipse
+            cx={CX}
+            cy={CY + dy}
+            rx={Math.sqrt(Math.max(GLOBE_R * GLOBE_R - dy * dy, 1))}
+            ry={Math.max(GLOBE_R * 0.16, 4)}
+            class="atlas-lat"
+          />
+        ))
+      }
+      <ellipse cx={CX} cy={CY} rx={GLOBE_R * 0.38} ry={GLOBE_R} class="atlas-lon"></ellipse>
+      <ellipse cx={CX} cy={CY} rx={GLOBE_R * 0.74} ry={GLOBE_R} class="atlas-lon"></ellipse>
+      <line x1={CX} y1={CY - GLOBE_R} x2={CX} y2={CY + GLOBE_R} class="atlas-lon"></line>
+    </g>
+
+    <!-- atmosphere halo (rim glow) -->
+    <circle cx={CX} cy={CY} r={GLOBE_R + 4} class="atlas-halo"></circle>
+
+    <!-- activity arcs across the surface -->
+    <g class="atlas-arcs">
+      {
+        ARCS.map((arc) => (
+          <>
+            <path d={arc.d} class="atlas-arc" style={`--i:${arc.i}`} />
+            <circle cx={arc.x1} cy={arc.y1} r="2" class="atlas-arc-pt" style={`--i:${arc.i}`} />
+            <circle cx={arc.x2} cy={arc.y2} r="2" class="atlas-arc-pt" style={`--i:${arc.i}`} />
+          </>
+        ))
+      }
+    </g>
+
+    <!-- links from globe out to each door -->
+    {
+      NODES.map((n) => {
+        const rad = (n.angle * Math.PI) / 180;
+        const gx = CX + GLOBE_R * Math.cos(rad);
+        const gy = CY + GLOBE_R * Math.sin(rad);
+        return (
+          <line x1={gx} y1={gy} x2={n.x} y2={n.y} class={`atlas-link${n.gold ? ' gold' : ''}`} style={`--i:${n.i}`} />
+        );
+      })
+    }
+
+    <!-- wordmark -->
+    <text x={CX} y={CY + 8} text-anchor="middle" class="atlas-core-label">ATLAS</text>
+    <text x={CX} y={CY + 24} text-anchor="middle" class="atlas-core-sub">The MadMind DHNG</text>
+
+    <!-- doors -->
+    {
+      NODES.map((n) => (
+        <a href={n.href} class={`atlas-node${n.gold ? ' gold' : ''}`} style={`--i:${n.i}`}>
+          <circle cx={n.x} cy={n.y} r="22" class="atlas-hit" />
+          <circle cx={n.x} cy={n.y} r="7" class="atlas-dot" />
+          <text x={n.x} y={n.y + (n.below ? 28 : -28)} text-anchor="middle" class="atlas-label">
+            {n.label}
+          </text>
+          <text x={n.x} y={n.y + (n.below ? 43 : -43)} text-anchor="middle" class="atlas-sublabel">
+            {n.sub}
+          </text>
+        </a>
+      ))
+    }
+  </svg>
+
+  <!-- grid floor -->
+  <div class="atlas-floor" aria-hidden="true"></div>
+</div>
+
+<style>
+  .atlas-wrap {
+    position: relative;
+    max-width: 720px;
+    margin: 32px auto 0;
+  }
+  .atlas-graph {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+  }
+
+  .atlas-stars circle {
+    fill: var(--ink);
+  }
+
+  .atlas-glow {
+    fill: var(--gold-bright);
+    opacity: 0.12;
+    filter: blur(18px);
+  }
+
+  .atlas-ring {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 1;
+    opacity: 0.5;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .ring-a {
+    animation: atlas-spin 46s linear infinite;
+  }
+  .ring-b {
+    animation: atlas-spin 68s linear infinite reverse;
+  }
+
+  .atlas-globe {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: atlas-globe-spin 90s linear infinite;
+  }
+  .atlas-globe-fill {
+    fill: var(--card);
+    opacity: 0.65;
+  }
+  .atlas-globe-edge {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 1.25;
+    opacity: 0.8;
+  }
+  .atlas-lat,
+  .atlas-lon {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 0.6;
+    opacity: 0.4;
+  }
+
+  .atlas-halo {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 3;
+    opacity: 0.28;
+    filter: blur(4px);
+  }
+
+  .atlas-arc {
+    fill: none;
+    stroke: var(--gold-bright);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    opacity: 0;
+    animation: atlas-arc-draw 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation-delay: calc(var(--i) * 1.7s);
+  }
+  .atlas-arc-pt {
+    fill: var(--gold-bright);
+    opacity: 0;
+    animation: atlas-arc-pt 7s ease infinite;
+    animation-delay: calc(var(--i) * 1.7s);
+  }
+
+  .atlas-link {
+    stroke: var(--b1);
+    stroke-width: 1;
+    stroke-dasharray: 2 6;
+    opacity: 0.6;
+    animation: atlas-flow 6s linear infinite;
+    animation-delay: calc(var(--i) * -1.1s);
+  }
+  .atlas-link.gold {
+    stroke: var(--gold-bright);
+    opacity: 0.85;
+  }
+
+  .atlas-core-label {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    fill: var(--t1);
+  }
+  .atlas-core-sub {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--gold-bright);
+  }
+
+  .atlas-node {
+    cursor: pointer;
+    opacity: 0;
+    animation: atlas-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.3s + var(--i) * 0.09s);
+  }
+  .atlas-hit {
+    fill: transparent;
+  }
+  .atlas-dot {
+    fill: var(--card);
+    stroke: var(--gold-bright);
+    stroke-width: 1.5;
+    transition:
+      fill 0.2s,
+      stroke 0.2s,
+      r 0.2s;
+  }
+  .atlas-node.gold .atlas-dot {
+    fill: var(--gold-bright);
+    stroke: var(--gold-bright);
+  }
+  .atlas-node:hover .atlas-dot,
+  .atlas-node:focus-visible .atlas-dot {
+    fill: var(--gold-bright);
+    stroke: var(--gold-bright);
+    r: 9;
+  }
+  .atlas-label {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13px;
+    fill: var(--t1);
+    transition: fill 0.2s;
+  }
+  .atlas-sublabel {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--t3);
+  }
+  .atlas-node:hover .atlas-label,
+  .atlas-node:focus-visible .atlas-label {
+    fill: var(--gold-bright);
+  }
+
+  .atlas-floor {
+    position: absolute;
+    left: 50%;
+    bottom: -18px;
+    transform: translateX(-50%) perspective(240px) rotateX(62deg);
+    width: 82%;
+    height: 130px;
+    background-image:
+      linear-gradient(var(--b1) 1px, transparent 1px), linear-gradient(90deg, var(--b1) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: linear-gradient(to top, black, transparent 85%);
+    mask-image: linear-gradient(to top, black, transparent 85%);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes atlas-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes atlas-globe-spin {
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+  @keyframes atlas-flow {
+    to {
+      stroke-dashoffset: -32;
+    }
+  }
+  @keyframes atlas-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes atlas-arc-draw {
+    0% {
+      stroke-dashoffset: 260;
+      opacity: 0;
+    }
+    12% {
+      opacity: 0.85;
+    }
+    45% {
+      stroke-dashoffset: 0;
+      opacity: 0.85;
+    }
+    60%,
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+  @keyframes atlas-arc-pt {
+    0% {
+      opacity: 0;
+    }
+    12%,
+    50% {
+      opacity: 0.9;
+    }
+    62%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .atlas-ring,
+    .atlas-globe,
+    .atlas-link,
+    .atlas-arc,
+    .atlas-arc-pt,
+    .atlas-node {
+      animation: none !important;
+      opacity: 1;
+    }
+    /* show the arcs as static curves when the draw animation is off */
+    .atlas-arc {
+      stroke-dashoffset: 0;
+      opacity: 0.5;
+    }
+    .atlas-arc-pt {
+      opacity: 0.6;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .atlas-label {
+      font-size: 11px;
+    }
+    .atlas-sublabel {
+      font-size: 7.5px;
+    }
+    .atlas-floor {
+      display: none;
+    }
+  }
+</style>

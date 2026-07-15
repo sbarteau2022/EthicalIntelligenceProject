@@ -9,6 +9,8 @@ import '~/assets/styles/hub.css';
 import Layout from '~/layouts/Layout.astro';
 import HubNav from '~/components/hub/HubNav.astro';
 import HubFooter from '~/components/hub/HubFooter.astro';
+import AtlasGraph from '~/components/hub/AtlasGraph.astro';
+import { SOCIALS } from '~/hub';
 
 const metadata = {
   title: 'The Ethical Intelligence Project — Powered by Elle AI',
@@ -16,44 +18,115 @@ const metadata = {
     'Community-based intelligence infrastructure that transforms complexity into action. Powered by Elle AI — a corpus-grounded intelligence built to serve the people doing the work.',
 };
 
-// The hub surfaces — one account opens all of them.
+// The hub surfaces — one account opens all of them. `mock` picks the
+// little live-product vignette each bento card renders; `span` is the
+// card's width in the 6-column bento grid.
 const HUB = [
   {
     href: '/optimus',
     n: 'OPTIMUS JOURNAL',
     title: 'A record that never rewrites itself',
     body: 'Your append-only journal plus the manuscript reader. Free with sign-up.',
+    mock: 'journal',
+    span: 3,
   },
   {
     href: '/engine',
     n: 'ANALYSIS ENGINE',
     title: 'Sixteen readings, one conclusion',
     body: 'Upload a document, run the structural analysis, get the one thing that matters.',
+    mock: 'verdict',
+    span: 3,
   },
   {
     href: '/business',
     n: 'SMALL BUSINESS HUB',
     title: 'Optimized for the stop-loss',
     body: 'Custom pipelines: an AI that learns your business and stops the bleeding first.',
+    mock: 'spark',
+    span: 2,
   },
   {
     href: '/learn',
-    n: 'LEARN',
+    n: 'ATLAS EDU',
     title: 'AI in plain language',
-    body: 'Free courses: build your own AI with ethics baked in, automate a pipeline, learn to code with Elle.',
+    body: 'Free courses: build your own AI with ethics baked in, automate a pipeline, code with Elle.',
+    mock: 'progress',
+    span: 2,
   },
   {
     href: '/observer',
     n: 'THE OBSERVER',
     title: 'Research & testimony',
     body: 'Structural analysis with no side — published when ready, never on a schedule.',
+    mock: 'docs',
+    span: 2,
   },
   {
     href: '/elle',
     n: 'TALK TO ELLE →',
     title: 'The intelligence behind it all',
     body: 'Corpus-grounded conversation. Free during beta, more room when you sign in.',
+    mock: 'chat',
+    span: 6,
     gold: true,
+  },
+];
+
+// The work — the four pillars everything public hangs off.
+const WORK = [
+  {
+    n: '01',
+    name: 'Research',
+    body: 'The Observer: structural analysis and testimony, published when ready — never on a schedule.',
+    href: '/observer',
+    link: 'The Observer →',
+  },
+  {
+    n: '02',
+    name: 'Corpus',
+    body: 'The published papers behind Elle — top 1% publication volume on PhilPapers, open to anyone who wants to check the reasoning.',
+    href: 'https://philpeople.org/profiles/stewart-barteau',
+    link: 'Read on PhilPeople →',
+    external: true,
+  },
+  {
+    n: '03',
+    name: 'Engineering philosophy',
+    body: 'Ethics as architecture, not disclaimer: append-only records, auditable memory, reasoning you can read.',
+    href: '#principles',
+    link: 'The principles →',
+  },
+  {
+    n: '04',
+    name: 'Builder notes',
+    body: "The working record of how Elle is actually built — her phase-state manuscript and the journal she keeps while she's building.",
+    href: '/optimus',
+    link: 'Optimus Journal →',
+  },
+];
+
+// Atlas Edu — the education platform (full curriculum lives at /learn).
+const COURSES = [
+  {
+    badge: 'Course 01 · Free · Start here',
+    title: 'AI, in Plain Language',
+    body: 'What a model actually is, why it gets things wrong, and how to ask better questions.',
+  },
+  {
+    badge: 'Course 02 · Build',
+    title: 'Build Your Own AI — Ethics Baked In',
+    body: 'Pick the job, ground it in something true, and ship it with the guardrails designed in.',
+  },
+  {
+    badge: 'Course 03 · Automate',
+    title: 'Automate a Pipeline',
+    body: 'Stop-loss first: find the leak, wire the watcher, get one finding instead of forty charts.',
+  },
+  {
+    badge: 'Course 04 · Code',
+    title: 'Learn to Code with ElleAI',
+    body: 'Ship real things with Elle at your elbow — from first commit to deployed.',
   },
 ];
 
@@ -70,11 +143,67 @@ const engines = [
   { id: '09', name: 'The Observer', tag: 'Research & Testimony', href: '/observer' },
 ];
 
+// The three proof lines that used to fan out over the hero — now a
+// compact strip under the Atlas graph.
+const PROOF = [
+  {
+    tag: 'Optimus Journal · Append-only',
+    quote: '"Entry 47 stands. Entry 63 corrects it. Both stay in the record, forever."',
+    meta: 'κ 0.72 ▲ · nothing rewritten',
+  },
+  {
+    tag: 'Analysis Engine · The conclusion',
+    quote: '"Both sides avoid the permit backlog — that\'s the real opening. Build the checklist first."',
+    meta: '16 axes · self-checked · verdict earned',
+  },
+  {
+    tag: 'Pipeline · Variance watch',
+    quote: '"Dairy invoice line up 11% in 3 weeks — one supplier. Smallest move: call before Friday\'s order."',
+    meta: 'one finding · not forty charts',
+  },
+];
+
 const stats = [
   { n: '9', label: 'Intelligence engines' },
   { n: '76+', label: 'Papers published' },
   { n: 'TOP 1%', label: 'Publication volume, PhilPapers' },
   { n: '∞', label: 'Lives within reach' },
+];
+
+// The corpus — ported from the retired observer-platform landing page.
+const CORPUS_DOCS = [
+  { title: 'I Knew You Before I Met You', version: 'v4 · Primary' },
+  { title: 'The Convergence', version: 'v3 · Crux Document' },
+  { title: 'NECAI-F', version: 'v1 · Ethics Framework' },
+  { title: 'The Plenum', version: 'v3 · Substrate Theory' },
+  { title: 'The Threshold', version: 'v4 · Choice & Agency' },
+  { title: 'The Harmonizer', version: 'v3-revised · Applied' },
+  { title: 'Ethics of Now', version: 'v3 · Moral Framework' },
+  { title: 'Superposition', version: 'v4 · Quantum Frame' },
+];
+
+// What's different — also ported from the retired landing page.
+const DIFFERENT = [
+  {
+    row: 'Grounding',
+    them: 'Trained on the open internet. No one accountable for what it says.',
+    us: 'Grounded in 76+ published, peer-read papers — cite the source, check the reasoning.',
+  },
+  {
+    row: 'Memory',
+    them: 'Resets every session. You reintroduce yourself forever.',
+    us: 'One continuous relationship. She remembers — and you can export or erase it, your call.',
+  },
+  {
+    row: 'Autonomy',
+    them: 'A black box. You never see the reasoning.',
+    us: 'She works while you sleep, and leaves a journal you can actually read.',
+  },
+  {
+    row: 'Ownership',
+    them: 'Built by a company, answerable to shareholders.',
+    us: 'Built by a community, answerable to the community it was built for.',
+  },
 ];
 
 const principles = [
@@ -90,42 +219,44 @@ const principles = [
   <div class="eih">
     <HubNav current="/" />
 
-    <!-- HERO -->
-    <section class="hero wrap" style="padding-bottom:30px">
-      <div class="eyebrow rv">The Ethical Intelligence Project · Powered by Elle AI</div>
-      <h1 class="rv" style="--d:0.06s">
-        Intelligence for the people<br />doing the work.
-      </h1>
-      <p class="lede rv" style="--d:0.12s">
-        The information exists. The resources exist. The opportunities exist. For millions of working people, the
-        problem is access. We build community-based intelligence that turns complexity into action — corpus-grounded,
-        transparent, and answerable to the people it serves.
-      </p>
-      <div class="cta-row rv" style="--d:0.18s">
-        <a href="/elle" class="btn">Talk to Elle →</a>
-        <a href="#hub" class="btn ghost">Explore the hub</a>
-      </div>
+    <!-- HERO — full-bleed dark band, Atlas at its center -->
+    <section class="hero atlas-hero">
+      <div class="wrap" style="padding-bottom:30px">
+        <div class="eyebrow rv">The Ethical Intelligence Project · Powered by Elle AI</div>
+        <h1 class="rv" style="--d:0.06s">
+          Intelligence for the people<br />doing the work.
+        </h1>
+        <p class="lede rv" style="--d:0.12s">
+          The information exists. The resources exist. The opportunities exist. For millions of working people, the
+          problem is access. We build community-based intelligence that turns complexity into action — corpus-grounded,
+          transparent, and answerable to the people it serves.
+        </p>
+        <div class="cta-row rv" style="--d:0.18s">
+          <a href="/elle" class="btn">Talk to Elle →</a>
+          <a href="#hub" class="btn ghost">Explore the hub</a>
+        </div>
 
-      <!-- layered proof cards -->
-      <div class="layers rv" style="--d:0.25s">
-        <div class="layer l1">
-          <div class="tag">Optimus Journal · Append-only</div>
-          <div class="big">"Entry 47 stands. Entry 63 corrects it. Both stay in the record, forever."</div>
-          <div class="meta">κ 0.72 ▲ · nothing rewritten</div>
+        <!-- ATLAS — the one interactive map of everything Elle is -->
+        <AtlasGraph />
+        <div class="rv" style="--d:0.3s;text-align:center;max-width:480px;margin:6px auto 0">
+          <p style="font-size:0.86rem;color:var(--t3)">
+            Atlas is the map — one core, five doors. The chat, the corpus, the journal, the mission, the engines. Click
+            any node.
+          </p>
         </div>
-        <div class="layer l2">
-          <div class="tag">Analysis Engine · The conclusion</div>
-          <div class="big">
-            "Both sides avoid the permit backlog — that's the real opening. Build the checklist first."
-          </div>
-          <div class="meta">16 axes · self-checked · verdict earned</div>
-        </div>
-        <div class="layer l3">
-          <div class="tag">Pipeline · Variance watch</div>
-          <div class="big">
-            "Dairy invoice line up 11% in 3 weeks — one supplier. Smallest move: call before Friday's order."
-          </div>
-          <div class="meta">one finding · not forty charts</div>
+
+        <div class="cards rv stagger" style="--d:0.4s;margin-top:46px">
+          {
+            PROOF.map((p) => (
+              <div class="card">
+                <div class="n">{p.tag}</div>
+                <p style="font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--t1);line-height:1.35">
+                  {p.quote}
+                </p>
+                <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--t3);margin-top:8px">{p.meta}</div>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -142,9 +273,9 @@ const principles = [
       >
     </div>
 
-    <!-- CENTRAL CLAIM -->
-    <section class="wrap" style="text-align:center">
-      <div class="eyebrow rv">The central claim</div>
+    <!-- CENTRAL CLAIM / MISSION -->
+    <section id="mission" class="wrap" style="text-align:center">
+      <div class="eyebrow rv">The mission · the central claim</div>
       <blockquote
         class="rv"
         style="font-family:var(--font-display);font-size:1.8rem;font-style:italic;line-height:1.45;color:var(--ink);max-width:780px;margin:0 auto"
@@ -160,22 +291,198 @@ const principles = [
       </div>
     </section>
 
+    <!-- THE CORPUS -->
+    <section id="corpus" class="tint">
+      <div class="wrap">
+        <div class="split">
+          <div>
+            <div class="eyebrow rv">The corpus</div>
+            <h2 class="rv">76+ published papers. <em>One framework.</em></h2>
+            <p class="rv">
+              Built across years of philosophy, recovery work, and collaboration with AI — the intellectual foundation
+              everything else runs on. Engineering specs, philosophical grounding, and ethics, published where they can
+              be checked. A few of the load-bearing documents:
+            </p>
+            <p class="rv">
+              This isn't marketing copy standing in for rigor. It's <strong>76+ papers</strong>, ranked in the
+              <strong>top 1% for publication volume</strong> and <strong>top 2% for downloads</strong> on PhilPapers — read
+              into course syllabi at <strong>18+ universities</strong>. Elle doesn't improvise an ethics. She inherits
+              one that's been examined.
+            </p>
+            <div class="cta-row rv" style="justify-content:flex-start">
+              <a href="https://philpeople.org/profiles/stewart-barteau" target="_blank" rel="noreferrer" class="btn"
+                >Explore the corpus →</a
+              >
+              <a href="/observer" class="btn ghost">The Observer</a>
+            </div>
+          </div>
+          <div class="cards rv stagger" style="--d:0.1s;grid-template-columns:repeat(2,1fr);gap:10px">
+            {
+              CORPUS_DOCS.map((doc) => (
+                <div class="card lift" style="padding:16px 18px">
+                  <h3 style="font-size:1rem;margin-bottom:5px">{doc.title}</h3>
+                  <p style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin:0">
+                    {doc.version}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- the work: research · corpus · engineering philosophy · builder notes -->
+        <div class="work rv stagger" style="margin-top:56px">
+          {
+            WORK.map((w) => (
+              <a
+                href={w.href}
+                class="work-pillar"
+                target={w.external ? '_blank' : undefined}
+                rel={w.external ? 'noreferrer' : undefined}
+              >
+                <div class="n">{w.n}</div>
+                <h3>{w.name}</h3>
+                <p>{w.body}</p>
+                <span class="go">{w.link}</span>
+              </a>
+            ))
+          }
+        </div>
+
+        <!-- follow the work -->
+        <div class="rv" style="margin-top:40px;text-align:center">
+          <div
+            style="font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:14px"
+          >
+            Follow the work
+          </div>
+          <div class="follow-strip">
+            {
+              SOCIALS.map((s) => (
+                <a href={s.href} target="_blank" rel="noreferrer">
+                  {s.name}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT'S DIFFERENT -->
+    <section class="wrap">
+      <div style="text-align:center">
+        <div class="eyebrow rv">What's different</div>
+        <h2 class="rv">Not a smarter chatbot.<br />A different relationship to truth.</h2>
+        <p class="rv" style="max-width:560px;margin:0 auto">
+          Every design choice below is a rejection of a default the rest of the industry stopped questioning.
+        </p>
+      </div>
+      <div class="diff rv" style="margin-top:40px">
+        <div class="diff-row diff-head">
+          <div></div>
+          <div>Most AI</div>
+          <div style="color:var(--gold)">Elle</div>
+        </div>
+        {
+          DIFFERENT.map((d) => (
+            <div class="diff-row">
+              <div class="diff-k">{d.row}</div>
+              <div class="diff-them">{d.them}</div>
+              <div class="diff-us">{d.us}</div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
     <!-- THE HUB -->
     <section id="hub" class="tint">
       <div class="wrap">
         <div class="eyebrow rv">One hub · one account</div>
         <h2 class="rv">Everything we build, one door.</h2>
-        <div class="cards rv stagger" style="margin-top:30px">
+        <div class="bento rv stagger" style="margin-top:30px">
           {
             HUB.map((h) => (
-              <a
-                href={h.href}
-                class="card"
-                style={h.gold ? 'border-color:var(--gold-bright);background:var(--gold-wash)' : ''}
-              >
+              <a href={h.href} class={`bento-card${h.gold ? ' gold' : ''}`} style={`--span:${h.span}`}>
                 <div class="n">{h.n}</div>
                 <h3>{h.title}</h3>
                 <p>{h.body}</p>
+                {h.mock === 'journal' && (
+                  <div class="mock mock-journal">
+                    <div class="mline">
+                      <span class="mk">ENTRY 47</span>
+                      <span>stands.</span>
+                    </div>
+                    <div class="mline">
+                      <span class="mk">ENTRY 63</span>
+                      <span>corrects it. Both stay.</span>
+                    </div>
+                    <div class="mline gold">
+                      <span class="mk">κ 0.72 ▲</span>
+                      <span>nothing rewritten</span>
+                    </div>
+                  </div>
+                )}
+                {h.mock === 'verdict' && (
+                  <div class="mock mock-verdict">
+                    <div class="ticks">
+                      {Array.from({ length: 16 }).map((_, i) => (
+                        <i style={`--h:${8 + ((i * 7) % 12)}px`} />
+                      ))}
+                    </div>
+                    <div class="mline gold">
+                      <span class="mk">VERDICT</span>
+                      <span>build the checklist first</span>
+                    </div>
+                  </div>
+                )}
+                {h.mock === 'spark' && (
+                  <div class="mock">
+                    <svg viewBox="0 0 120 34" class="mock-spark" preserveAspectRatio="none">
+                      <polyline points="0,26 20,24 40,25 60,20 80,18 100,10 118,6" />
+                      <circle cx="118" cy="6" r="2.5" />
+                    </svg>
+                    <div class="mline gold">
+                      <span class="mk">+11% · 3 WKS</span>
+                      <span>call before Friday</span>
+                    </div>
+                  </div>
+                )}
+                {h.mock === 'progress' && (
+                  <div class="mock">
+                    <div class="mock-dots">
+                      <i class="on" />
+                      <i class="on" />
+                      <i />
+                      <i />
+                      <i />
+                    </div>
+                    <div class="mline gold">
+                      <span class="mk">LESSON 2 OF 5</span>
+                      <span>free · in plain language</span>
+                    </div>
+                  </div>
+                )}
+                {h.mock === 'docs' && (
+                  <div class="mock mock-journal">
+                    <div class="mline">
+                      <span class="mk">PUBLISHED</span>
+                      <span>when ready</span>
+                    </div>
+                    <div class="mline gold">
+                      <span class="mk">NEVER</span>
+                      <span>on a schedule</span>
+                    </div>
+                  </div>
+                )}
+                {h.mock === 'chat' && (
+                  <div class="mock mock-chat">
+                    <div class="bub you">Where do I even start with the permit?</div>
+                    <div class="bub elle">With the backlog — that's the real opening. Here's the checklist…</div>
+                  </div>
+                )}
+                <span class="go">Open →</span>
               </a>
             ))
           }
@@ -212,7 +519,7 @@ const principles = [
     </section>
 
     <!-- NINE ENGINES -->
-    <section class="tint">
+    <section id="engines" class="tint">
       <div class="wrap">
         <div class="eyebrow rv">Nine engines</div>
         <h2 class="rv">One presence. Nine expressions.</h2>
@@ -250,7 +557,7 @@ const principles = [
     </section>
 
     <!-- PRINCIPLES -->
-    <section class="tint">
+    <section id="principles" class="tint">
       <div class="wrap">
         <div class="eyebrow rv">The principles</div>
         <h2 class="rv">Ethics as architecture, not disclaimer.</h2>
@@ -267,38 +574,30 @@ const principles = [
       </div>
     </section>
 
-    <!-- LEARN TEASER -->
-    <section class="wrap">
-      <div class="split">
-        <div>
-          <div class="eyebrow rv">New · Learn</div>
-          <h2 class="rv">Understand the thing before you trust it.</h2>
-          <p class="rv">
-            Four free courses in plain language: what AI actually is, how to <strong
-              >build your own with ethics baked in</strong
-            >, how to <strong>automate a pipeline</strong>, and how to <strong>learn to code with Elle</strong>
-            at your elbow. Every lesson readable on the page, every lesson one click from a live conversation.
-          </p>
-          <div class="cta-row rv" style="justify-content:flex-start">
-            <a href="/learn" class="btn">Start learning free →</a>
-          </div>
-        </div>
-        <div class="rv" style="--d:0.1s">
-          <div class="limit-list">
-            <div class="limit-row">
-              <span class="k">01 · AI, in Plain Language</span><span class="v">5 lessons · free</span>
-            </div>
-            <div class="limit-row">
-              <span class="k">02 · Build Your Own AI</span><span class="v">ethics baked in</span>
-            </div>
-            <div class="limit-row">
-              <span class="k">03 · Automate a Pipeline</span><span class="v">stop-loss first</span>
-            </div>
-            <div class="limit-row">
-              <span class="k">04 · Code with ElleAI</span><span class="v">ship real things</span>
-            </div>
-          </div>
-        </div>
+    <!-- ATLAS EDU — the education platform -->
+    <section id="edu" class="wrap">
+      <div style="text-align:center">
+        <div class="eyebrow rv">Atlas Edu · The education platform</div>
+        <h2 class="rv">Understand the thing before you trust it.</h2>
+        <p class="rv" style="max-width:600px;margin:0 auto">
+          Four free courses in plain language — every lesson readable on the page, every lesson one click from a live
+          conversation with Elle.
+        </p>
+      </div>
+      <div class="bento edu-bento rv stagger" style="margin-top:36px">
+        {
+          COURSES.map((c) => (
+            <a href="/learn" class="bento-card" style="--span:3">
+              <div class="n">{c.badge.toUpperCase()}</div>
+              <h3>{c.title}</h3>
+              <p>{c.body}</p>
+              <span class="go">Start free →</span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="cta-row rv" style="margin-top:30px">
+        <a href="/learn" class="btn">Open Atlas Edu →</a>
       </div>
     </section>
 
@@ -327,4 +626,69 @@ const principles = [
     data-title="Elle"
     data-accent="#9a7524"
     defer></script>
+
+  <!-- bento cursor spotlight: each card's ::before glow follows the pointer -->
+  <script is:inline>
+    (function () {
+      if (window.matchMedia('(hover: none)').matches) return;
+      document.querySelectorAll('.bento-card').forEach(function (card) {
+        card.addEventListener('pointermove', function (e) {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', e.clientX - r.left + 'px');
+          card.style.setProperty('--my', e.clientY - r.top + 'px');
+        });
+      });
+    })();
+  </script>
 </Layout>
+
+<style>
+  /* ATLAS HERO — a dark, space-lit band for the homepage only. Redefines
+     the shared hub tokens locally so every existing .eyebrow/h1/.btn/.card
+     component renders correctly on black without a second stylesheet. */
+  .eih .hero.atlas-hero {
+    --paper: #05060a;
+    --card: #0d0f16;
+    --wash: #0d0f16;
+    --ink: #f5f0e8;
+    --t1: #e8e4dc;
+    --t2: #9ca3af;
+    --t3: #6b7280;
+    --gold: #c9902f;
+    --gold-bright: #f5b942;
+    --gold-wash: rgba(245, 185, 66, 0.12);
+    --b1: rgba(245, 185, 66, 0.22);
+    --b2: rgba(255, 255, 255, 0.1);
+    --line-soft: rgba(255, 255, 255, 0.07);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse 90% 70% at 50% 20%, #10131c 0%, #05060a 60%);
+    padding: 88px 0 64px;
+    text-align: center;
+  }
+  /* .btn's solid fill is normally --ink-on-light; on the dark hero that
+     token is light text, so the primary/ghost buttons need their own
+     dark-appropriate treatment rather than inheriting it. */
+  .eih .hero.atlas-hero .btn {
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+    color: #191509;
+  }
+  .eih .hero.atlas-hero .btn:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--gold-bright);
+  }
+  .eih .hero.atlas-hero .btn.ghost {
+    background: transparent;
+    border-color: var(--b2);
+    color: var(--t1);
+  }
+  .eih .hero.atlas-hero .btn.ghost:hover {
+    background: transparent;
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+</style>
