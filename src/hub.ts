@@ -12,6 +12,7 @@ export const HUB_TABS = [
   { text: 'Small Business', href: '/business' },
   { text: 'Learn', href: '/learn' },
   { text: 'The Observer', href: '/observer' },
+  { text: 'Harmonic Atlas', href: '/atlas' },
 ];
 
 // Social / publication profiles. The PhilArchive entry points at the live

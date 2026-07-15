@@ -34,6 +34,7 @@
     "astro-seo": "^1.1.0",
     "limax": "4.1.0",
     "lodash.merge": "^4.6.2",
+    "three": "^0.180.0",
     "unpic": "^4.2.2"
   },
   "devDependencies": {
