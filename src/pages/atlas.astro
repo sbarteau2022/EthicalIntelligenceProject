@@ -140,8 +140,8 @@ const u = snapshot.unifiedFunction;
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-    const snap = JSON.parse(document.getElementById('harmonic-snap').textContent);
-    const canvas = document.getElementById('atlas-canvas');
+    const snap = JSON.parse((document.getElementById('harmonic-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('atlas-canvas') as HTMLCanvasElement;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const COL = {
@@ -173,20 +173,20 @@ const u = snapshot.unifiedFunction;
     const rim = new THREE.PointLight(0xd0a94e, 18, 40); rim.position.set(-5, -3, -4); scene.add(rim);
 
     const world = new THREE.Group(); scene.add(world);       // everything, so obliquity can tilt it
-    const V = (a) => new THREE.Vector3(a[0], a[1], a[2]);
+    const V = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
 
-    function nodeMesh(pos, color, radius, emissive) {
+    function nodeMesh(pos: number[], color: number, radius: number, emissive?: number) {
       const m = new THREE.Mesh(
         new THREE.SphereGeometry(radius, 20, 20),
         new THREE.MeshStandardMaterial({ color, emissive: emissive ?? color, emissiveIntensity: 0.7, roughness: 0.35, metalness: 0.1 })
       );
       m.position.copy(V(pos)); return m;
     }
-    function edgeLines(nodesById, edges, color, opacity, width) {
-      const pts = [];
+    function edgeLines(nodesById: Record<number, number[]>, edges: number[][], color: number, opacity: number, width = 1) {
+      const pts: THREE.Vector3[] = [];
       for (const [a, b] of edges) { pts.push(V(nodesById[a]), V(nodesById[b])); }
       const g = new THREE.BufferGeometry().setFromPoints(pts);
-      return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: width || 1 }));
+      return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: width }));
     }
 
     // ── the globe / singularity core ──
@@ -251,7 +251,7 @@ const u = snapshot.unifiedFunction;
     const bond = new THREE.Mesh(bondGeo, new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 }));
     vessel.add(bond);
 
-    function placeMolecule(angle) {
+    function placeMolecule(angle: number) {
       const q = PHI * Math.cos(angle) * orbScale, p = PHI_INV * Math.sin(angle) * orbScale;
       mPlus.position.set(q, p, 0);
       mMinus.position.set(-q, -p, 0);
