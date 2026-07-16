@@ -62,8 +62,13 @@ const nm = neural.meta;
 
         <div class="lg-section" data-family="unified">
           <div class="lg-head">Unified function</div>
+          <button class="lg-row keep" data-g="vessel">
+            <span class="sw" style="--c:#b79cff"></span><b>Vessel</b> · the unified function itself — seated at the shared
+            center, in the cube slot
+          </button>
           <button class="lg-row" data-g="uPillars">
-            <span class="sw" style="--c:#ff5c9e"></span><b>Pillars</b> · 21 · the load-bearing architecture
+            <span class="sw" style="--c:#ff5c9e"></span><b>Pillars</b> · 21 · the load-bearing architecture · 5 axes × 4 +
+            the core
           </button>
           <button class="lg-row" data-g="uFlower">
             <span class="sw" style="--c:#ff8a4d"></span><b>Lobes / flower</b> · 19 · the relational structure
@@ -106,12 +111,13 @@ const nm = neural.meta;
           <button class="lg-row" data-g="singularity">
             <span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything holds around
           </button>
-          <button class="lg-row" data-g="vessel">
-            <span class="sw" style="--c:#b79cff"></span><b>Vessel (unified function)</b> · where the Metatron's Cube would
-            sit
-          </button>
           <button class="lg-row" data-g="ghost">
-            <span class="sw" style="--c:#cdd6ff"></span><b>Metatron ghost</b> · the cube's 13-circle lattice
+            <span class="sw" style="--c:#cdd6ff"></span><b>Metatron ghost</b> · the cube's 13-circle lattice — the shadow
+            of the equilibrium
+          </button>
+          <button class="lg-row" data-g="equilibrium">
+            <span class="sw" style="--c:#9fb6ff"></span><b>Vector equilibrium</b> · 12 around 1 · the body that casts the
+            lattice
           </button>
         </div>
       </div>
@@ -272,6 +278,9 @@ const nm = neural.meta;
     }
     .lg-section.dim {
       opacity: 0.3;
+    }
+    .lg-section.dim .lg-row.keep {
+      opacity: 1;
     }
     .lg-head {
       font-family: 'DM Mono', ui-monospace, monospace;
@@ -434,6 +443,7 @@ const nm = neural.meta;
       envelope: { profile: number[][] };
       lockRing: { radius: number; y: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
+      vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
       singularity: { radius: number };
     }
 
@@ -456,6 +466,7 @@ const nm = neural.meta;
       nLobe: 0xffe45c,
       nThread: 0x55e9d0,
       nEnvelope: 0x7c88b8,
+      equilibrium: 0x9fb6ff,
       singularity: 0xffffff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
@@ -582,6 +593,33 @@ const nm = neural.meta;
       new THREE.LineSegments(
         new THREE.BufferGeometry().setFromPoints(ghostLinePts),
         new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.06 })
+      )
+    );
+
+    // the vector equilibrium — what the Metatron lattice is a shadow of:
+    // 12 spheres around 1 (cuboctahedron); its plane projection is the
+    // 13-circle lattice the ghost draws beneath it.
+    const equilibrium = new THREE.Group();
+    world.add(equilibrium);
+    const veVerts = N.vectorEquilibrium.vertices.map(V3);
+    equilibrium.add(nodeMesh(new THREE.Vector3(0, 0, 0), COL.equilibrium, 0.022));
+    for (const v of veVerts) {
+      equilibrium.add(nodeMesh(v, COL.equilibrium, 0.018));
+      equilibrium.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), v]),
+          new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.25 })
+        )
+      );
+    }
+    const vePts: THREE.Vector3[] = [];
+    for (const [i, j] of N.vectorEquilibrium.edges) {
+      vePts.push(veVerts[i], veVerts[j]);
+    }
+    equilibrium.add(
+      new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(vePts),
+        new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.45 })
       )
     );
 
@@ -877,6 +915,7 @@ const nm = neural.meta;
       nLobes: nLobeParts,
       nThreads: nThreadParts,
       nEnvelope: [nEnvelope],
+      equilibrium: [equilibrium],
       singularity: [singularity],
       vessel: [vessel],
       ghost: [ghost],
@@ -946,6 +985,7 @@ const nm = neural.meta;
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
+      equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();
       composer.render();
       requestAnimationFrame(frame);
