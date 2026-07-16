@@ -12,9 +12,10 @@ export const HUB_TABS = [
   { text: 'Small Business', href: '/business' },
   { text: 'Learn', href: '/learn' },
   { text: 'The Observer', href: '/observer' },
-  { text: 'Harmonic Atlas', href: '/atlas' },
-  { text: 'Neural Atlas', href: '/neural-atlas' },
-  { text: 'Master Atlas', href: '/master-atlas' },
+  // One unified Atlas tab — the Master Atlas page carries the view selector
+  // (Combined · Unified function · Neural map); /atlas and /neural-atlas stay
+  // routable as the deep-dive pages but no longer take header slots.
+  { text: 'Atlas', href: '/master-atlas' },
 ];
 
 // Social / publication profiles. The PhilArchive entry points at the live
