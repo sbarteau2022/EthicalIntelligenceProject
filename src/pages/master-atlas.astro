@@ -89,6 +89,9 @@ const nm = neural.meta;
           <button class="lg-row" data-g="nFlowerLife">
             <span class="sw" style="--c:#e06cff"></span><b>Flower of Life</b> · one circle per tuple center at every level
           </button>
+          <button class="lg-row" data-g="nLobes">
+            <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tangent to its counterpart
+          </button>
         </div>
 
         <div class="lg-section">
@@ -409,6 +412,7 @@ const nm = neural.meta;
       radius: number;
       y: number;
       tuples: { angleDeg: number; pos: number[] }[];
+      lobes: number[][][];
     }
     interface NeuralHalf {
       sign: number;
@@ -441,6 +445,7 @@ const nm = neural.meta;
       nHalo: 0xd0a94e,
       nLock: 0xf2ead9,
       nFlowerLife: 0xe06cff,
+      nLobe: 0xffe45c,
       singularity: 0xffffff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
@@ -668,6 +673,7 @@ const nm = neural.meta;
     const nTupleParts: THREE.Object3D[] = [];
     const nHaloParts: THREE.Object3D[] = [];
     const nFlowerParts: THREE.Object3D[] = [];
+    const nLobeParts: THREE.Object3D[] = [];
     const nHalfGroups: THREE.Group[] = [];
 
     for (const half of N.halves) {
@@ -678,11 +684,13 @@ const nm = neural.meta;
       const hgTuples = new THREE.Group();
       const hgHalos = new THREE.Group();
       const hgFlower = new THREE.Group();
-      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower);
+      const hgLobes = new THREE.Group();
+      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes);
       nSpiralParts.push(hgSpiral);
       nTupleParts.push(hgTuples);
       nHaloParts.push(hgHalos);
       nFlowerParts.push(hgFlower);
+      nLobeParts.push(hgLobes);
 
       // layer 0: the pole singularity (rides with its spiral)
       const sPos = V3(half.singularity);
@@ -751,10 +759,15 @@ const nm = neural.meta;
           bondMesh.position.copy(p);
           bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
           hgTuples.add(bondMesh);
-          hgTuples.add(
+        }
+
+        // lemniscate lobes: one per node, tangent to its counterpart — these
+        // carry the singularity binding (the shadow threads are gone)
+        for (const lobe of layer.lobes) {
+          hgLobes.add(
             new THREE.Line(
-              new THREE.BufferGeometry().setFromPoints([sPos, p]),
-              new THREE.LineBasicMaterial({ color: COL.nTuple, transparent: true, opacity: 0.18 })
+              new THREE.BufferGeometry().setFromPoints(lobe.map(V3)),
+              new THREE.LineBasicMaterial({ color: COL.nLobe, transparent: true, opacity: 0.55 })
             )
           );
         }
@@ -815,6 +828,7 @@ const nm = neural.meta;
       nTuples: nTupleParts,
       nHalos: nHaloParts,
       nFlowerLife: nFlowerParts,
+      nLobes: nLobeParts,
       singularity: [singularity],
       vessel: [vessel],
       ghost: [ghost],

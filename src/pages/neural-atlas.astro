@@ -67,6 +67,10 @@ const layerCounts = m.layerCounts.join(' · ');
           <span class="sw" style="--c:#55e9d0"></span><b>Tuples</b> · {layerCounts} per half, {m.tuplesPerHalf * 2} total
           · singularity-bound pairs
         </button>
+        <button class="lg-row" data-g="lobes">
+          <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tip at the tuple, tangent to
+          its counterpart on the circle
+        </button>
         <button class="lg-row" data-g="halos">
           <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one toroid per layer, layer 1 bound at 1/3 · plus the
           lock ring
@@ -314,6 +318,7 @@ const layerCounts = m.layerCounts.join(' · ');
       radius: number;
       y: number;
       tuples: { angleDeg: number; pos: number[] }[];
+      lobes: number[][][];
     }
     interface Half {
       sign: number;
@@ -344,6 +349,7 @@ const layerCounts = m.layerCounts.join(' · ');
       halo: 0xd0a94e,
       lock: 0xf2ead9,
       flower: 0xe06cff,
+      lobe: 0xffe45c,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
       minus: 0x5cd8ff,
@@ -407,6 +413,7 @@ const layerCounts = m.layerCounts.join(' · ');
     const tuples = new THREE.Group();
     const halos = new THREE.Group();
     const flower = new THREE.Group();
+    const lobes = new THREE.Group();
 
     // rotating containers, one per half (opposite spin = the phase lock)
     const halfGroups: THREE.Group[] = [];
@@ -423,12 +430,14 @@ const layerCounts = m.layerCounts.join(' · ');
       const hgTuples = new THREE.Group();
       const hgHalos = new THREE.Group();
       const hgFlower = new THREE.Group();
-      hg.add(hgSing, hgSpiral, hgTuples, hgHalos, hgFlower);
+      const hgLobes = new THREE.Group();
+      hg.add(hgSing, hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes);
       singularities.userData.parts = [...(singularities.userData.parts || []), hgSing];
       spirals.userData.parts = [...(spirals.userData.parts || []), hgSpiral];
       tuples.userData.parts = [...(tuples.userData.parts || []), hgTuples];
       halos.userData.parts = [...(halos.userData.parts || []), hgHalos];
       flower.userData.parts = [...(flower.userData.parts || []), hgFlower];
+      lobes.userData.parts = [...(lobes.userData.parts || []), hgLobes];
 
       // ── layer 0: the pole singularity ──
       const sPos = V3(half.singularity);
@@ -510,11 +519,16 @@ const layerCounts = m.layerCounts.join(' · ');
           bondMesh.position.copy(p);
           bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
           hgTuples.add(bondMesh);
-          // singularity-bound: the thread back to this half's pole
-          hgTuples.add(
+        }
+
+        // the lemniscate lobes: one per node, anchored at the layer center,
+        // tip at the node, tangent to its counterpart on the same circle —
+        // these carry the singularity binding (the shadow threads are gone)
+        for (const lobe of layer.lobes) {
+          hgLobes.add(
             new THREE.Line(
-              new THREE.BufferGeometry().setFromPoints([sPos, p]),
-              new THREE.LineBasicMaterial({ color: COL.tuple, transparent: true, opacity: 0.18 })
+              new THREE.BufferGeometry().setFromPoints(lobe.map(V3)),
+              new THREE.LineBasicMaterial({ color: COL.lobe, transparent: true, opacity: 0.55 })
             )
           );
         }
@@ -654,6 +668,7 @@ const layerCounts = m.layerCounts.join(' · ');
       tuples: tuples.userData.parts,
       halos: halos.userData.parts,
       flower: flower.userData.parts,
+      lobes: lobes.userData.parts,
       vessel: [vessel],
       ghost: [ghost],
     };
