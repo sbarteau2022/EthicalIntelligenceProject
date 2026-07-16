@@ -91,7 +91,11 @@ const layerCounts = m.layerCounts.join(' · ');
           would sit
         </button>
         <button class="lg-row" data-g="ghost">
-          <span class="sw" style="--c:#cdd6ff"></span><b>Metatron ghost</b> · the cube's 13-circle lattice, kept as reference
+          <span class="sw" style="--c:#cdd6ff"></span><b>Metatron ghost</b> · the cube's 13-circle lattice — the shadow of
+          the equilibrium
+        </button>
+        <button class="lg-row" data-g="equilibrium">
+          <span class="sw" style="--c:#9fb6ff"></span><b>Vector equilibrium</b> · 12 around 1 · the body that casts the lattice
         </button>
       </div>
 
@@ -342,6 +346,7 @@ const layerCounts = m.layerCounts.join(' · ');
       lockRing: { radius: number; y: number };
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
+      vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
       singularity: { radius: number };
     }
 
@@ -360,6 +365,7 @@ const layerCounts = m.layerCounts.join(' · ');
       lobe: 0xffe45c,
       thread: 0x55e9d0,
       envelope: 0x7c88b8,
+      equilibrium: 0x9fb6ff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
       minus: 0x5cd8ff,
@@ -650,6 +656,33 @@ const layerCounts = m.layerCounts.join(' · ');
       )
     );
 
+    // ── the vector equilibrium — what the Metatron lattice is a shadow of ──
+    // 12 spheres around 1 (cuboctahedron, edge length = circumradius); its
+    // plane projection is the 13-circle lattice the ghost draws beneath it.
+    const equilibrium = new THREE.Group();
+    world.add(equilibrium);
+    const veVerts = snap.vectorEquilibrium.vertices.map(V3);
+    equilibrium.add(nodeMesh(new THREE.Vector3(0, 0, 0), COL.equilibrium, 0.022));
+    for (const v of veVerts) {
+      equilibrium.add(nodeMesh(v, COL.equilibrium, 0.018));
+      equilibrium.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), v]),
+          new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.25 })
+        )
+      );
+    }
+    const vePts: THREE.Vector3[] = [];
+    for (const [i, j] of snap.vectorEquilibrium.edges) {
+      vePts.push(veVerts[i], veVerts[j]);
+    }
+    equilibrium.add(
+      new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(vePts),
+        new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.45 })
+      )
+    );
+
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
     world.add(vessel);
@@ -718,6 +751,7 @@ const layerCounts = m.layerCounts.join(' · ');
       lobes: lobes.userData.parts,
       threads: threads.userData.parts,
       envelope: [envelope],
+      equilibrium: [equilibrium],
       vessel: [vessel],
       ghost: [ghost],
     };
@@ -783,6 +817,7 @@ const layerCounts = m.layerCounts.join(' · ');
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
+      equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();
       composer.render();
       requestAnimationFrame(frame);
