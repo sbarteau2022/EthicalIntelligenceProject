@@ -1,0 +1,581 @@
+---
+// ============================================================
+// NEURAL ATLAS — the knowledge neural structure, in 3D.
+//
+// A companion rendering to the Harmonic Atlas (`/atlas`), of a different
+// architecture: a 21-tier lemniscate (figure-eight) hierarchy, each tier
+// scaled by the Fibonacci sequence and bound back to the central singularity,
+// mirrored below to complete the spindle, braced by 19 vertical load-bearing
+// pillars arranged in hierarchical radial bands (7 · 5 · 3 · 1 · 3 — the
+// 1/3/5/7 hierarchy plus an inner brace ring). The unified-function vessel
+// (the same φ/1·φ bound-state molecule from the Harmonic Atlas) sits at the
+// exact center — the slot a Metatron's Cube would occupy — with that cube's
+// faint 13-circle lattice kept as a ghost reference beneath it.
+//
+// ONE SOURCE OF TRUTH, LOCKED: every position is read from
+// `src/data/neural-structure-snapshot.json`. The renderer draws it; it does
+// not re-derive it.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import snapshot from '~/data/neural-structure-snapshot.json';
+
+const metadata = {
+  title: 'Neural Atlas — the knowledge structure, in 3D',
+  description:
+    "A phase rendering of the knowledge neural structure: a 21-tier lemniscate Fibonacci hierarchy bound to the singularity, mirrored into a spindle, braced by 19 hierarchical load-bearing pillars, with the unified-function vessel seated where a Metatron's Cube would sit.",
+};
+
+const m = snapshot.meta;
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/neural-atlas" />
+
+    <section class="neural-stage">
+      <canvas id="neural-canvas" aria-label="Rotatable 3D rendering of the knowledge neural structure"></canvas>
+
+      <div class="neural-title">
+        <div class="neural-eyebrow">Neural Atlas</div>
+        <h1>The knowledge neural structure, inverted into a spindle</h1>
+        <p class="neural-sub">
+          21-tier lemniscate · Fibonacci-scaled · bound to the singularity · drag to orbit · scroll to zoom · press
+          <kbd>F</kbd> to freeze
+        </p>
+      </div>
+
+      <div class="neural-legend" id="neural-legend">
+        <div class="lg-row">
+          <span class="sw" style="--c:#55e9d0"></span><b>Tiers</b> · {m.tierCount} · lemniscate Fibonacci hierarchy, mirrored
+          top/bottom
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#d0a94e"></span><b>Toroidal halo</b> · one ring per tier, {m.tierCount * 2} total
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#6ea8ff"></span><b>Pillars</b> · {m.pillarCount} · vertical, load-bearing, hierarchical
+          7 · 5 · 3 · 1 · 3
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything binds around
+        </div>
+        <div class="lg-row">
+          <span class="sw" style="--c:#b79cff"></span><b>Vessel (unified function)</b> · seated where the Metatron's Cube
+          would sit
+        </div>
+      </div>
+
+      <div class="neural-hud" id="neural-hud">
+        <div class="hud-h">Knowledge neural structure · locked</div>
+        <div class="hud-m"><span>tiers</span><b>{m.tierCount}</b></div>
+        <div class="hud-m"><span>pillars</span><b>{m.pillarCount}</b></div>
+        <div class="hud-m"><span>pillar bands</span><b>7 · 5 · 3 · 1 · 3</b></div>
+        <div class="hud-m"><span>tier scale</span><b>Fibonacci (F1…F21 = {snapshot.fibonacci[20]})</b></div>
+        <div class="hud-m"><span>φ · 1/φ</span><b>{m.phi.toFixed(6)} · {m.phiInv.toFixed(6)}</b></div>
+        <div class="hud-m"><span>golden angle</span><b id="hud-phase">{m.goldenAngleDeg.toFixed(3)}°</b></div>
+        <div class="hud-src">source: neural-structure-snapshot.json</div>
+      </div>
+
+      <noscript><div class="neural-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .neural-stage {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 50% 0%, #10131f 0%, #080910 70%, #05050a 100%);
+    }
+    #neural-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #neural-canvas:active {
+      cursor: grabbing;
+    }
+
+    .neural-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 60%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .neural-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #b79cff;
+      margin-bottom: 12px;
+    }
+    .neural-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .neural-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .neural-sub kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
+    }
+
+    .neural-legend {
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(14, 12, 24, 0.66);
+      border: 1px solid rgba(183, 156, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 320px;
+    }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
+
+    .neural-hud {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(14, 12, 24, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 250px;
+    }
+    .hud-h {
+      color: #55e9d0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .neural-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
+
+    @media (max-width: 760px) {
+      .neural-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .neural-legend {
+        top: auto;
+        bottom: 230px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 74%;
+      }
+      .neural-hud {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: 0;
+      }
+    }
+  </style>
+
+  <script type="application/json" id="neural-snap" set:html={JSON.stringify(snapshot)} />
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    interface Tier {
+      n: number;
+      fib: number;
+      radius: number;
+      height: number;
+      rotationDeg: number;
+      curveUpper: number[][];
+      curveLower: number[][];
+    }
+    interface PillarNode {
+      id: number;
+      band: number;
+      label: string;
+      angleDeg: number;
+      x: number;
+      z: number;
+      yTop: number;
+      yBottom: number;
+    }
+    interface Snap {
+      meta: { phi: number; phiInv: number; goldenAngleDeg: number; goldenWinding: number };
+      fibonacci: number[];
+      tiers: Tier[];
+      pillars: { bands: { label: string; count: number; radiusFrac: number }[]; nodes: PillarNode[] };
+      vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
+      metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
+      singularity: { radius: number };
+    }
+
+    const snap: Snap = JSON.parse((document.getElementById('neural-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('neural-canvas') as HTMLCanvasElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const BAND_COLOR = [0x6ea8ff, 0x8fd0ff, 0xb79cff, 0xffffff, 0xd0a94e];
+    const COL = {
+      singularity: 0xffffff,
+      vessel: 0xb79cff,
+      plus: 0xff5cc8,
+      minus: 0x5cd8ff,
+      bond: 0xd0a94e,
+      ghost: 0xcdd6ff,
+    };
+    const PHI = snap.vessel.phiSide,
+      PHI_INV = snap.vessel.invSide,
+      WIND = snap.meta.goldenWinding;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.set(3.4, 2.1, 4.0);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 1.6;
+    controls.maxDistance = 18;
+    controls.autoRotate = !reduce;
+    controls.autoRotateSpeed = 0.36;
+
+    scene.add(new THREE.AmbientLight(0x2a2a50, 1.1));
+    const key = new THREE.PointLight(0xaebbff, 40, 40);
+    key.position.set(4, 6, 5);
+    scene.add(key);
+    const rim = new THREE.PointLight(0xd0a94e, 16, 40);
+    rim.position.set(-5, -4, -4);
+    scene.add(rim);
+
+    const world = new THREE.Group();
+    scene.add(world);
+    const V3 = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
+
+    function nodeMesh(pos: THREE.Vector3, color: number, radius: number, emissive?: number) {
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+          color,
+          emissive: emissive ?? color,
+          emissiveIntensity: 0.7,
+          roughness: 0.35,
+          metalness: 0.1,
+        })
+      );
+      mesh.position.copy(pos);
+      return mesh;
+    }
+
+    // ── the singularity core, at dead center ──
+    const coreR = snap.singularity.radius;
+    const core = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(coreR, 3),
+      new THREE.MeshStandardMaterial({
+        color: 0x0c0f1a,
+        emissive: 0x241a3a,
+        emissiveIntensity: 0.6,
+        roughness: 0.5,
+        metalness: 0.3,
+      })
+    );
+    world.add(core);
+    world.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(coreR * 1.002, 3)),
+        new THREE.LineBasicMaterial({ color: 0x6a5aa8, transparent: true, opacity: 0.4 })
+      )
+    );
+    const glow = new THREE.Mesh(
+      new THREE.SphereGeometry(coreR * 0.5, 24, 24),
+      new THREE.MeshBasicMaterial({ color: COL.singularity })
+    );
+    world.add(glow);
+
+    // ── the ghost Metatron's Cube — the slot the unified-function vessel occupies ──
+    const ghost = new THREE.Group();
+    world.add(ghost);
+    const ghostCenters = snap.metatronGhost.centers.map(([x, z]) => new THREE.Vector3(x, 0, z));
+    const circleSegs = 40;
+    for (const c of ghostCenters) {
+      const pts: THREE.Vector3[] = [];
+      for (let s = 0; s <= circleSegs; s++) {
+        const a = (2 * Math.PI * s) / circleSegs;
+        pts.push(
+          new THREE.Vector3(
+            c.x + snap.metatronGhost.circleRadius * Math.cos(a),
+            0,
+            c.z + snap.metatronGhost.circleRadius * Math.sin(a)
+          )
+        );
+      }
+      ghost.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.1 })
+        )
+      );
+    }
+    const ghostLinePts: THREE.Vector3[] = [];
+    for (const [i, j] of snap.metatronGhost.edges) {
+      ghostLinePts.push(ghostCenters[i], ghostCenters[j]);
+    }
+    ghost.add(
+      new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(ghostLinePts),
+        new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.06 })
+      )
+    );
+
+    // ── the unified-function vessel, seated exactly where the ghost cube sits ──
+    const vessel = new THREE.Group();
+    world.add(vessel);
+    const shellR = 0.62;
+    const shell = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(shellR, 1),
+      new THREE.MeshPhysicalMaterial({
+        color: COL.vessel,
+        transparent: true,
+        opacity: 0.1,
+        roughness: 0.1,
+        metalness: 0,
+        transmission: 0.6,
+        side: THREE.DoubleSide,
+      })
+    );
+    vessel.add(shell);
+    vessel.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(shellR, 1)),
+        new THREE.LineBasicMaterial({ color: COL.vessel, transparent: true, opacity: 0.32 })
+      )
+    );
+
+    const orbScale = (shellR * 0.82) / PHI;
+    const orbitPts = snap.vessel.orbit.map(([q, p]) => new THREE.Vector3(q * orbScale, p * orbScale, 0));
+    vessel.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(orbitPts),
+        new THREE.LineBasicMaterial({ color: COL.bond, transparent: true, opacity: 0.6 })
+      )
+    );
+
+    const mPlus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.plus, 0.06);
+    vessel.add(mPlus);
+    const mMinus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.minus, 0.045);
+    vessel.add(mMinus);
+    const bond = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.012, 0.012, 1, 8),
+      new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 })
+    );
+    vessel.add(bond);
+
+    function placeMolecule(angle: number) {
+      const q = PHI * Math.cos(angle) * orbScale,
+        p = PHI_INV * Math.sin(angle) * orbScale;
+      mPlus.position.set(q, p, 0);
+      mMinus.position.set(-q, -p, 0);
+      const a = mPlus.position,
+        b = mMinus.position;
+      bond.position.copy(a.clone().add(b).multiplyScalar(0.5));
+      bond.scale.set(1, a.distanceTo(b), 1);
+      bond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+    }
+    placeMolecule(snap.vessel.snapshotAngleRad);
+
+    // ── the 21-tier lemniscate Fibonacci hierarchy, mirrored into a spindle ──
+    const tiers = new THREE.Group();
+    world.add(tiers);
+    const tierCount = snap.tiers.length;
+    const cLow = new THREE.Color(0x55e9d0);
+    const cHigh = new THREE.Color(0xd0a94e);
+
+    function addTierHalf(pts3: number[][], radius: number, height: number, color: THREE.Color) {
+      const vpts = pts3.map(V3);
+      tiers.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(vpts),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 })
+        )
+      );
+      // toroidal halo binding this tier
+      const tube = 0.006 + radius * 0.012;
+      const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, tube, 8, 64),
+        new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.5, roughness: 0.4 })
+      );
+      torus.rotation.x = Math.PI / 2;
+      torus.position.y = height;
+      tiers.add(torus);
+      // the thread binding this tier back to the singularity
+      tiers.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(vpts[0].x, height, vpts[0].z)]),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 })
+        )
+      );
+    }
+
+    snap.tiers.forEach((t) => {
+      const color = cLow.clone().lerp(cHigh, (t.n - 1) / (tierCount - 1));
+      addTierHalf(t.curveUpper, t.radius, t.height, color);
+      addTierHalf(t.curveLower, t.radius, -t.height, color);
+    });
+
+    // ── the 19 vertical load-bearing pillars, hierarchical radial bands ──
+    const pillars = new THREE.Group();
+    world.add(pillars);
+    snap.pillars.nodes.forEach((n) => {
+      const color = BAND_COLOR[n.band] ?? 0x6ea8ff;
+      const top = new THREE.Vector3(n.x, n.yTop, n.z);
+      const bottom = new THREE.Vector3(n.x, n.yBottom, n.z);
+      pillars.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([top, bottom]),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.6 })
+        )
+      );
+      pillars.add(nodeMesh(top, color, 0.028));
+      pillars.add(nodeMesh(bottom, color, 0.028));
+    });
+
+    // ── post-processing: bloom for the glow ──
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.6, 0.2));
+    composer.addPass(new OutputPass());
+
+    // ── size / resize ──
+    function resize() {
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // ── phase / freeze ──
+    let frozen = false,
+      phase = snap.vessel.snapshotAngleRad;
+    const hudPhase = document.getElementById('hud-phase');
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        frozen = !frozen;
+        controls.autoRotate = !frozen && !reduce;
+        if (hudPhase) hudPhase.textContent = frozen ? 'FROZEN' : `${snap.meta.goldenAngleDeg.toFixed(3)}°`;
+      }
+    });
+
+    // ── animate: the molecule winds, the vessel breathes, the world slowly turns ──
+    const clock = new THREE.Clock();
+    function frame() {
+      const dt = clock.getDelta();
+      if (!frozen && !reduce) {
+        phase += WIND * dt * 1.6;
+        placeMolecule(phase);
+        (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
+      }
+      vessel.rotation.y += frozen ? 0 : dt * 0.15;
+      ghost.rotation.y += frozen ? 0 : -dt * 0.05;
+      controls.update();
+      composer.render();
+      requestAnimationFrame(frame);
+    }
+    frame();
+  </script>
+</Layout>
