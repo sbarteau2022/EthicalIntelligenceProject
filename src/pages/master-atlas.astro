@@ -86,6 +86,19 @@ const nm = neural.meta;
           <button class="lg-row" data-g="nHalos">
             <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one per layer + the phase-lock ring
           </button>
+          <button class="lg-row" data-g="nFlowerLife">
+            <span class="sw" style="--c:#e06cff"></span><b>Flower of Life</b> · one circle per tuple center at every level
+          </button>
+          <button class="lg-row" data-g="nLobes">
+            <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tangent to its counterpart
+          </button>
+          <button class="lg-row" data-g="nThreads">
+            <span class="sw" style="--c:#3a8f82"></span><b>Shadow paths</b> · straight tuple-to-singularity binds
+          </button>
+          <button class="lg-row" data-g="nEnvelope">
+            <span class="sw" style="--c:#7c88b8"></span><b>Emission envelope</b> · the hyperbolic hourglass, maxima at the
+            poles
+          </button>
         </div>
 
         <div class="lg-section">
@@ -406,6 +419,7 @@ const nm = neural.meta;
       radius: number;
       y: number;
       tuples: { angleDeg: number; pos: number[] }[];
+      lobes: number[][][];
     }
     interface NeuralHalf {
       sign: number;
@@ -413,9 +427,11 @@ const nm = neural.meta;
       singularity: number[];
       layers: NeuralLayer[];
       spiral: number[][];
+      flower: { k: number; y: number; radius: number; centers: number[][] }[];
     }
     interface NeuralSnap {
       halves: NeuralHalf[];
+      envelope: { profile: number[][] };
       lockRing: { radius: number; y: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       singularity: { radius: number };
@@ -436,6 +452,10 @@ const nm = neural.meta;
       nTuplePartner: 0x2fb3a0,
       nHalo: 0xd0a94e,
       nLock: 0xf2ead9,
+      nFlowerLife: 0xe06cff,
+      nLobe: 0xffe45c,
+      nThread: 0x55e9d0,
+      nEnvelope: 0x7c88b8,
       singularity: 0xffffff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
@@ -662,6 +682,9 @@ const nm = neural.meta;
     const nSpiralParts: THREE.Object3D[] = [];
     const nTupleParts: THREE.Object3D[] = [];
     const nHaloParts: THREE.Object3D[] = [];
+    const nFlowerParts: THREE.Object3D[] = [];
+    const nLobeParts: THREE.Object3D[] = [];
+    const nThreadParts: THREE.Object3D[] = [];
     const nHalfGroups: THREE.Group[] = [];
 
     for (const half of N.halves) {
@@ -671,10 +694,16 @@ const nm = neural.meta;
       const hgSpiral = new THREE.Group();
       const hgTuples = new THREE.Group();
       const hgHalos = new THREE.Group();
-      hg.add(hgSpiral, hgTuples, hgHalos);
+      const hgFlower = new THREE.Group();
+      const hgLobes = new THREE.Group();
+      const hgThreads = new THREE.Group();
+      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes, hgThreads);
       nSpiralParts.push(hgSpiral);
       nTupleParts.push(hgTuples);
       nHaloParts.push(hgHalos);
+      nFlowerParts.push(hgFlower);
+      nLobeParts.push(hgLobes);
+      nThreadParts.push(hgThreads);
 
       // layer 0: the pole singularity (rides with its spiral)
       const sPos = V3(half.singularity);
@@ -743,10 +772,40 @@ const nm = neural.meta;
           bondMesh.position.copy(p);
           bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
           hgTuples.add(bondMesh);
-          hgTuples.add(
+          // the shadow path, restored as its own layer
+          hgThreads.add(
             new THREE.Line(
               new THREE.BufferGeometry().setFromPoints([sPos, p]),
-              new THREE.LineBasicMaterial({ color: COL.nTuple, transparent: true, opacity: 0.18 })
+              new THREE.LineBasicMaterial({ color: COL.nThread, transparent: true, opacity: 0.18 })
+            )
+          );
+        }
+
+        // lemniscate lobes: one per node, tangent to its counterpart — these
+        // carry the singularity binding (the shadow threads are gone)
+        for (const lobe of layer.lobes) {
+          hgLobes.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints(lobe.map(V3)),
+              new THREE.LineBasicMaterial({ color: COL.nLobe, transparent: true, opacity: 0.55 })
+            )
+          );
+        }
+      }
+
+      // the Flower of Life: one circle per tuple center at every level
+      const CIRCLE_SEGS = 72;
+      for (const level of half.flower) {
+        for (const [cx, cz] of level.centers) {
+          const pts: THREE.Vector3[] = [];
+          for (let s = 0; s <= CIRCLE_SEGS; s++) {
+            const a = (2 * Math.PI * s) / CIRCLE_SEGS;
+            pts.push(new THREE.Vector3(cx + level.radius * Math.cos(a), level.y, cz + level.radius * Math.sin(a)));
+          }
+          hgFlower.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints(pts),
+              new THREE.LineBasicMaterial({ color: COL.nFlowerLife, transparent: true, opacity: 0.32 })
             )
           );
         }
@@ -768,6 +827,32 @@ const nm = neural.meta;
     neuralGrp.add(lockRing);
     nHaloParts.push(lockRing);
 
+    // the emission envelope: the hyperbolic hourglass, maxima at the poles
+    const nEnvelope = new THREE.Group();
+    neuralGrp.add(nEnvelope);
+    const envGeo = new THREE.LatheGeometry(
+      N.envelope.profile.map(([r, y]) => new THREE.Vector2(r, y)),
+      72
+    );
+    nEnvelope.add(
+      new THREE.Mesh(
+        envGeo,
+        new THREE.MeshBasicMaterial({
+          color: COL.nEnvelope,
+          transparent: true,
+          opacity: 0.05,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      )
+    );
+    nEnvelope.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(envGeo),
+        new THREE.LineBasicMaterial({ color: COL.nEnvelope, transparent: true, opacity: 0.07 })
+      )
+    );
+
     // phase lock: the halves counter-rotate at the same rate, driven by the
     // same phase that winds the molecule
     const LOCK_SPIN = 0.22;
@@ -788,6 +873,10 @@ const nm = neural.meta;
       nSpirals: nSpiralParts,
       nTuples: nTupleParts,
       nHalos: nHaloParts,
+      nFlowerLife: nFlowerParts,
+      nLobes: nLobeParts,
+      nThreads: nThreadParts,
+      nEnvelope: [nEnvelope],
       singularity: [singularity],
       vessel: [vessel],
       ghost: [ghost],
