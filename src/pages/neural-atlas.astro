@@ -71,6 +71,13 @@ const layerCounts = m.layerCounts.join(' · ');
           <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tip at the tuple, tangent to
           its counterpart on the circle
         </button>
+        <button class="lg-row" data-g="threads">
+          <span class="sw" style="--c:#3a8f82"></span><b>Shadow paths</b> · every tuple bound straight to its singularity
+        </button>
+        <button class="lg-row" data-g="envelope">
+          <span class="sw" style="--c:#7c88b8"></span><b>Emission envelope</b> · the hyperbolic hourglass — the singularities
+          are its maxima
+        </button>
         <button class="lg-row" data-g="halos">
           <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one toroid per layer, layer 1 bound at 1/3 · plus the
           lock ring
@@ -331,6 +338,7 @@ const layerCounts = m.layerCounts.join(' · ');
     interface Snap {
       meta: { phi: number; phiInv: number; goldenWinding: number; spiralTurns: number };
       halves: Half[];
+      envelope: { profile: number[][] };
       lockRing: { radius: number; y: number };
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
@@ -350,6 +358,8 @@ const layerCounts = m.layerCounts.join(' · ');
       lock: 0xf2ead9,
       flower: 0xe06cff,
       lobe: 0xffe45c,
+      thread: 0x55e9d0,
+      envelope: 0x7c88b8,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
       minus: 0x5cd8ff,
@@ -414,6 +424,7 @@ const layerCounts = m.layerCounts.join(' · ');
     const halos = new THREE.Group();
     const flower = new THREE.Group();
     const lobes = new THREE.Group();
+    const threads = new THREE.Group();
 
     // rotating containers, one per half (opposite spin = the phase lock)
     const halfGroups: THREE.Group[] = [];
@@ -431,13 +442,15 @@ const layerCounts = m.layerCounts.join(' · ');
       const hgHalos = new THREE.Group();
       const hgFlower = new THREE.Group();
       const hgLobes = new THREE.Group();
-      hg.add(hgSing, hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes);
+      const hgThreads = new THREE.Group();
+      hg.add(hgSing, hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes, hgThreads);
       singularities.userData.parts = [...(singularities.userData.parts || []), hgSing];
       spirals.userData.parts = [...(spirals.userData.parts || []), hgSpiral];
       tuples.userData.parts = [...(tuples.userData.parts || []), hgTuples];
       halos.userData.parts = [...(halos.userData.parts || []), hgHalos];
       flower.userData.parts = [...(flower.userData.parts || []), hgFlower];
       lobes.userData.parts = [...(lobes.userData.parts || []), hgLobes];
+      threads.userData.parts = [...(threads.userData.parts || []), hgThreads];
 
       // ── layer 0: the pole singularity ──
       const sPos = V3(half.singularity);
@@ -519,6 +532,14 @@ const layerCounts = m.layerCounts.join(' · ');
           bondMesh.position.copy(p);
           bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
           hgTuples.add(bondMesh);
+          // the shadow path: the straight singularity-bound thread, restored
+          // as its own layer alongside the lobes — nothing taken away
+          hgThreads.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints([sPos, p]),
+              new THREE.LineBasicMaterial({ color: COL.thread, transparent: true, opacity: 0.18 })
+            )
+          );
         }
 
         // the lemniscate lobes: one per node, anchored at the layer center,
@@ -567,6 +588,32 @@ const layerCounts = m.layerCounts.join(' · ');
     lockRing.position.y = snap.lockRing.y;
     halos.userData.parts.push(lockRing);
     world.add(lockRing);
+
+    // ── the emission envelope: the hyperbolic hourglass, maxima at the poles ──
+    const envelope = new THREE.Group();
+    world.add(envelope);
+    const envGeo = new THREE.LatheGeometry(
+      snap.envelope.profile.map(([r, y]) => new THREE.Vector2(r, y)),
+      72
+    );
+    envelope.add(
+      new THREE.Mesh(
+        envGeo,
+        new THREE.MeshBasicMaterial({
+          color: COL.envelope,
+          transparent: true,
+          opacity: 0.05,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      )
+    );
+    envelope.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(envGeo),
+        new THREE.LineBasicMaterial({ color: COL.envelope, transparent: true, opacity: 0.07 })
+      )
+    );
 
     // ── the ghost Metatron's Cube — the slot the vessel occupies ──
     const ghost = new THREE.Group();
@@ -669,6 +716,8 @@ const layerCounts = m.layerCounts.join(' · ');
       halos: halos.userData.parts,
       flower: flower.userData.parts,
       lobes: lobes.userData.parts,
+      threads: threads.userData.parts,
+      envelope: [envelope],
       vessel: [vessel],
       ghost: [ghost],
     };

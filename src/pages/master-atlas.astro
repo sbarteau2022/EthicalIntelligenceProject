@@ -92,6 +92,13 @@ const nm = neural.meta;
           <button class="lg-row" data-g="nLobes">
             <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tangent to its counterpart
           </button>
+          <button class="lg-row" data-g="nThreads">
+            <span class="sw" style="--c:#3a8f82"></span><b>Shadow paths</b> · straight tuple-to-singularity binds
+          </button>
+          <button class="lg-row" data-g="nEnvelope">
+            <span class="sw" style="--c:#7c88b8"></span><b>Emission envelope</b> · the hyperbolic hourglass, maxima at the
+            poles
+          </button>
         </div>
 
         <div class="lg-section">
@@ -424,6 +431,7 @@ const nm = neural.meta;
     }
     interface NeuralSnap {
       halves: NeuralHalf[];
+      envelope: { profile: number[][] };
       lockRing: { radius: number; y: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       singularity: { radius: number };
@@ -446,6 +454,8 @@ const nm = neural.meta;
       nLock: 0xf2ead9,
       nFlowerLife: 0xe06cff,
       nLobe: 0xffe45c,
+      nThread: 0x55e9d0,
+      nEnvelope: 0x7c88b8,
       singularity: 0xffffff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
@@ -674,6 +684,7 @@ const nm = neural.meta;
     const nHaloParts: THREE.Object3D[] = [];
     const nFlowerParts: THREE.Object3D[] = [];
     const nLobeParts: THREE.Object3D[] = [];
+    const nThreadParts: THREE.Object3D[] = [];
     const nHalfGroups: THREE.Group[] = [];
 
     for (const half of N.halves) {
@@ -685,12 +696,14 @@ const nm = neural.meta;
       const hgHalos = new THREE.Group();
       const hgFlower = new THREE.Group();
       const hgLobes = new THREE.Group();
-      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes);
+      const hgThreads = new THREE.Group();
+      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower, hgLobes, hgThreads);
       nSpiralParts.push(hgSpiral);
       nTupleParts.push(hgTuples);
       nHaloParts.push(hgHalos);
       nFlowerParts.push(hgFlower);
       nLobeParts.push(hgLobes);
+      nThreadParts.push(hgThreads);
 
       // layer 0: the pole singularity (rides with its spiral)
       const sPos = V3(half.singularity);
@@ -759,6 +772,13 @@ const nm = neural.meta;
           bondMesh.position.copy(p);
           bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
           hgTuples.add(bondMesh);
+          // the shadow path, restored as its own layer
+          hgThreads.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints([sPos, p]),
+              new THREE.LineBasicMaterial({ color: COL.nThread, transparent: true, opacity: 0.18 })
+            )
+          );
         }
 
         // lemniscate lobes: one per node, tangent to its counterpart — these
@@ -807,6 +827,32 @@ const nm = neural.meta;
     neuralGrp.add(lockRing);
     nHaloParts.push(lockRing);
 
+    // the emission envelope: the hyperbolic hourglass, maxima at the poles
+    const nEnvelope = new THREE.Group();
+    neuralGrp.add(nEnvelope);
+    const envGeo = new THREE.LatheGeometry(
+      N.envelope.profile.map(([r, y]) => new THREE.Vector2(r, y)),
+      72
+    );
+    nEnvelope.add(
+      new THREE.Mesh(
+        envGeo,
+        new THREE.MeshBasicMaterial({
+          color: COL.nEnvelope,
+          transparent: true,
+          opacity: 0.05,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      )
+    );
+    nEnvelope.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(envGeo),
+        new THREE.LineBasicMaterial({ color: COL.nEnvelope, transparent: true, opacity: 0.07 })
+      )
+    );
+
     // phase lock: the halves counter-rotate at the same rate, driven by the
     // same phase that winds the molecule
     const LOCK_SPIN = 0.22;
@@ -829,6 +875,8 @@ const nm = neural.meta;
       nHalos: nHaloParts,
       nFlowerLife: nFlowerParts,
       nLobes: nLobeParts,
+      nThreads: nThreadParts,
+      nEnvelope: [nEnvelope],
       singularity: [singularity],
       vessel: [vessel],
       ghost: [ghost],
