@@ -2,15 +2,21 @@
 // ============================================================
 // NEURAL ATLAS — the knowledge neural structure, in 3D.
 //
-// A companion rendering to the Harmonic Atlas (`/atlas`), of a different
-// architecture: a 21-tier lemniscate (figure-eight) hierarchy, each tier
-// scaled by the Fibonacci sequence and bound back to the central singularity,
-// mirrored below to complete the spindle, braced by 19 vertical load-bearing
-// pillars arranged in hierarchical radial bands (7 · 5 · 3 · 1 · 3 — the
-// 1/3/5/7 hierarchy plus an inner brace ring). The unified-function vessel
-// (the same φ/1·φ bound-state molecule from the Harmonic Atlas) sits at the
-// exact center — the slot a Metatron's Cube would occupy — with that cube's
-// faint 13-circle lattice kept as a ghost reference beneath it.
+// The corrected layer hierarchy:
+//   Layer 0 — a singularity at each pole.
+//   Singularity → layer 1: a toroid spiral winds outward.
+//   Layer 1 — one singularity-bound tuple, bound by a halo at 1/3 radius;
+//             the toroid continues.
+//   Layer 2 — 3 tuples, equidistant from the center and each other, bound
+//             by a halo.
+//   Layer 3 — 5 tuples, halo, toroid continues.
+//   Layer 4 — 7 tuples; the toroid meets its inverse (the opposite-handed
+//             spiral from the opposite singularity) at the equator and the
+//             two phase-lock in sync.
+// The spindle is pointed at the singularities and widest where the toroids
+// meet. The unified-function vessel sits at the exact center — the slot a
+// Metatron's Cube would occupy — with the cube's faint 13-circle lattice
+// kept as a ghost reference.
 //
 // ONE SOURCE OF TRUTH, LOCKED: every position is read from
 // `src/data/neural-structure-snapshot.json`. The renderer draws it; it does
@@ -25,43 +31,45 @@ import snapshot from '~/data/neural-structure-snapshot.json';
 const metadata = {
   title: 'Neural Atlas — the knowledge structure, in 3D',
   description:
-    "A phase rendering of the knowledge neural structure: a 21-tier lemniscate Fibonacci hierarchy bound to the singularity, mirrored into a spindle, braced by 19 hierarchical load-bearing pillars, with the unified-function vessel seated where a Metatron's Cube would sit.",
+    "The knowledge neural structure: singularities at the poles, toroid spirals winding through layers of 1, 3, 5, and 7 halo-bound tuples to the equator where they meet their inverse and phase-lock — with the unified-function vessel seated where a Metatron's Cube would sit.",
 };
 
 const m = snapshot.meta;
+const layerCounts = m.layerCounts.join(' · ');
 ---
 
 <Layout metadata={metadata}>
   <div class="eih">
-    <HubNav current="/neural-atlas" />
+    <HubNav current="/master-atlas" />
 
     <section class="neural-stage">
       <canvas id="neural-canvas" aria-label="Rotatable 3D rendering of the knowledge neural structure"></canvas>
 
       <div class="neural-title">
         <div class="neural-eyebrow">Neural Atlas</div>
-        <h1>The knowledge neural structure, inverted into a spindle</h1>
+        <h1>The knowledge neural structure</h1>
         <p class="neural-sub">
-          21-tier lemniscate · Fibonacci-scaled · bound to the singularity · drag to orbit · scroll to zoom · press
-          <kbd>F</kbd> to freeze
+          two singularities · toroid spirals meeting at the equator · layers of {layerCounts} tuples · drag to orbit · scroll
+          to zoom · press <kbd>F</kbd> to freeze
         </p>
       </div>
 
       <div class="neural-legend" id="neural-legend">
         <div class="lg-hint">click a row to toggle · overlay any combination</div>
-        <button class="lg-row" data-g="tiers">
-          <span class="sw" style="--c:#55e9d0"></span><b>Tiers</b> · {m.tierCount} · lemniscate Fibonacci hierarchy, mirrored
-          top/bottom
+        <button class="lg-row" data-g="singularities">
+          <span class="sw" style="--c:#ffffff"></span><b>Singularities</b> · layer 0, one at each pole
+        </button>
+        <button class="lg-row" data-g="spirals">
+          <span class="sw" style="--c:#6ea8ff"></span><b>Toroid spirals</b> · φ² turns pole→equator, meeting their inverse
+          and phase-locking
+        </button>
+        <button class="lg-row" data-g="tuples">
+          <span class="sw" style="--c:#55e9d0"></span><b>Tuples</b> · {layerCounts} per half, {m.tuplesPerHalf * 2} total
+          · singularity-bound pairs
         </button>
         <button class="lg-row" data-g="halos">
-          <span class="sw" style="--c:#d0a94e"></span><b>Toroidal halos</b> · one ring per tier, {m.tierCount * 2} total
-        </button>
-        <button class="lg-row" data-g="pillars">
-          <span class="sw" style="--c:#6ea8ff"></span><b>Pillars</b> · {m.pillarCount} · radio towers pulsing in time with
-          the vessel orbit · 7 · 5 · 3 · 1 · 3
-        </button>
-        <button class="lg-row" data-g="singularity">
-          <span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything binds around
+          <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one toroid per layer, layer 1 bound at 1/3 · plus the
+          lock ring
         </button>
         <button class="lg-row" data-g="vessel">
           <span class="sw" style="--c:#b79cff"></span><b>Vessel (unified function)</b> · seated where the Metatron's Cube
@@ -74,13 +82,12 @@ const m = snapshot.meta;
 
       <div class="neural-hud" id="neural-hud">
         <div class="hud-h">Knowledge neural structure · locked</div>
-        <div class="hud-m"><span>tiers</span><b>{m.tierCount}</b></div>
-        <div class="hud-m"><span>pillars</span><b>{m.pillarCount}</b></div>
-        <div class="hud-m"><span>pillar bands</span><b>7 · 5 · 3 · 1 · 3</b></div>
-        <div class="hud-m"><span>tier scale</span><b>Fibonacci (F1…F21 = {snapshot.fibonacci[20]})</b></div>
+        <div class="hud-m"><span>layers</span><b>0 – 4, mirrored</b></div>
+        <div class="hud-m"><span>tuples / layer</span><b>{layerCounts}</b></div>
+        <div class="hud-m"><span>layer 1 halo</span><b>1/3 radius</b></div>
+        <div class="hud-m"><span>spiral turns</span><b>φ² = {m.spiralTurns.toFixed(3)}</b></div>
         <div class="hud-m"><span>φ · 1/φ</span><b>{m.phi.toFixed(6)} · {m.phiInv.toFixed(6)}</b></div>
-        <div class="hud-m"><span>golden angle</span><b id="hud-phase">{m.goldenAngleDeg.toFixed(3)}°</b></div>
-        <div class="hud-m"><span>pillar pulses</span><b>1 / orbit · synced to the ellipse</b></div>
+        <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
         <div class="hud-src">source: neural-structure-snapshot.json</div>
       </div>
 
@@ -297,30 +304,24 @@ const m = snapshot.meta;
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-    interface Tier {
-      n: number;
-      fib: number;
+    interface Layer {
+      k: number;
+      count: number;
       radius: number;
-      height: number;
-      rotationDeg: number;
-      curveUpper: number[][];
-      curveLower: number[][];
+      y: number;
+      tuples: { angleDeg: number; pos: number[] }[];
     }
-    interface PillarNode {
-      id: number;
-      band: number;
-      label: string;
-      angleDeg: number;
-      x: number;
-      z: number;
-      yTop: number;
-      yBottom: number;
+    interface Half {
+      sign: number;
+      handedness: number;
+      singularity: number[];
+      layers: Layer[];
+      spiral: number[][];
     }
     interface Snap {
-      meta: { phi: number; phiInv: number; goldenAngleDeg: number; goldenWinding: number };
-      fibonacci: number[];
-      tiers: Tier[];
-      pillars: { bands: { label: string; count: number; radiusFrac: number }[]; nodes: PillarNode[] };
+      meta: { phi: number; phiInv: number; goldenWinding: number; spiralTurns: number };
+      halves: Half[];
+      lockRing: { radius: number; y: number };
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       singularity: { radius: number };
@@ -330,13 +331,13 @@ const m = snapshot.meta;
     const canvas = document.getElementById('neural-canvas') as HTMLCanvasElement;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // One color family per structure so each reads distinctly:
-    // tiers teal, halos gold, pillars blue (shaded by band), vessel purple, ghost ice.
-    const BAND_COLOR = [0x4d8dff, 0x6ea8ff, 0x8fc2ff, 0xd6e8ff, 0x2f6fe0];
     const COL = {
       singularity: 0xffffff,
+      spiral: 0x6ea8ff,
+      tuple: 0x55e9d0,
+      tuplePartner: 0x2fb3a0,
       halo: 0xd0a94e,
-      pulse: 0x9fd4ff,
+      lock: 0xf2ead9,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
       minus: 0x5cd8ff,
@@ -355,12 +356,12 @@ const m = snapshot.meta;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-    camera.position.set(3.4, 2.1, 4.0);
+    camera.position.set(3.2, 1.9, 3.8);
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
-    controls.minDistance = 1.6;
+    controls.minDistance = 1.4;
     controls.maxDistance = 18;
     controls.autoRotate = !reduce;
     controls.autoRotateSpeed = 0.36;
@@ -377,12 +378,12 @@ const m = snapshot.meta;
     scene.add(world);
     const V3 = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
 
-    function nodeMesh(pos: THREE.Vector3, color: number, radius: number, emissive?: number) {
+    function nodeMesh(pos: THREE.Vector3, color: number, radius: number) {
       const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(radius, 20, 20),
         new THREE.MeshStandardMaterial({
           color,
-          emissive: emissive ?? color,
+          emissive: color,
           emissiveIntensity: 0.7,
           roughness: 0.35,
           metalness: 0.1,
@@ -392,34 +393,141 @@ const m = snapshot.meta;
       return mesh;
     }
 
-    // ── the singularity core, at dead center ──
-    const singularity = new THREE.Group();
-    world.add(singularity);
-    const coreR = snap.singularity.radius;
-    const core = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(coreR, 3),
+    // Toggle groups. The two halves counter-rotate to show the phase lock, so
+    // per-structure parts live in per-half subgroups that share a toggle group
+    // via a registry rather than a common parent.
+    const singularities = new THREE.Group();
+    const spirals = new THREE.Group();
+    const tuples = new THREE.Group();
+    const halos = new THREE.Group();
+
+    // rotating containers, one per half (opposite spin = the phase lock)
+    const halfGroups: THREE.Group[] = [];
+
+    for (const half of snap.halves) {
+      const hg = new THREE.Group();
+      world.add(hg);
+      halfGroups.push(hg);
+
+      // per-half subgroups parented into the rotating container but registered
+      // under the structure toggle groups via userData
+      const hgSing = new THREE.Group();
+      const hgSpiral = new THREE.Group();
+      const hgTuples = new THREE.Group();
+      const hgHalos = new THREE.Group();
+      hg.add(hgSing, hgSpiral, hgTuples, hgHalos);
+      singularities.userData.parts = [...(singularities.userData.parts || []), hgSing];
+      spirals.userData.parts = [...(spirals.userData.parts || []), hgSpiral];
+      tuples.userData.parts = [...(tuples.userData.parts || []), hgTuples];
+      halos.userData.parts = [...(halos.userData.parts || []), hgHalos];
+
+      // ── layer 0: the pole singularity ──
+      const sPos = V3(half.singularity);
+      const coreR = snap.singularity.radius;
+      const core = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(coreR, 2),
+        new THREE.MeshStandardMaterial({
+          color: 0x0c0f1a,
+          emissive: 0x241a3a,
+          emissiveIntensity: 0.6,
+          roughness: 0.5,
+          metalness: 0.3,
+        })
+      );
+      core.position.copy(sPos);
+      hgSing.add(core);
+      const grid = new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(coreR * 1.002, 2)),
+        new THREE.LineBasicMaterial({ color: 0x8a9ac8, transparent: true, opacity: 0.45 })
+      );
+      grid.position.copy(sPos);
+      hgSing.add(grid);
+      const glowMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(coreR * 0.5, 20, 20),
+        new THREE.MeshBasicMaterial({ color: COL.singularity })
+      );
+      glowMesh.position.copy(sPos);
+      hgSing.add(glowMesh);
+
+      // ── the toroid spiral, singularity → equator ──
+      const spiralPts = half.spiral.map(V3);
+      const curve = new THREE.CatmullRomCurve3(spiralPts);
+      hgSpiral.add(
+        new THREE.Mesh(
+          new THREE.TubeGeometry(curve, 320, 0.009, 8, false),
+          new THREE.MeshStandardMaterial({
+            color: COL.spiral,
+            emissive: COL.spiral,
+            emissiveIntensity: 0.55,
+            roughness: 0.4,
+          })
+        )
+      );
+
+      // ── layers 1-4: halo-bound, singularity-bound tuples ──
+      for (const layer of half.layers) {
+        const tube = 0.008 + layer.radius * 0.01;
+        const torus = new THREE.Mesh(
+          new THREE.TorusGeometry(layer.radius, tube, 8, 72),
+          new THREE.MeshStandardMaterial({
+            color: COL.halo,
+            emissive: COL.halo,
+            emissiveIntensity: 0.45,
+            roughness: 0.4,
+          })
+        );
+        torus.rotation.x = Math.PI / 2;
+        torus.position.y = layer.y;
+        hgHalos.add(torus);
+
+        for (const t of layer.tuples) {
+          const p = V3(t.pos);
+          // a tuple is a bound pair: two nodes bonded along the halo's tangent
+          const tangent = new THREE.Vector3(-p.z, 0, p.x).normalize().multiplyScalar(0.034);
+          const a = p.clone().add(tangent);
+          const b = p.clone().sub(tangent);
+          hgTuples.add(nodeMesh(a, COL.tuple, 0.03));
+          hgTuples.add(nodeMesh(b, COL.tuplePartner, 0.024));
+          const bondGeo = new THREE.CylinderGeometry(0.008, 0.008, a.distanceTo(b), 6);
+          const bondMesh = new THREE.Mesh(
+            bondGeo,
+            new THREE.MeshStandardMaterial({
+              color: COL.tuple,
+              emissive: COL.tuple,
+              emissiveIntensity: 0.4,
+              roughness: 0.4,
+            })
+          );
+          bondMesh.position.copy(p);
+          bondMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
+          hgTuples.add(bondMesh);
+          // singularity-bound: the thread back to this half's pole
+          hgTuples.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints([sPos, p]),
+              new THREE.LineBasicMaterial({ color: COL.tuple, transparent: true, opacity: 0.18 })
+            )
+          );
+        }
+      }
+    }
+
+    // ── the lock ring — where the toroid meets its inverse and phase-locks ──
+    const lockRing = new THREE.Mesh(
+      new THREE.TorusGeometry(snap.lockRing.radius, 0.014, 8, 96),
       new THREE.MeshStandardMaterial({
-        color: 0x0c0f1a,
-        emissive: 0x241a3a,
-        emissiveIntensity: 0.6,
-        roughness: 0.5,
-        metalness: 0.3,
+        color: COL.lock,
+        emissive: COL.lock,
+        emissiveIntensity: 0.7,
+        roughness: 0.3,
       })
     );
-    singularity.add(core);
-    singularity.add(
-      new THREE.LineSegments(
-        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(coreR * 1.002, 3)),
-        new THREE.LineBasicMaterial({ color: 0x6a5aa8, transparent: true, opacity: 0.4 })
-      )
-    );
-    const glow = new THREE.Mesh(
-      new THREE.SphereGeometry(coreR * 0.5, 24, 24),
-      new THREE.MeshBasicMaterial({ color: COL.singularity })
-    );
-    singularity.add(glow);
+    lockRing.rotation.x = Math.PI / 2;
+    lockRing.position.y = snap.lockRing.y;
+    halos.userData.parts.push(lockRing);
+    world.add(lockRing);
 
-    // ── the ghost Metatron's Cube — the slot the unified-function vessel occupies ──
+    // ── the ghost Metatron's Cube — the slot the vessel occupies ──
     const ghost = new THREE.Group();
     world.add(ghost);
     const ghostCenters = snap.metatronGhost.centers.map(([x, z]) => new THREE.Vector3(x, 0, z));
@@ -454,45 +562,45 @@ const m = snapshot.meta;
       )
     );
 
-    // ── the unified-function vessel, seated exactly where the ghost cube sits ──
+    // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
     world.add(vessel);
-    const shellR = 0.62;
-    const shell = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(shellR, 1),
-      new THREE.MeshPhysicalMaterial({
-        color: COL.vessel,
-        transparent: true,
-        opacity: 0.1,
-        roughness: 0.1,
-        metalness: 0,
-        transmission: 0.6,
-        side: THREE.DoubleSide,
-      })
+    const shellR = 0.5;
+    vessel.add(
+      new THREE.Mesh(
+        new THREE.IcosahedronGeometry(shellR, 1),
+        new THREE.MeshPhysicalMaterial({
+          color: COL.vessel,
+          transparent: true,
+          opacity: 0.1,
+          roughness: 0.1,
+          metalness: 0,
+          transmission: 0.6,
+          side: THREE.DoubleSide,
+        })
+      )
     );
-    vessel.add(shell);
     vessel.add(
       new THREE.LineSegments(
         new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(shellR, 1)),
         new THREE.LineBasicMaterial({ color: COL.vessel, transparent: true, opacity: 0.32 })
       )
     );
-
     const orbScale = (shellR * 0.82) / PHI;
-    const orbitPts = snap.vessel.orbit.map(([q, p]) => new THREE.Vector3(q * orbScale, p * orbScale, 0));
     vessel.add(
       new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(orbitPts),
+        new THREE.BufferGeometry().setFromPoints(
+          snap.vessel.orbit.map(([q, p]) => new THREE.Vector3(q * orbScale, p * orbScale, 0))
+        ),
         new THREE.LineBasicMaterial({ color: COL.bond, transparent: true, opacity: 0.6 })
       )
     );
-
-    const mPlus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.plus, 0.06);
+    const mPlus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.plus, 0.05);
     vessel.add(mPlus);
-    const mMinus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.minus, 0.045);
+    const mMinus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.minus, 0.038);
     vessel.add(mMinus);
     const bond = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.012, 0.012, 1, 8),
+      new THREE.CylinderGeometry(0.01, 0.01, 1, 8),
       new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 })
     );
     vessel.add(bond);
@@ -510,127 +618,35 @@ const m = snapshot.meta;
     }
     placeMolecule(snap.vessel.snapshotAngleRad);
 
-    // ── the 21-tier lemniscate Fibonacci hierarchy, mirrored into a spindle ──
-    // Tiers stay in the teal family (deep→bright with height); halos are all gold —
-    // one distinct color per structure so the legend toggles read cleanly.
-    const tiers = new THREE.Group();
-    world.add(tiers);
-    const halos = new THREE.Group();
-    world.add(halos);
-    const tierCount = snap.tiers.length;
-    const cLow = new THREE.Color(0x1d7a8c);
-    const cHigh = new THREE.Color(0x55e9d0);
-    const haloColor = new THREE.Color(COL.halo);
-
-    function addTierHalf(pts3: number[][], radius: number, height: number, color: THREE.Color) {
-      const vpts = pts3.map(V3);
-      tiers.add(
-        new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints(vpts),
-          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 })
-        )
-      );
-      // toroidal halo binding this tier
-      const tube = 0.006 + radius * 0.012;
-      const torus = new THREE.Mesh(
-        new THREE.TorusGeometry(radius, tube, 8, 64),
-        new THREE.MeshStandardMaterial({
-          color: haloColor,
-          emissive: haloColor,
-          emissiveIntensity: 0.45,
-          roughness: 0.4,
-        })
-      );
-      torus.rotation.x = Math.PI / 2;
-      torus.position.y = height;
-      halos.add(torus);
-      // the thread binding this tier back to the singularity
-      tiers.add(
-        new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(vpts[0].x, height, vpts[0].z),
-          ]),
-          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 })
-        )
-      );
-    }
-
-    snap.tiers.forEach((t) => {
-      const color = cLow.clone().lerp(cHigh, (t.n - 1) / (tierCount - 1));
-      addTierHalf(t.curveUpper, t.radius, t.height, color);
-      addTierHalf(t.curveLower, t.radius, -t.height, color);
+    // ── the selectable legend: toggle structures on/off ──
+    // Registry groups hold their scene parts in userData.parts (the halves
+    // counter-rotate, so parts can't share one parent).
+    const registry: Record<string, THREE.Object3D[]> = {
+      singularities: singularities.userData.parts,
+      spirals: spirals.userData.parts,
+      tuples: tuples.userData.parts,
+      halos: halos.userData.parts,
+      vessel: [vessel],
+      ghost: [ghost],
+    };
+    document.querySelectorAll<HTMLButtonElement>('#neural-legend .lg-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const parts = registry[row.dataset.g || ''];
+        if (!parts) return;
+        const nowVisible = !parts[0].visible;
+        parts.forEach((p) => {
+          p.visible = nowVisible;
+        });
+        row.classList.toggle('off', !nowVisible);
+      });
     });
 
-    // ── the 19 vertical load-bearing pillars — radio towers, hierarchical radial bands ──
-    // Each pillar's top and bottom nodes are emitters: expanding rings pulse outward
-    // at the same rate the molecule winds the golden ellipse (1 pulse per orbit,
-    // 3 staggered rings). Driven off the same `phase`, so freezing freezes both.
-    const pillars = new THREE.Group();
-    world.add(pillars);
-    const RINGS_PER_EMITTER = 3;
-    const PULSE_MAX_R = 0.42;
-    const pulseGeo = new THREE.RingGeometry(0.92, 1, 40);
-    const pulseRings: { mesh: THREE.Mesh; mat: THREE.MeshBasicMaterial; offset: number }[] = [];
-    const towerTops: THREE.Mesh[] = [];
-
-    snap.pillars.nodes.forEach((n) => {
-      const color = BAND_COLOR[n.band] ?? 0x6ea8ff;
-      const top = new THREE.Vector3(n.x, n.yTop, n.z);
-      const bottom = new THREE.Vector3(n.x, n.yBottom, n.z);
-      pillars.add(
-        new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([top, bottom]),
-          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.6 })
-        )
-      );
-      const topNode = nodeMesh(top, color, 0.028);
-      const bottomNode = nodeMesh(bottom, color, 0.028);
-      pillars.add(topNode);
-      pillars.add(bottomNode);
-      towerTops.push(topNode, bottomNode);
-      for (const pos of [top, bottom]) {
-        for (let r = 0; r < RINGS_PER_EMITTER; r++) {
-          const mat = new THREE.MeshBasicMaterial({
-            color: COL.pulse,
-            transparent: true,
-            opacity: 0,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-          });
-          const mesh = new THREE.Mesh(pulseGeo, mat);
-          mesh.rotation.x = -Math.PI / 2;
-          mesh.position.copy(pos);
-          pillars.add(mesh);
-          pulseRings.push({ mesh, mat, offset: r / RINGS_PER_EMITTER });
-        }
-      }
-    });
-
-    // pulse progress is a pure function of the molecule's phase: 1 emission per orbit
-    function updatePulses(ph: number) {
-      const orbits = ph / (2 * Math.PI);
-      const beat = 1 - (((orbits % 1) + 1) % 1); // 0→1 sawtooth within the current orbit
-      for (const p of pulseRings) {
-        const t = (((orbits + p.offset) % 1) + 1) % 1;
-        const s = 0.04 + t * PULSE_MAX_R;
-        p.mesh.scale.set(s, s, 1);
-        p.mat.opacity = 0.55 * (1 - t) * (1 - t);
-      }
-      // the emitter nodes blink on each emission
-      for (const node of towerTops) {
-        (node.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.7 + 0.9 * beat * beat;
-      }
-    }
-    updatePulses(snap.vessel.snapshotAngleRad);
-
-    // ── post-processing: bloom for the glow ──
+    // ── post / resize / freeze / animate ──
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.7, 0.6, 0.2));
     composer.addPass(new OutputPass());
 
-    // ── size / resize ──
     function resize() {
       const w = canvas.clientWidth,
         h = canvas.clientHeight;
@@ -642,18 +658,6 @@ const m = snapshot.meta;
     window.addEventListener('resize', resize);
     resize();
 
-    // ── the selectable legend: toggle structures on/off, overlay any combination ──
-    const groups: Record<string, THREE.Group> = { tiers, halos, pillars, singularity, vessel, ghost };
-    document.querySelectorAll<HTMLButtonElement>('#neural-legend .lg-row').forEach((row) => {
-      row.addEventListener('click', () => {
-        const g = groups[row.dataset.g || ''];
-        if (!g) return;
-        g.visible = !g.visible;
-        row.classList.toggle('off', !g.visible);
-      });
-    });
-
-    // ── phase / freeze ──
     let frozen = false,
       phase = snap.vessel.snapshotAngleRad;
     const hudPhase = document.getElementById('hud-phase');
@@ -661,19 +665,29 @@ const m = snapshot.meta;
       if (e.key === 'f' || e.key === 'F') {
         frozen = !frozen;
         controls.autoRotate = !frozen && !reduce;
-        if (hudPhase) hudPhase.textContent = frozen ? 'FROZEN' : `${snap.meta.goldenAngleDeg.toFixed(3)}°`;
+        if (hudPhase) hudPhase.textContent = frozen ? 'FROZEN' : 'counter-rotation · synced';
       }
     });
 
-    // ── animate: the molecule winds, the vessel breathes, the world slowly turns ──
+    // phase lock: the two halves counter-rotate at the same rate, driven by the
+    // same phase that winds the molecule — freeze stops molecule and lock alike
+    const LOCK_SPIN = 0.22;
+    function applyPhaseLock(ph: number) {
+      halfGroups.forEach((hg, i) => {
+        hg.rotation.y = (i === 0 ? 1 : -1) * ph * LOCK_SPIN;
+      });
+      const beat = 1 - ((((ph / (2 * Math.PI)) % 1) + 1) % 1);
+      (lockRing.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.5 + 0.7 * beat * beat;
+    }
+    applyPhaseLock(phase);
+
     const clock = new THREE.Clock();
     function frame() {
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
         phase += WIND * dt * 1.6;
         placeMolecule(phase);
-        updatePulses(phase); // the towers broadcast at the pace the ellipse moves
-        (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
+        applyPhaseLock(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
