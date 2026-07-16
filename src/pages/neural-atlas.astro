@@ -502,7 +502,10 @@ const m = snapshot.meta;
       // the thread binding this tier back to the singularity
       tiers.add(
         new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(vpts[0].x, height, vpts[0].z)]),
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(vpts[0].x, height, vpts[0].z),
+          ]),
           new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 })
         )
       );
