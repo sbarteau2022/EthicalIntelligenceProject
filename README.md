@@ -1,4 +1,4 @@
- # The Ethical Intelligence Project
+# The Ethical Intelligence Project
 
 **Powered by Elle AI**
 
