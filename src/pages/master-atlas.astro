@@ -1,0 +1,828 @@
+---
+// ============================================================
+// MASTER ATLAS — everything, one rendering.
+//
+// The Harmonic Atlas (the unified function: 21 load-bearing pillars, 19
+// relational lobes, the hubless bridge fabric) and the Neural Atlas (the
+// knowledge neural structure: 21 lemniscate Fibonacci tiers with toroidal
+// halos, mirrored into a spindle, 19 radio-tower pillars) rendered together
+// in ONE scene, nested around the same center: the singularity core and the
+// unified-function vessel, seated where the Metatron's Cube would sit.
+//
+// A master selector switches the view — Combined · Unified function ·
+// Neural map — and every structure keeps its own legend row, so any part
+// can be toggled and overlaid against any other.
+//
+// ONE SOURCE OF TRUTH, LOCKED: positions are read verbatim from
+// `harmonic-snapshot.json` and `neural-structure-snapshot.json`. The
+// renderer draws them; it re-derives nothing.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import harmonic from '~/data/harmonic-snapshot.json';
+import neural from '~/data/neural-structure-snapshot.json';
+
+const metadata = {
+  title: 'Master Atlas — everything, one rendering',
+  description:
+    'The unified function and the knowledge neural structure rendered together in one 3D scene — switch between Combined, Unified function, and Neural map views, and toggle every structure independently to overlay and examine any combination.',
+};
+
+const u = harmonic.unifiedFunction;
+const nm = neural.meta;
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/master-atlas" />
+
+    <section class="master-stage">
+      <canvas id="master-canvas" aria-label="Rotatable 3D rendering combining the unified function and the neural map"
+      ></canvas>
+
+      <div class="master-title">
+        <div class="master-eyebrow">Master Atlas</div>
+        <h1>Everything, one rendering</h1>
+        <p class="master-sub">
+          the unified function nested inside the neural map · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+        </p>
+      </div>
+
+      <div class="master-mode" id="master-mode" role="group" aria-label="Select which structure family to view">
+        <button data-mode="combined" class="on">Combined</button>
+        <button data-mode="unified">Unified function</button>
+        <button data-mode="neural">Neural map</button>
+      </div>
+
+      <div class="master-legend" id="master-legend">
+        <div class="lg-hint">click a row to toggle · overlay any combination</div>
+
+        <div class="lg-section" data-family="unified">
+          <div class="lg-head">Unified function</div>
+          <button class="lg-row" data-g="uPillars">
+            <span class="sw" style="--c:#ff5c9e"></span><b>Pillars</b> · 21 · the load-bearing architecture
+          </button>
+          <button class="lg-row" data-g="uFlower">
+            <span class="sw" style="--c:#ff8a4d"></span><b>Lobes / flower</b> · 19 · the relational structure
+          </button>
+          <button class="lg-row" data-g="uBridges">
+            <span class="sw" style="--c:#6ee87a"></span><b>Bridges</b> · hubless fabric, no privileged node
+          </button>
+        </div>
+
+        <div class="lg-section" data-family="neural">
+          <div class="lg-head">Neural map</div>
+          <button class="lg-row" data-g="nTiers">
+            <span class="sw" style="--c:#55e9d0"></span><b>Tiers</b> · {nm.tierCount} · lemniscate Fibonacci spindle
+          </button>
+          <button class="lg-row" data-g="nHalos">
+            <span class="sw" style="--c:#d0a94e"></span><b>Toroidal halos</b> · one per tier, {nm.tierCount * 2} total
+          </button>
+          <button class="lg-row" data-g="nTowers">
+            <span class="sw" style="--c:#6ea8ff"></span><b>Towers</b> · {nm.pillarCount} · pulsing with the vessel orbit
+          </button>
+        </div>
+
+        <div class="lg-section">
+          <div class="lg-head">Shared center</div>
+          <button class="lg-row" data-g="singularity">
+            <span class="sw" style="--c:#ffffff"></span><b>Singularity</b> · the center everything holds around
+          </button>
+          <button class="lg-row" data-g="vessel">
+            <span class="sw" style="--c:#b79cff"></span><b>Vessel (unified function)</b> · where the Metatron's Cube would
+            sit
+          </button>
+          <button class="lg-row" data-g="ghost">
+            <span class="sw" style="--c:#cdd6ff"></span><b>Metatron ghost</b> · the cube's 13-circle lattice
+          </button>
+        </div>
+      </div>
+
+      <div class="master-hud" id="master-hud">
+        <div class="hud-h">Master Atlas · locked</div>
+        <div class="hud-m"><span>unified · pillars / lobes</span><b>21 / 19</b></div>
+        <div class="hud-m"><span>neural · tiers / towers</span><b>{nm.tierCount} / {nm.pillarCount}</b></div>
+        <div class="hud-m"><span>area φ·1/φ</span><b>{u.area_invariant.toFixed(3)}</b></div>
+        <div class="hud-m"><span>free energy F</span><b>{u.free_energy.toFixed(3)}</b></div>
+        <div class="hud-m">
+          <span>no privileged node</span><b class="ok">{u.no_privileged_node ? 'true' : 'false'}</b>
+        </div>
+        <div class="hud-m"><span>obliquity θ</span><b>{harmonic.obliquity.thetaDeg.toFixed(1)}°</b></div>
+        <div class="hud-m"><span>tower pulses</span><b id="hud-phase">1 / orbit · synced</b></div>
+        <div class="hud-src">sources: harmonic-snapshot.json · neural-structure-snapshot.json</div>
+      </div>
+
+      <noscript><div class="master-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .master-stage {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 50% 0%, #0f1220 0%, #070811 70%, #05050b 100%);
+    }
+    #master-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #master-canvas:active {
+      cursor: grabbing;
+    }
+
+    .master-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 46%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .master-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #d0a94e;
+      margin-bottom: 12px;
+    }
+    .master-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .master-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .master-sub kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
+    }
+
+    .master-mode {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 26px;
+      z-index: 3;
+      display: flex;
+      gap: 4px;
+      background: rgba(12, 14, 24, 0.72);
+      border: 1px solid rgba(208, 169, 78, 0.24);
+      border-radius: 999px;
+      padding: 4px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .master-mode button {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #9aa3ba;
+      background: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 15px;
+      cursor: pointer;
+      transition:
+        color 0.15s ease,
+        background 0.15s ease;
+    }
+    .master-mode button:hover {
+      color: #eef1f8;
+    }
+    .master-mode button.on {
+      color: #10131f;
+      background: #d0a94e;
+    }
+
+    .master-legend {
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(12, 14, 24, 0.66);
+      border: 1px solid rgba(208, 169, 78, 0.18);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 320px;
+      max-height: calc(100% - 120px);
+      overflow-y: auto;
+    }
+    .lg-hint {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7b84a0;
+    }
+    .lg-section {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      transition: opacity 0.2s ease;
+    }
+    .lg-section.dim {
+      opacity: 0.3;
+    }
+    .lg-head {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #d0a94e;
+    }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+      text-align: left;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s ease;
+    }
+    .lg-row:hover b {
+      text-decoration: underline;
+    }
+    .lg-row.off {
+      opacity: 0.32;
+    }
+    .lg-row.off .sw {
+      box-shadow: none;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
+
+    .master-hud {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(12, 14, 24, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 250px;
+    }
+    .hud-h {
+      color: #55e9d0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-m b.ok {
+      color: #55e9d0;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .master-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
+
+    @media (max-width: 900px) {
+      .master-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .master-legend {
+        top: auto;
+        bottom: 84px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 74%;
+        max-height: 44%;
+      }
+      .master-hud {
+        display: none;
+      }
+      .master-mode {
+        bottom: 16px;
+      }
+    }
+  </style>
+
+  <script type="application/json" id="harmonic-snap" set:html={JSON.stringify(harmonic)} />
+  <script type="application/json" id="neural-snap" set:html={JSON.stringify(neural)} />
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    interface HarmonicSnap {
+      meta: { phi: number; phiInv: number; goldenWinding: number };
+      architecture: { nodes: { id: number; kind: string; pos: number[] }[]; edges: number[][] };
+      fabric: { edges: number[][] };
+      flower: { nodes: { id: number; ring: number; pos: number[] }[]; edges: number[][] };
+      vessel: { orbit: number[][]; snapshotAngleRad: number };
+      obliquity: { thetaDeg: number };
+    }
+    interface NeuralTier {
+      n: number;
+      radius: number;
+      height: number;
+      curveUpper: number[][];
+      curveLower: number[][];
+    }
+    interface NeuralSnap {
+      tiers: NeuralTier[];
+      pillars: { nodes: { band: number; x: number; z: number; yTop: number; yBottom: number }[] };
+      metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
+      singularity: { radius: number };
+    }
+
+    const H: HarmonicSnap = JSON.parse((document.getElementById('harmonic-snap') as HTMLElement).textContent || '{}');
+    const N: NeuralSnap = JSON.parse((document.getElementById('neural-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('master-canvas') as HTMLCanvasElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // One distinct color per structure across BOTH families.
+    const COL = {
+      uPillar: 0xff5c9e,
+      uFlower: 0xff8a4d,
+      uBridge: 0x6ee87a,
+      nTierLow: 0x1d7a8c,
+      nTierHigh: 0x55e9d0,
+      nHalo: 0xd0a94e,
+      pulse: 0x9fd4ff,
+      singularity: 0xffffff,
+      vessel: 0xb79cff,
+      plus: 0xff5cc8,
+      minus: 0x5cd8ff,
+      bond: 0xd0a94e,
+      ghost: 0xcdd6ff,
+    };
+    const NBAND_COLOR = [0x4d8dff, 0x6ea8ff, 0x8fc2ff, 0xd6e8ff, 0x2f6fe0];
+    const PHI = H.meta.phi,
+      PHI_INV = H.meta.phiInv,
+      WIND = H.meta.goldenWinding;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.set(3.6, 2.2, 4.2);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 1.6;
+    controls.maxDistance = 18;
+    controls.autoRotate = !reduce;
+    controls.autoRotateSpeed = 0.34;
+
+    scene.add(new THREE.AmbientLight(0x2a3050, 1.1));
+    const key = new THREE.PointLight(0xaec2ff, 40, 40);
+    key.position.set(4, 6, 5);
+    scene.add(key);
+    const rim = new THREE.PointLight(0xd0a94e, 16, 40);
+    rim.position.set(-5, -4, -4);
+    scene.add(rim);
+
+    const world = new THREE.Group();
+    scene.add(world);
+    const V3 = (a: number[]) => new THREE.Vector3(a[0], a[1], a[2]);
+
+    function nodeMesh(pos: THREE.Vector3, color: number, radius: number) {
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 0.7,
+          roughness: 0.35,
+          metalness: 0.1,
+        })
+      );
+      mesh.position.copy(pos);
+      return mesh;
+    }
+    function edgeLines(nodesById: Record<number, number[]>, edges: number[][], color: number, opacity: number) {
+      const pts: THREE.Vector3[] = [];
+      for (const [a, b] of edges) {
+        pts.push(V3(nodesById[a]), V3(nodesById[b]));
+      }
+      return new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+      );
+    }
+
+    // ════ SHARED CENTER — the singularity and the vessel, common to both maps ════
+    const singularity = new THREE.Group();
+    world.add(singularity);
+    const coreR = 0.42;
+    singularity.add(
+      new THREE.Mesh(
+        new THREE.IcosahedronGeometry(coreR, 3),
+        new THREE.MeshStandardMaterial({
+          color: 0x0c1020,
+          emissive: 0x1f2246,
+          emissiveIntensity: 0.6,
+          roughness: 0.5,
+          metalness: 0.3,
+        })
+      )
+    );
+    singularity.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(coreR * 1.002, 3)),
+        new THREE.LineBasicMaterial({ color: 0x5a6ba8, transparent: true, opacity: 0.4 })
+      )
+    );
+    const glow = new THREE.Mesh(
+      new THREE.SphereGeometry(coreR * 0.5, 24, 24),
+      new THREE.MeshBasicMaterial({ color: COL.singularity })
+    );
+    singularity.add(glow);
+
+    // the ghost Metatron's Cube — the slot the vessel occupies
+    const ghost = new THREE.Group();
+    world.add(ghost);
+    const ghostCenters = N.metatronGhost.centers.map(([x, z]) => new THREE.Vector3(x, 0, z));
+    const circleSegs = 40;
+    for (const c of ghostCenters) {
+      const pts: THREE.Vector3[] = [];
+      for (let s = 0; s <= circleSegs; s++) {
+        const a = (2 * Math.PI * s) / circleSegs;
+        pts.push(
+          new THREE.Vector3(
+            c.x + N.metatronGhost.circleRadius * Math.cos(a),
+            0,
+            c.z + N.metatronGhost.circleRadius * Math.sin(a)
+          )
+        );
+      }
+      ghost.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.1 })
+        )
+      );
+    }
+    const ghostLinePts: THREE.Vector3[] = [];
+    for (const [i, j] of N.metatronGhost.edges) {
+      ghostLinePts.push(ghostCenters[i], ghostCenters[j]);
+    }
+    ghost.add(
+      new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(ghostLinePts),
+        new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.06 })
+      )
+    );
+
+    // the vessel — the unified-function rendering, seated where the cube would be
+    const vessel = new THREE.Group();
+    world.add(vessel);
+    const shellR = 0.66;
+    vessel.add(
+      new THREE.Mesh(
+        new THREE.IcosahedronGeometry(shellR, 1),
+        new THREE.MeshPhysicalMaterial({
+          color: COL.vessel,
+          transparent: true,
+          opacity: 0.1,
+          roughness: 0.1,
+          metalness: 0,
+          transmission: 0.6,
+          side: THREE.DoubleSide,
+        })
+      )
+    );
+    vessel.add(
+      new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(shellR, 1)),
+        new THREE.LineBasicMaterial({ color: COL.vessel, transparent: true, opacity: 0.32 })
+      )
+    );
+    const orbScale = (shellR * 0.82) / PHI;
+    vessel.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(
+          H.vessel.orbit.map(([q, p]) => new THREE.Vector3(q * orbScale, p * orbScale, 0))
+        ),
+        new THREE.LineBasicMaterial({ color: COL.bond, transparent: true, opacity: 0.6 })
+      )
+    );
+    const mPlus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.plus, 0.06);
+    vessel.add(mPlus);
+    const mMinus = nodeMesh(new THREE.Vector3(0, 0, 0), COL.minus, 0.045);
+    vessel.add(mMinus);
+    const bond = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.012, 0.012, 1, 8),
+      new THREE.MeshStandardMaterial({ color: COL.bond, emissive: COL.bond, emissiveIntensity: 0.5, roughness: 0.4 })
+    );
+    vessel.add(bond);
+
+    function placeMolecule(angle: number) {
+      const q = PHI * Math.cos(angle) * orbScale,
+        p = PHI_INV * Math.sin(angle) * orbScale;
+      mPlus.position.set(q, p, 0);
+      mMinus.position.set(-q, -p, 0);
+      const a = mPlus.position,
+        b = mMinus.position;
+      bond.position.copy(a.clone().add(b).multiplyScalar(0.5));
+      bond.scale.set(1, a.distanceTo(b), 1);
+      bond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+    }
+    placeMolecule(H.vessel.snapshotAngleRad);
+
+    // ════ UNIFIED FUNCTION — the harmonic architecture, tilted by its obliquity ════
+    const unified = new THREE.Group();
+    world.add(unified);
+    unified.rotation.z = (H.obliquity.thetaDeg * Math.PI) / 180;
+
+    const uPillars = new THREE.Group();
+    unified.add(uPillars);
+    const archById: Record<number, number[]> = {};
+    H.architecture.nodes.forEach((n) => {
+      archById[n.id] = n.pos;
+    });
+    H.architecture.nodes.forEach((n) =>
+      uPillars.add(nodeMesh(V3(n.pos), COL.uPillar, n.kind === 'apex' ? 0.075 : 0.05))
+    );
+    uPillars.add(edgeLines(archById, H.architecture.edges, COL.uPillar, 0.5));
+
+    const uBridges = new THREE.Group();
+    unified.add(uBridges);
+    uBridges.add(edgeLines(archById, H.fabric.edges, COL.uBridge, 0.5));
+
+    const uFlower = new THREE.Group();
+    unified.add(uFlower);
+    const flowerById: Record<number, number[]> = {};
+    H.flower.nodes.forEach((n) => {
+      flowerById[n.id] = n.pos;
+    });
+    H.flower.nodes.forEach((n) => uFlower.add(nodeMesh(V3(n.pos), COL.uFlower, n.ring === 0 ? 0.07 : 0.045)));
+    uFlower.add(edgeLines(flowerById, H.flower.edges, COL.uFlower, 0.42));
+
+    // ════ NEURAL MAP — the lemniscate Fibonacci spindle + the radio towers ════
+    const neuralGrp = new THREE.Group();
+    world.add(neuralGrp);
+
+    const nTiers = new THREE.Group();
+    neuralGrp.add(nTiers);
+    const nHalos = new THREE.Group();
+    neuralGrp.add(nHalos);
+    const tierCount = N.tiers.length;
+    const cLow = new THREE.Color(COL.nTierLow);
+    const cHigh = new THREE.Color(COL.nTierHigh);
+    const haloColor = new THREE.Color(COL.nHalo);
+
+    function addTierHalf(pts3: number[][], radius: number, height: number, color: THREE.Color) {
+      const vpts = pts3.map(V3);
+      nTiers.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(vpts),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 })
+        )
+      );
+      const tube = 0.006 + radius * 0.012;
+      const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, tube, 8, 64),
+        new THREE.MeshStandardMaterial({
+          color: haloColor,
+          emissive: haloColor,
+          emissiveIntensity: 0.45,
+          roughness: 0.4,
+        })
+      );
+      torus.rotation.x = Math.PI / 2;
+      torus.position.y = height;
+      nHalos.add(torus);
+      nTiers.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(vpts[0].x, height, vpts[0].z),
+          ]),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 })
+        )
+      );
+    }
+    N.tiers.forEach((t) => {
+      const color = cLow.clone().lerp(cHigh, (t.n - 1) / (tierCount - 1));
+      addTierHalf(t.curveUpper, t.radius, t.height, color);
+      addTierHalf(t.curveLower, t.radius, -t.height, color);
+    });
+
+    // the 19 towers, radio-pulsing at the pace the molecule winds the ellipse
+    const nTowers = new THREE.Group();
+    neuralGrp.add(nTowers);
+    const RINGS_PER_EMITTER = 3;
+    const PULSE_MAX_R = 0.42;
+    const pulseGeo = new THREE.RingGeometry(0.92, 1, 40);
+    const pulseRings: { mesh: THREE.Mesh; mat: THREE.MeshBasicMaterial; offset: number }[] = [];
+    const towerNodes: THREE.Mesh[] = [];
+
+    N.pillars.nodes.forEach((n) => {
+      const color = NBAND_COLOR[n.band] ?? 0x6ea8ff;
+      const top = new THREE.Vector3(n.x, n.yTop, n.z);
+      const bottom = new THREE.Vector3(n.x, n.yBottom, n.z);
+      nTowers.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([top, bottom]),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.6 })
+        )
+      );
+      const topNode = nodeMesh(top, color, 0.028);
+      const bottomNode = nodeMesh(bottom, color, 0.028);
+      nTowers.add(topNode);
+      nTowers.add(bottomNode);
+      towerNodes.push(topNode, bottomNode);
+      for (const pos of [top, bottom]) {
+        for (let r = 0; r < RINGS_PER_EMITTER; r++) {
+          const mat = new THREE.MeshBasicMaterial({
+            color: COL.pulse,
+            transparent: true,
+            opacity: 0,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+          });
+          const mesh = new THREE.Mesh(pulseGeo, mat);
+          mesh.rotation.x = -Math.PI / 2;
+          mesh.position.copy(pos);
+          nTowers.add(mesh);
+          pulseRings.push({ mesh, mat, offset: r / RINGS_PER_EMITTER });
+        }
+      }
+    });
+
+    function updatePulses(ph: number) {
+      const orbits = ph / (2 * Math.PI);
+      const beat = 1 - (((orbits % 1) + 1) % 1);
+      for (const p of pulseRings) {
+        const t = (((orbits + p.offset) % 1) + 1) % 1;
+        const s = 0.04 + t * PULSE_MAX_R;
+        p.mesh.scale.set(s, s, 1);
+        p.mat.opacity = 0.55 * (1 - t) * (1 - t);
+      }
+      for (const node of towerNodes) {
+        (node.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.7 + 0.9 * beat * beat;
+      }
+    }
+    updatePulses(H.vessel.snapshotAngleRad);
+
+    // ════ the master selector + the per-structure legend ════
+    const groups: Record<string, THREE.Group> = {
+      uPillars,
+      uFlower,
+      uBridges,
+      nTiers,
+      nHalos,
+      nTowers,
+      singularity,
+      vessel,
+      ghost,
+    };
+    document.querySelectorAll<HTMLButtonElement>('#master-legend .lg-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const g = groups[row.dataset.g || ''];
+        if (!g) return;
+        g.visible = !g.visible;
+        row.classList.toggle('off', !g.visible);
+      });
+    });
+
+    const modeBtns = document.querySelectorAll<HTMLButtonElement>('#master-mode button');
+    const sections = document.querySelectorAll<HTMLElement>('#master-legend .lg-section[data-family]');
+    function setMode(mode: string) {
+      unified.visible = mode !== 'neural';
+      neuralGrp.visible = mode !== 'unified';
+      modeBtns.forEach((b) => b.classList.toggle('on', b.dataset.mode === mode));
+      sections.forEach((s) => {
+        const fam = s.dataset.family;
+        s.classList.toggle('dim', (fam === 'unified' && !unified.visible) || (fam === 'neural' && !neuralGrp.visible));
+      });
+    }
+    modeBtns.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode || 'combined')));
+    setMode('combined');
+
+    // ════ post / resize / freeze / animate ════
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.65, 0.6, 0.22));
+    composer.addPass(new OutputPass());
+
+    function resize() {
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let frozen = false,
+      phase = H.vessel.snapshotAngleRad;
+    const hudPhase = document.getElementById('hud-phase');
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        frozen = !frozen;
+        controls.autoRotate = !frozen && !reduce;
+        if (hudPhase) hudPhase.textContent = frozen ? 'FROZEN' : '1 / orbit · synced';
+      }
+    });
+
+    const clock = new THREE.Clock();
+    function frame() {
+      const dt = clock.getDelta();
+      if (!frozen && !reduce) {
+        phase += WIND * dt * 1.6;
+        placeMolecule(phase);
+        updatePulses(phase);
+        (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
+      }
+      vessel.rotation.y += frozen ? 0 : dt * 0.15;
+      ghost.rotation.y += frozen ? 0 : -dt * 0.05;
+      controls.update();
+      composer.render();
+      requestAnimationFrame(frame);
+    }
+    frame();
+  </script>
+</Layout>

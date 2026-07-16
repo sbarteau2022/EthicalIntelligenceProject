@@ -14,6 +14,7 @@ export const HUB_TABS = [
   { text: 'The Observer', href: '/observer' },
   { text: 'Harmonic Atlas', href: '/atlas' },
   { text: 'Neural Atlas', href: '/neural-atlas' },
+  { text: 'Master Atlas', href: '/master-atlas' },
 ];
 
 // Social / publication profiles. The PhilArchive entry points at the live
