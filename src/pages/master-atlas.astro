@@ -86,6 +86,9 @@ const nm = neural.meta;
           <button class="lg-row" data-g="nHalos">
             <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one per layer + the phase-lock ring
           </button>
+          <button class="lg-row" data-g="nFlowerLife">
+            <span class="sw" style="--c:#e06cff"></span><b>Flower of Life</b> · one circle per tuple center at every level
+          </button>
         </div>
 
         <div class="lg-section">
@@ -413,6 +416,7 @@ const nm = neural.meta;
       singularity: number[];
       layers: NeuralLayer[];
       spiral: number[][];
+      flower: { k: number; y: number; radius: number; centers: number[][] }[];
     }
     interface NeuralSnap {
       halves: NeuralHalf[];
@@ -436,6 +440,7 @@ const nm = neural.meta;
       nTuplePartner: 0x2fb3a0,
       nHalo: 0xd0a94e,
       nLock: 0xf2ead9,
+      nFlowerLife: 0xe06cff,
       singularity: 0xffffff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
@@ -662,6 +667,7 @@ const nm = neural.meta;
     const nSpiralParts: THREE.Object3D[] = [];
     const nTupleParts: THREE.Object3D[] = [];
     const nHaloParts: THREE.Object3D[] = [];
+    const nFlowerParts: THREE.Object3D[] = [];
     const nHalfGroups: THREE.Group[] = [];
 
     for (const half of N.halves) {
@@ -671,10 +677,12 @@ const nm = neural.meta;
       const hgSpiral = new THREE.Group();
       const hgTuples = new THREE.Group();
       const hgHalos = new THREE.Group();
-      hg.add(hgSpiral, hgTuples, hgHalos);
+      const hgFlower = new THREE.Group();
+      hg.add(hgSpiral, hgTuples, hgHalos, hgFlower);
       nSpiralParts.push(hgSpiral);
       nTupleParts.push(hgTuples);
       nHaloParts.push(hgHalos);
+      nFlowerParts.push(hgFlower);
 
       // layer 0: the pole singularity (rides with its spiral)
       const sPos = V3(half.singularity);
@@ -751,6 +759,24 @@ const nm = neural.meta;
           );
         }
       }
+
+      // the Flower of Life: one circle per tuple center at every level
+      const CIRCLE_SEGS = 72;
+      for (const level of half.flower) {
+        for (const [cx, cz] of level.centers) {
+          const pts: THREE.Vector3[] = [];
+          for (let s = 0; s <= CIRCLE_SEGS; s++) {
+            const a = (2 * Math.PI * s) / CIRCLE_SEGS;
+            pts.push(new THREE.Vector3(cx + level.radius * Math.cos(a), level.y, cz + level.radius * Math.sin(a)));
+          }
+          hgFlower.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints(pts),
+              new THREE.LineBasicMaterial({ color: COL.nFlowerLife, transparent: true, opacity: 0.32 })
+            )
+          );
+        }
+      }
     }
 
     // the lock ring — where the toroid meets its inverse and phase-locks
@@ -788,6 +814,7 @@ const nm = neural.meta;
       nSpirals: nSpiralParts,
       nTuples: nTupleParts,
       nHalos: nHaloParts,
+      nFlowerLife: nFlowerParts,
       singularity: [singularity],
       vessel: [vessel],
       ghost: [ghost],

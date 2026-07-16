@@ -71,6 +71,10 @@ const layerCounts = m.layerCounts.join(' · ');
           <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one toroid per layer, layer 1 bound at 1/3 · plus the
           lock ring
         </button>
+        <button class="lg-row" data-g="flower">
+          <span class="sw" style="--c:#e06cff"></span><b>Flower of Life</b> · one circle per tuple center at every level,
+          seed circle at layer 0
+        </button>
         <button class="lg-row" data-g="vessel">
           <span class="sw" style="--c:#b79cff"></span><b>Vessel (unified function)</b> · seated where the Metatron's Cube
           would sit
@@ -317,6 +321,7 @@ const layerCounts = m.layerCounts.join(' · ');
       singularity: number[];
       layers: Layer[];
       spiral: number[][];
+      flower: { k: number; y: number; radius: number; centers: number[][] }[];
     }
     interface Snap {
       meta: { phi: number; phiInv: number; goldenWinding: number; spiralTurns: number };
@@ -338,6 +343,7 @@ const layerCounts = m.layerCounts.join(' · ');
       tuplePartner: 0x2fb3a0,
       halo: 0xd0a94e,
       lock: 0xf2ead9,
+      flower: 0xe06cff,
       vessel: 0xb79cff,
       plus: 0xff5cc8,
       minus: 0x5cd8ff,
@@ -400,6 +406,7 @@ const layerCounts = m.layerCounts.join(' · ');
     const spirals = new THREE.Group();
     const tuples = new THREE.Group();
     const halos = new THREE.Group();
+    const flower = new THREE.Group();
 
     // rotating containers, one per half (opposite spin = the phase lock)
     const halfGroups: THREE.Group[] = [];
@@ -415,11 +422,13 @@ const layerCounts = m.layerCounts.join(' · ');
       const hgSpiral = new THREE.Group();
       const hgTuples = new THREE.Group();
       const hgHalos = new THREE.Group();
-      hg.add(hgSing, hgSpiral, hgTuples, hgHalos);
+      const hgFlower = new THREE.Group();
+      hg.add(hgSing, hgSpiral, hgTuples, hgHalos, hgFlower);
       singularities.userData.parts = [...(singularities.userData.parts || []), hgSing];
       spirals.userData.parts = [...(spirals.userData.parts || []), hgSpiral];
       tuples.userData.parts = [...(tuples.userData.parts || []), hgTuples];
       halos.userData.parts = [...(halos.userData.parts || []), hgHalos];
+      flower.userData.parts = [...(flower.userData.parts || []), hgFlower];
 
       // ── layer 0: the pole singularity ──
       const sPos = V3(half.singularity);
@@ -506,6 +515,24 @@ const layerCounts = m.layerCounts.join(' · ');
             new THREE.Line(
               new THREE.BufferGeometry().setFromPoints([sPos, p]),
               new THREE.LineBasicMaterial({ color: COL.tuple, transparent: true, opacity: 0.18 })
+            )
+          );
+        }
+      }
+
+      // ── the Flower of Life: one circle per tuple center at every level ──
+      const CIRCLE_SEGS = 72;
+      for (const level of half.flower) {
+        for (const [cx, cz] of level.centers) {
+          const pts: THREE.Vector3[] = [];
+          for (let s = 0; s <= CIRCLE_SEGS; s++) {
+            const a = (2 * Math.PI * s) / CIRCLE_SEGS;
+            pts.push(new THREE.Vector3(cx + level.radius * Math.cos(a), level.y, cz + level.radius * Math.sin(a)));
+          }
+          hgFlower.add(
+            new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints(pts),
+              new THREE.LineBasicMaterial({ color: COL.flower, transparent: true, opacity: 0.32 })
             )
           );
         }
@@ -626,6 +653,7 @@ const layerCounts = m.layerCounts.join(' · ');
       spirals: spirals.userData.parts,
       tuples: tuples.userData.parts,
       halos: halos.userData.parts,
+      flower: flower.userData.parts,
       vessel: [vessel],
       ghost: [ghost],
     };
