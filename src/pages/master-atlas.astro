@@ -85,8 +85,8 @@ const nm = neural.meta;
             inverse
           </button>
           <button class="lg-row" data-g="nTuples">
-            <span class="sw" style="--c:#55e9d0"></span><b>Tuples</b> · {nm.layerCounts.join(' · ')} per half,
-            {nm.tuplesPerHalf * 2} total
+            <span class="sw" style="--c:#55e9d0"></span><b>Tuples</b> · {nm.stackLabel} = {nm.totalStations} stations · the
+            7-ring shared at the lock
           </button>
           <button class="lg-row" data-g="nHalos">
             <span class="sw" style="--c:#d0a94e"></span><b>Halos</b> · one per layer + the phase-lock ring
@@ -126,7 +126,7 @@ const nm = neural.meta;
         <div class="hud-h">Master Atlas · locked</div>
         <div class="hud-m"><span>unified · pillars / lobes</span><b>21 / 19</b></div>
         <div class="hud-m">
-          <span>neural · layers / tuples</span><b>{nm.layerCounts.join('·')} / {nm.tuplesPerHalf * 2}</b>
+          <span>neural · stack</span><b>{nm.stackLabel} = {nm.totalStations}</b>
         </div>
         <div class="hud-m"><span>area φ·1/φ</span><b>{u.area_invariant.toFixed(3)}</b></div>
         <div class="hud-m"><span>free energy F</span><b>{u.free_energy.toFixed(3)}</b></div>
@@ -440,6 +440,15 @@ const nm = neural.meta;
     }
     interface NeuralSnap {
       halves: NeuralHalf[];
+      equator: {
+        k: number;
+        count: number;
+        radius: number;
+        y: number;
+        tuples: { angleDeg: number; pos: number[] }[];
+        lobes: number[][][];
+        flower: { radius: number; centers: number[][] };
+      };
       envelope: { profile: number[][] };
       lockRing: { radius: number; y: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
@@ -847,6 +856,76 @@ const nm = neural.meta;
             )
           );
         }
+      }
+    }
+
+    // ── layer 4: the shared equator ring — the phase lock itself ──
+    // One ring of 7 tuples at y=0, belonging to neither half: it holds still
+    // while the halves counter-rotate against it. Its halo is the lock ring.
+    const sharedGrp = new THREE.Group();
+    neuralGrp.add(sharedGrp);
+    const sharedTuples = new THREE.Group();
+    const sharedLobes = new THREE.Group();
+    const sharedThreads = new THREE.Group();
+    const sharedFlower = new THREE.Group();
+    sharedGrp.add(sharedTuples, sharedLobes, sharedThreads, sharedFlower);
+    nTupleParts.push(sharedTuples);
+    nLobeParts.push(sharedLobes);
+    nThreadParts.push(sharedThreads);
+    nFlowerParts.push(sharedFlower);
+    const poleA = V3(N.halves[0].singularity);
+    const poleB = V3(N.halves[1].singularity);
+    for (const t of N.equator.tuples) {
+      const p = V3(t.pos);
+      const tangent = new THREE.Vector3(-p.z, 0, p.x).normalize().multiplyScalar(0.034);
+      sharedTuples.add(nodeMesh(p.clone().add(tangent), COL.nTuple, 0.03));
+      sharedTuples.add(nodeMesh(p.clone().sub(tangent), COL.nTuplePartner, 0.024));
+      const eqBond = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.008, 0.008, 0.068, 6),
+        new THREE.MeshStandardMaterial({
+          color: COL.nTuple,
+          emissive: COL.nTuple,
+          emissiveIntensity: 0.4,
+          roughness: 0.4,
+        })
+      );
+      eqBond.position.copy(p);
+      eqBond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent.clone().normalize());
+      sharedTuples.add(eqBond);
+      // the equator binds to BOTH poles
+      for (const pole of [poleA, poleB]) {
+        sharedThreads.add(
+          new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([pole, p]),
+            new THREE.LineBasicMaterial({ color: COL.nThread, transparent: true, opacity: 0.18 })
+          )
+        );
+      }
+    }
+    for (const lobe of N.equator.lobes) {
+      sharedLobes.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(lobe.map(V3)),
+          new THREE.LineBasicMaterial({ color: COL.nLobe, transparent: true, opacity: 0.55 })
+        )
+      );
+    }
+    {
+      const SEGS = 72;
+      for (const [cx, cz] of N.equator.flower.centers) {
+        const pts: THREE.Vector3[] = [];
+        for (let s = 0; s <= SEGS; s++) {
+          const a = (2 * Math.PI * s) / SEGS;
+          pts.push(
+            new THREE.Vector3(cx + N.equator.flower.radius * Math.cos(a), 0, cz + N.equator.flower.radius * Math.sin(a))
+          );
+        }
+        sharedFlower.add(
+          new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(pts),
+            new THREE.LineBasicMaterial({ color: COL.nFlowerLife, transparent: true, opacity: 0.32 })
+          )
+        );
       }
     }
 
