@@ -123,6 +123,10 @@ const nm = neural.meta;
             <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven · twists end-to-end; spinor tint flips
             at 360°, returns at 720° — spin-½
           </button>
+          <button class="lg-row" data-g="nAxis">
+            <span class="sw" style="--c:#ffe4b8"></span><b>Far-field spin</b> · the braid seen from beyond the loci = one
+            axis; home at 360°, braid at 720°
+          </button>
         </div>
       </div>
 
@@ -141,6 +145,7 @@ const nm = neural.meta;
         <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
         <div class="hud-m"><span>break event</span><b>converge → focus → emit</b></div>
         <div class="hud-m"><span>belt twist</span><b id="hud-belt">0·π · spinor +1</b></div>
+        <div class="hud-m"><span>far-field spin</span><b id="hud-axis">0.00 turns · home</b></div>
         <div class="hud-src">sources: harmonic-snapshot.json · neural-structure-snapshot.json</div>
       </div>
 
@@ -1192,6 +1197,69 @@ const nm = neural.meta;
     }
     updateBelt(0);
 
+    // ── the far-field readout: what comes out the other side of each locus ──
+    // A locus is where the whole braid converges to a point; through it, only a
+    // single direction can emerge — the braid's net invariant, its spin axis
+    // (the no-hair charge). That arrow is what a far observer sees; it returns
+    // every 360° of end-rotation, while the braid untangles only every 720°.
+    // At 360° the arrow is home yet the braid still carries a full hidden twist:
+    // the arrow is what the observer sees, the braid is what remembers the 4π.
+    const axisReadout = new THREE.Group();
+    neuralGrp.add(axisReadout);
+    const AX_LOCUS_Y = N.quantumBelt.strands[0][0][1]; // top locus y
+    const AX_TILT = 0.62; // the spin axis rides off-axis so its turn is visible
+    const axSpins = [1, -1].map((sgn) => {
+      const base = new THREE.Vector3(0, sgn * (AX_LOCUS_Y + 0.55), 0);
+      const sphereGeo = new THREE.SphereGeometry(0.28, 20, 14);
+      const bloch = new THREE.Mesh(
+        sphereGeo,
+        new THREE.MeshBasicMaterial({
+          color: 0x9fd0ff,
+          transparent: true,
+          opacity: 0.05,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      );
+      bloch.position.copy(base);
+      axisReadout.add(bloch);
+      const wire = new THREE.LineSegments(
+        new THREE.WireframeGeometry(sphereGeo),
+        new THREE.LineBasicMaterial({ color: 0x9fd0ff, transparent: true, opacity: 0.12 })
+      );
+      wire.position.copy(base);
+      axisReadout.add(wire);
+      // the braid, gathered through the locus into this one axis
+      axisReadout.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, sgn * AX_LOCUS_Y, 0), base]),
+          new THREE.LineBasicMaterial({ color: 0x9fd0ff, transparent: true, opacity: 0.3 })
+        )
+      );
+      const arrow = new THREE.ArrowHelper(new THREE.Vector3(0, sgn, 0), base, 0.42, 0xffe4b8, 0.15, 0.1);
+      axisReadout.add(arrow);
+      return { base, arrow, sgn };
+    });
+    const hudAxis = document.getElementById('hud-axis');
+    function updateAxis(ph: number) {
+      const tau = 2 * Math.PI * (1 - Math.cos(ph * 0.4)); // same end-to-end twist as the belt
+      for (const sp of axSpins) {
+        const az = sp.sgn * tau; // the far-field spin precesses at the physical rate
+        const d = new THREE.Vector3(
+          Math.sin(AX_TILT) * Math.cos(az),
+          sp.sgn * Math.cos(AX_TILT),
+          Math.sin(AX_TILT) * Math.sin(az)
+        );
+        sp.arrow.setDirection(d.normalize());
+      }
+      if (hudAxis) {
+        const turns = tau / (2 * Math.PI); // arrow revolutions; home at whole numbers
+        const home = Math.abs(turns - Math.round(turns)) < 0.03;
+        hudAxis.textContent = `${turns.toFixed(2)} turns${home ? ' \u00b7 home' : ''}`;
+      }
+    }
+    updateAxis(0);
+
     const registry: Record<string, THREE.Object3D[]> = {
       uPillars: [uPillars],
       uFlower: [uFlower],
@@ -1204,6 +1272,7 @@ const nm = neural.meta;
       nThreads: nThreadParts,
       nEnvelope: [nEnvelope],
       nBelt: [belt],
+      nAxis: [axisReadout],
       equilibrium: [equilibrium],
       singularity: [singularity],
       vessel: [vessel],
@@ -1273,6 +1342,7 @@ const nm = neural.meta;
         updateJitterbug((1 - Math.cos(phase * 0.5)) / 2);
         updatePulse(phase);
         updateBelt(phase);
+        updateAxis(phase);
         (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
