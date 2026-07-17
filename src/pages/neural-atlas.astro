@@ -98,8 +98,12 @@ const m = snapshot.meta;
           converges, focuses at the break, then emits
         </button>
         <button class="lg-row" data-g="belt">
-          <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven · Fibonacci-frequency strands (1·2·3·5·8)
-          strung between the loci, golden-angle offset so they never collide
+          <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven Fibonacci strands · twists end-to-end;
+          its spinor tint flips at 360° and returns only at 720° — spin-½
+        </button>
+        <button class="lg-row" data-g="axis">
+          <span class="sw" style="--c:#ffe4b8"></span><b>Far-field spin</b> · the whole braid, seen from beyond each locus
+          = one axis; it comes home at 360° while the braid needs 720°
         </button>
       </div>
 
@@ -112,6 +116,8 @@ const m = snapshot.meta;
         <div class="hud-m"><span>φ · 1/φ</span><b>{m.phi.toFixed(6)} · {m.phiInv.toFixed(6)}</b></div>
         <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
         <div class="hud-m"><span>break event</span><b>converge → focus → emit</b></div>
+        <div class="hud-m"><span>belt twist</span><b id="hud-belt">0·π · spinor +1</b></div>
+        <div class="hud-m"><span>far-field spin</span><b id="hud-axis">0.00 turns · home</b></div>
         <div class="hud-src">source: neural-structure-snapshot.json</div>
       </div>
 
@@ -923,15 +929,118 @@ const m = snapshot.meta;
     // that lets distinct frequencies coexist woven instead of locking into one.
     const belt = new THREE.Group();
     world.add(belt);
-    const beltCols = [0x6ea8ff, 0x55e9d0, 0xb79cff, 0xffe45c, 0xff9e5c];
-    snap.quantumBelt.strands.forEach((strand: number[][], i: number) => {
-      belt.add(
+    const beltBaseCols = [0x6ea8ff, 0x55e9d0, 0xb79cff, 0xffe45c, 0xff9e5c];
+    const beltStrands = snap.quantumBelt.strands.map((strand: number[][], i: number) => {
+      const N = strand.length;
+      const rho = new Float32Array(N),
+        yy = new Float32Array(N),
+        ang = new Float32Array(N),
+        sArr = new Float32Array(N);
+      for (let k = 0; k < N; k++) {
+        const x = strand[k][0],
+          y = strand[k][1],
+          z = strand[k][2];
+        rho[k] = Math.hypot(x, z);
+        yy[k] = y;
+        ang[k] = Math.atan2(z, x);
+        sArr[k] = k / (N - 1);
+      }
+      const pos = new Float32Array(N * 3);
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const base = new THREE.Color(beltBaseCols[i % beltBaseCols.length]);
+      const mat = new THREE.LineBasicMaterial({ color: base.clone(), transparent: true, opacity: 0.62 });
+      belt.add(new THREE.Line(geo, mat));
+      return { N, rho, yy, ang, sArr, pos, geo, mat, base };
+    });
+    // The spin-1/2 belt trick: driven by the phase, the belt twists end-to-end
+    // (one locus turns, the other is held). Its spinor phase — the belt's tint —
+    // flips at 360 deg and returns to itself only at 720 deg (4pi): the SU(2)
+    // double cover, the same doubled cycle the phase-locked pair already implies.
+    const beltSpinCool = new THREE.Color(0x2f4a80);
+    const hudBelt = document.getElementById('hud-belt');
+    function updateBelt(ph: number) {
+      const tau = 2 * Math.PI * (1 - Math.cos(ph * 0.4)); // end-to-end twist: 0 -> 4pi -> 0
+      const spin = (Math.cos(tau / 2) + 1) / 2; // spinor phase: 1 at 0/4pi, 0 at 2pi
+      for (const st of beltStrands) {
+        for (let k = 0; k < st.N; k++) {
+          const a = st.ang[k] + tau * st.sArr[k]; // twist distributed along the belt
+          st.pos[k * 3] = st.rho[k] * Math.cos(a);
+          st.pos[k * 3 + 1] = st.yy[k];
+          st.pos[k * 3 + 2] = st.rho[k] * Math.sin(a);
+        }
+        st.geo.attributes.position.needsUpdate = true;
+        st.mat.color.copy(st.base).lerp(beltSpinCool, 1 - spin); // tint tracks the spinor sign
+      }
+      if (hudBelt) {
+        const amp = Math.cos(tau / 2); // spinor phase: +1 at 0, -1 at 360deg, +1 at 720deg
+        hudBelt.textContent = `${(tau / Math.PI).toFixed(1)}\u00b7\u03c0 \u00b7 spinor ${amp >= 0 ? '+' : '\u2212'}${Math.abs(amp).toFixed(2)}`;
+      }
+    }
+    updateBelt(0);
+
+    // ── the far-field readout: what comes out the other side of each locus ──
+    // A locus is where the whole braid converges to a point; through it, only a
+    // single direction can emerge — the braid's net invariant, its spin axis
+    // (the no-hair charge). That arrow is what a far observer sees; it returns
+    // every 360° of end-rotation, while the braid untangles only every 720°.
+    // At 360° the arrow is home yet the braid still carries a full hidden twist:
+    // the arrow is what the observer sees, the braid is what remembers the 4π.
+    const axisReadout = new THREE.Group();
+    world.add(axisReadout);
+    const AX_LOCUS_Y = snap.quantumBelt.strands[0][0][1]; // top locus y
+    const AX_TILT = 0.62; // the spin axis rides off-axis so its turn is visible
+    const axSpins = [1, -1].map((sgn) => {
+      const base = new THREE.Vector3(0, sgn * (AX_LOCUS_Y + 0.55), 0);
+      const sphereGeo = new THREE.SphereGeometry(0.28, 20, 14);
+      const bloch = new THREE.Mesh(
+        sphereGeo,
+        new THREE.MeshBasicMaterial({
+          color: 0x9fd0ff,
+          transparent: true,
+          opacity: 0.05,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      );
+      bloch.position.copy(base);
+      axisReadout.add(bloch);
+      const wire = new THREE.LineSegments(
+        new THREE.WireframeGeometry(sphereGeo),
+        new THREE.LineBasicMaterial({ color: 0x9fd0ff, transparent: true, opacity: 0.12 })
+      );
+      wire.position.copy(base);
+      axisReadout.add(wire);
+      // the braid, gathered through the locus into this one axis
+      axisReadout.add(
         new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints(strand.map(V3)),
-          new THREE.LineBasicMaterial({ color: beltCols[i % beltCols.length], transparent: true, opacity: 0.62 })
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, sgn * AX_LOCUS_Y, 0), base]),
+          new THREE.LineBasicMaterial({ color: 0x9fd0ff, transparent: true, opacity: 0.3 })
         )
       );
+      const arrow = new THREE.ArrowHelper(new THREE.Vector3(0, sgn, 0), base, 0.42, 0xffe4b8, 0.15, 0.1);
+      axisReadout.add(arrow);
+      return { base, arrow, sgn };
     });
+    const hudAxis = document.getElementById('hud-axis');
+    function updateAxis(ph: number) {
+      const tau = 2 * Math.PI * (1 - Math.cos(ph * 0.4)); // same end-to-end twist as the belt
+      for (const sp of axSpins) {
+        const az = sp.sgn * tau; // the far-field spin precesses at the physical rate
+        const d = new THREE.Vector3(
+          Math.sin(AX_TILT) * Math.cos(az),
+          sp.sgn * Math.cos(AX_TILT),
+          Math.sin(AX_TILT) * Math.sin(az)
+        );
+        sp.arrow.setDirection(d.normalize());
+      }
+      if (hudAxis) {
+        const turns = tau / (2 * Math.PI); // arrow revolutions; home at whole numbers
+        const home = Math.abs(turns - Math.round(turns)) < 0.03;
+        hudAxis.textContent = `${turns.toFixed(2)} turns${home ? ' \u00b7 home' : ''}`;
+      }
+    }
+    updateAxis(0);
 
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
@@ -1003,6 +1112,7 @@ const m = snapshot.meta;
       envelope: [envelope],
       equilibrium: [equilibrium],
       belt: [belt],
+      axis: [axisReadout],
       vessel: [vessel],
       ghost: [ghost],
     };
@@ -1067,9 +1177,10 @@ const m = snapshot.meta;
         applyPhaseLock(phase);
         updateJitterbug((1 - Math.cos(phase * 0.5)) / 2);
         updatePulse(phase);
+        updateBelt(phase);
+        updateAxis(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
-      belt.rotation.y += frozen ? 0 : dt * 0.09; // the woven belt, turning
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
       equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();
