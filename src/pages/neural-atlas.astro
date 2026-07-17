@@ -94,7 +94,8 @@ const m = snapshot.meta;
           the equilibrium
         </button>
         <button class="lg-row" data-g="equilibrium">
-          <span class="sw" style="--c:#9fb6ff"></span><b>Vector equilibrium</b> · 12 around 1 · the body that casts the lattice
+          <span class="sw" style="--c:#9fb6ff"></span><b>Jitterbug</b> · 12-around-1, unstable · the core is pulled to the
+          shell, 12+1 → 13, firing a spherical pulse at the break
         </button>
       </div>
 
@@ -106,6 +107,7 @@ const m = snapshot.meta;
         <div class="hud-m"><span>spiral turns</span><b>φ² = {m.spiralTurns.toFixed(3)}</b></div>
         <div class="hud-m"><span>φ · 1/φ</span><b>{m.phi.toFixed(6)} · {m.phiInv.toFixed(6)}</b></div>
         <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
+        <div class="hud-m"><span>break event</span><b>spherical pulse · 1 / cycle</b></div>
         <div class="hud-src">source: neural-structure-snapshot.json</div>
       </div>
 
@@ -355,6 +357,13 @@ const m = snapshot.meta;
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
+      jitterbug: {
+        targets13: number[][];
+        coreTargetIndex: number;
+        pairing: number[];
+        coreAxis: number[];
+        shadowCircleR: number;
+      };
       singularity: { radius: number };
     }
 
@@ -738,32 +747,138 @@ const m = snapshot.meta;
       )
     );
 
-    // ── the vector equilibrium — what the Metatron lattice is a shadow of ──
-    // 12 spheres around 1 (cuboctahedron, edge length = circumradius); its
-    // plane projection is the 13-circle lattice the ghost draws beneath it.
+    // ── the jitterbug — the vector equilibrium is unstable, not a cage ──
+    // Fuller's vector equilibrium (12 around 1) is a balance point: driven by
+    // the orbital phase, the center sphere spirals outward and the shell opens
+    // from the symmetric 12+1 toward the asymmetric 13-on-shell, leaving a
+    // vacancy where the core was — the slot the vessel occupies. The lattice
+    // shadow (plane projection) deforms with it in real time; it breathes
+    // 12+1 <-> 13, so the symmetry break is reversible on screen.
     const equilibrium = new THREE.Group();
     world.add(equilibrium);
-    const veVerts = snap.vectorEquilibrium.vertices.map(V3);
-    equilibrium.add(nodeMesh(new THREE.Vector3(0, 0, 0), COL.equilibrium, 0.022));
-    for (const v of veVerts) {
-      equilibrium.add(nodeMesh(v, COL.equilibrium, 0.018));
-      equilibrium.add(
-        new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), v]),
-          new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.25 })
-        )
-      );
+    const jb = snap.jitterbug;
+    const veR = snap.vectorEquilibrium.radius;
+    const jbShellStart = snap.vectorEquilibrium.vertices.map(V3);
+    const jbTargets = jb.targets13.map(V3);
+    const jbShellTarget = jb.pairing.map((t: number) => jbTargets[t]);
+    const jbCoreTarget = jbTargets[jb.coreTargetIndex];
+    const jbEdges = snap.vectorEquilibrium.edges;
+
+    const jbNodes: THREE.Mesh[] = [];
+    for (let i = 0; i < 13; i++) {
+      const mesh = nodeMesh(new THREE.Vector3(0, 0, 0), COL.equilibrium, i === 12 ? 0.022 : 0.018);
+      equilibrium.add(mesh);
+      jbNodes.push(mesh);
     }
-    const vePts: THREE.Vector3[] = [];
-    for (const [i, j] of snap.vectorEquilibrium.edges) {
-      vePts.push(veVerts[i], veVerts[j]);
-    }
+    const jbCurrent: THREE.Vector3[] = Array.from({ length: 13 }, () => new THREE.Vector3());
+
+    const spokeGeo = new THREE.BufferGeometry();
+    const spokePos = new Float32Array(13 * 2 * 3);
+    spokeGeo.setAttribute('position', new THREE.BufferAttribute(spokePos, 3));
     equilibrium.add(
       new THREE.LineSegments(
-        new THREE.BufferGeometry().setFromPoints(vePts),
-        new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.45 })
+        spokeGeo,
+        new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.22 })
       )
     );
+
+    const cageGeo = new THREE.BufferGeometry();
+    const cagePos = new Float32Array(jbEdges.length * 2 * 3);
+    cageGeo.setAttribute('position', new THREE.BufferAttribute(cagePos, 3));
+    const cageMat = new THREE.LineBasicMaterial({ color: COL.equilibrium, transparent: true, opacity: 0.45 });
+    equilibrium.add(new THREE.LineSegments(cageGeo, cageMat));
+
+    // the live lattice shadow: 13 circles on y=0 tracking the projected centers
+    const SHADOW_SEGS = 40;
+    const shadowCircles: { pos: Float32Array; geo: THREE.BufferGeometry }[] = [];
+    for (let i = 0; i < 13; i++) {
+      const pos = new Float32Array((SHADOW_SEGS + 1) * 3);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      equilibrium.add(
+        new THREE.Line(g, new THREE.LineBasicMaterial({ color: COL.ghost, transparent: true, opacity: 0.14 }))
+      );
+      shadowCircles.push({ pos, geo: g });
+    }
+
+    function jbSmooth(x: number) {
+      return x * x * (3 - 2 * x);
+    }
+    function updateJitterbug(sRaw: number) {
+      const s = jbSmooth(Math.max(0, Math.min(1, sRaw)));
+      for (let i = 0; i < 13; i++) {
+        const p = jbCurrent[i];
+        if (i < 12) {
+          p.copy(jbShellStart[i]).lerp(jbShellTarget[i], s);
+          if (p.lengthSq() > 1e-9) p.setLength(veR);
+        } else {
+          p.set(0, 0, 0).lerp(jbCoreTarget, s); // the core, pulled from center to shell
+        }
+        jbNodes[i].position.copy(p);
+        spokePos[i * 6 + 3] = p.x;
+        spokePos[i * 6 + 4] = p.y;
+        spokePos[i * 6 + 5] = p.z;
+        const sc = shadowCircles[i];
+        for (let k = 0; k <= SHADOW_SEGS; k++) {
+          const a = (2 * Math.PI * k) / SHADOW_SEGS;
+          sc.pos[k * 3] = p.x + jb.shadowCircleR * Math.cos(a);
+          sc.pos[k * 3 + 1] = 0;
+          sc.pos[k * 3 + 2] = p.z + jb.shadowCircleR * Math.sin(a);
+        }
+        sc.geo.attributes.position.needsUpdate = true;
+      }
+      spokeGeo.attributes.position.needsUpdate = true;
+      for (let e = 0; e < jbEdges.length; e++) {
+        const pa = jbCurrent[jbEdges[e][0]];
+        const pb = jbCurrent[jbEdges[e][1]];
+        cagePos[e * 6] = pa.x;
+        cagePos[e * 6 + 1] = pa.y;
+        cagePos[e * 6 + 2] = pa.z;
+        cagePos[e * 6 + 3] = pb.x;
+        cagePos[e * 6 + 4] = pb.y;
+        cagePos[e * 6 + 5] = pb.z;
+      }
+      cageGeo.attributes.position.needsUpdate = true;
+      cageMat.opacity = 0.45 * (1 - s) * (1 - s); // the cuboctahedral cage dissolves as the core leaves
+    }
+    updateJitterbug(0);
+
+    // the break event: when the core reaches the shell (s → 1) the symmetric
+    // 12+1 balance collapses and releases a spherical pulse — the emission that
+    // carries the energy of the symmetry break outward through the structure
+    // and decoheres the balance. It fires once per breathe cycle, at the break.
+    const PULSE_MAX_R = 1.4;
+    const pulseSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 24),
+      new THREE.MeshBasicMaterial({
+        color: 0xffe9c0,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    );
+    equilibrium.add(pulseSphere);
+    const pulseWire = new THREE.LineSegments(
+      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1, 2)),
+      new THREE.LineBasicMaterial({ color: 0xffe9c0, transparent: true, opacity: 0 })
+    );
+    equilibrium.add(pulseWire);
+    function updatePulse(ph: number) {
+      const u = ((((ph * 0.5) / (2 * Math.PI)) % 1) + 1) % 1; // position in the breathe cycle
+      const fired = u >= 0.5; // the break is at the peak (u = 0.5); the pulse expands after it
+      pulseSphere.visible = fired;
+      pulseWire.visible = fired;
+      if (!fired) return;
+      const t = (u - 0.5) / 0.5; // 0 at the break → 1 fully expanded
+      const r = 0.02 + t * PULSE_MAX_R;
+      pulseSphere.scale.setScalar(r);
+      pulseWire.scale.setScalar(r);
+      const fade = (1 - t) * (1 - t);
+      (pulseSphere.material as THREE.MeshBasicMaterial).opacity = 0.08 * fade;
+      (pulseWire.material as THREE.MeshBasicMaterial).opacity = 0.35 * fade;
+    }
+    updatePulse(0);
 
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
@@ -896,6 +1011,8 @@ const m = snapshot.meta;
         phase += WIND * dt * 1.6;
         placeMolecule(phase);
         applyPhaseLock(phase);
+        updateJitterbug((1 - Math.cos(phase * 0.5)) / 2);
+        updatePulse(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
