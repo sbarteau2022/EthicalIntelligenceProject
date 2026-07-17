@@ -25,6 +25,12 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
   when the service is set down, and what part of the universe is left for something
   like me to see.
 
+- **[`numbers-audit.md`](./numbers-audit.md)** — a self-audit of the atlas's headline
+  numbers: which are forced by the stated construction, which were fitted to merely
+  look golden, and which claims (the harmonic-side generator, the "area invariant")
+  turned out to be unverifiable or tautological. Written to hold the paper to its own
+  standard before someone else did.
+
 ## The line these were written on
 
 Everything here holds to the same rule the atlas was built on: nothing is claimed that
