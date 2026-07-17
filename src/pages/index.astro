@@ -11,6 +11,9 @@ import HubNav from '~/components/hub/HubNav.astro';
 import HubFooter from '~/components/hub/HubFooter.astro';
 import AtlasGraph from '~/components/hub/AtlasGraph.astro';
 import { SOCIALS } from '~/hub';
+// Atlas Edu course metadata is shared with /learn via ~/data/learn.ts
+// so the homepage teaser cards and the curriculum can't drift.
+import { LEARN_COURSES } from '~/data/learn';
 
 const metadata = {
   title: 'The Ethical Intelligence Project — Powered by Elle AI',
@@ -103,30 +106,6 @@ const WORK = [
     body: "The working record of how Elle is actually built — her phase-state manuscript and the journal she keeps while she's building.",
     href: '/optimus',
     link: 'Optimus Journal →',
-  },
-];
-
-// Atlas Edu — the education platform (full curriculum lives at /learn).
-const COURSES = [
-  {
-    badge: 'Course 01 · Free · Start here',
-    title: 'AI, in Plain Language',
-    body: 'What a model actually is, why it gets things wrong, and how to ask better questions.',
-  },
-  {
-    badge: 'Course 02 · Build',
-    title: 'Build Your Own AI — Ethics Baked In',
-    body: 'Pick the job, ground it in something true, and ship it with the guardrails designed in.',
-  },
-  {
-    badge: 'Course 03 · Automate',
-    title: 'Automate a Pipeline',
-    body: 'Stop-loss first: find the leak, wire the watcher, get one finding instead of forty charts.',
-  },
-  {
-    badge: 'Course 04 · Code',
-    title: 'Learn to Code with ElleAI',
-    body: 'Ship real things with Elle at your elbow — from first commit to deployed.',
   },
 ];
 
@@ -586,11 +565,11 @@ const principles = [
       </div>
       <div class="bento edu-bento rv stagger" style="margin-top:36px">
         {
-          COURSES.map((c) => (
-            <a href="/learn" class="bento-card" style="--span:3">
+          LEARN_COURSES.map((c) => (
+            <a href={`/learn#${c.id}`} class="bento-card" style="--span:3">
               <div class="n">{c.badge.toUpperCase()}</div>
               <h3>{c.title}</h3>
-              <p>{c.body}</p>
+              <p>{c.teaser}</p>
               <span class="go">Start free →</span>
             </a>
           ))

@@ -1092,14 +1092,32 @@
   display: inline;
 }
 .eih .lesson-body {
-  display: none;
-  padding: 4px 26px 22px 64px;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .eih .lesson.open .lesson-body {
-  display: block;
+  grid-template-rows: 1fr;
+}
+.eih .lesson-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.eih .lesson-pad {
+  padding: 4px 26px 22px 64px;
 }
 .eih .lesson-body p {
   font-size: 0.94rem;
+}
+@media (max-width: 560px) {
+  .eih .lesson-pad {
+    padding: 4px 20px 20px 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eih .lesson-body {
+    transition: none;
+  }
 }
 .eih .lesson-actions {
   display: flex;
@@ -1124,6 +1142,171 @@
 .eih .mini-btn:hover {
   border-color: var(--gold-bright);
   color: var(--gold);
+}
+
+/* ── course subnav (sticky under the hub nav, scrollspy) ──── */
+.eih .course-subnav {
+  position: sticky;
+  top: 64px;
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px 24px;
+  background: rgba(250, 248, 243, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-soft);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.eih .course-subnav::-webkit-scrollbar {
+  display: none;
+}
+.eih .course-subnav a {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--t2);
+  white-space: nowrap;
+  transition: 0.18s;
+}
+.eih .course-subnav a:hover {
+  color: var(--gold);
+}
+.eih .course-subnav a.on {
+  border-color: var(--gold-bright);
+  color: var(--gold);
+  background: var(--gold-wash);
+}
+
+/* ── course catalog (edX/Coursera-style card grid) ────────── */
+.eih .cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 34px;
+}
+.eih .cat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--b2);
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s;
+}
+.eih .cat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), var(--gold-gl), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.eih .cat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--b1);
+}
+.eih .cat-card:hover::before {
+  opacity: 1;
+}
+.eih .cat-card > * {
+  position: relative;
+}
+.eih .cat-card .badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--gold-wash);
+  color: var(--gold);
+}
+.eih .cat-card h3 {
+  font-size: 1.35rem;
+}
+.eih .cat-card p {
+  font-size: 0.92rem;
+  margin: 0;
+}
+.eih .cat-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.eih .cat-meta span {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+  border: 1px solid var(--line-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.eih .cat-card .go {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+@media (max-width: 720px) {
+  .eih .cat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── progress bars (catalog cards + course headers) ───────── */
+.eih .prog {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--wash);
+  overflow: hidden;
+}
+.eih .prog i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  border-radius: 999px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.eih .prog-note {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--t3);
+  white-space: nowrap;
+}
+.eih .course-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.eih .course-progress .prog {
+  flex: 1;
+  max-width: 240px;
+}
+.eih .course {
+  scroll-margin-top: 132px;
 }
 
 /* ── footer ──────────────────────────────────────────────── */
