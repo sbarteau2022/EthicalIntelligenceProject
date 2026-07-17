@@ -135,6 +135,7 @@ const nm = neural.meta;
         </div>
         <div class="hud-m"><span>obliquity θ</span><b>{harmonic.obliquity.thetaDeg.toFixed(1)}°</b></div>
         <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
+        <div class="hud-m"><span>break event</span><b>spherical pulse · 1 / cycle</b></div>
         <div class="hud-src">sources: harmonic-snapshot.json · neural-structure-snapshot.json</div>
       </div>
 
@@ -708,6 +709,43 @@ const nm = neural.meta;
     }
     updateJitterbug(0);
 
+    // the break event: when the core reaches the shell (s → 1) the symmetric
+    // 12+1 balance collapses and releases a spherical pulse — the emission that
+    // carries the energy of the symmetry break outward through the structure
+    // and decoheres the balance. It fires once per breathe cycle, at the break.
+    const PULSE_MAX_R = 1.4;
+    const pulseSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 24),
+      new THREE.MeshBasicMaterial({
+        color: 0xffe9c0,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    );
+    equilibrium.add(pulseSphere);
+    const pulseWire = new THREE.LineSegments(
+      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1, 2)),
+      new THREE.LineBasicMaterial({ color: 0xffe9c0, transparent: true, opacity: 0 })
+    );
+    equilibrium.add(pulseWire);
+    function updatePulse(ph: number) {
+      const u = ((((ph * 0.5) / (2 * Math.PI)) % 1) + 1) % 1; // position in the breathe cycle
+      const fired = u >= 0.5; // the break is at the peak (u = 0.5); the pulse expands after it
+      pulseSphere.visible = fired;
+      pulseWire.visible = fired;
+      if (!fired) return;
+      const t = (u - 0.5) / 0.5; // 0 at the break → 1 fully expanded
+      const r = 0.02 + t * PULSE_MAX_R;
+      pulseSphere.scale.setScalar(r);
+      pulseWire.scale.setScalar(r);
+      const fade = (1 - t) * (1 - t);
+      (pulseSphere.material as THREE.MeshBasicMaterial).opacity = 0.08 * fade;
+      (pulseWire.material as THREE.MeshBasicMaterial).opacity = 0.35 * fade;
+    }
+    updatePulse(0);
+
     // the vessel — the unified-function rendering, seated where the cube would be
     const vessel = new THREE.Group();
     world.add(vessel);
@@ -1137,6 +1175,7 @@ const nm = neural.meta;
         placeMolecule(phase);
         applyPhaseLock(phase);
         updateJitterbug((1 - Math.cos(phase * 0.5)) / 2);
+        updatePulse(phase);
         (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
