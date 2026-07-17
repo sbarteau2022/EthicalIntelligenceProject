@@ -94,8 +94,12 @@ const m = snapshot.meta;
           the equilibrium
         </button>
         <button class="lg-row" data-g="equilibrium">
-          <span class="sw" style="--c:#9fb6ff"></span><b>Jitterbug</b> · 12-around-1, unstable · the core is pulled to the
-          shell, 12+1 → 13, firing a spherical pulse at the break
+          <span class="sw" style="--c:#9fb6ff"></span><b>Jitterbug</b> · 12-around-1, unstable · 12+1 → 13 · an inverse wave
+          converges, focuses at the break, then emits
+        </button>
+        <button class="lg-row" data-g="belt">
+          <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven · Fibonacci-frequency strands (1·2·3·5·8)
+          strung between the loci, golden-angle offset so they never collide
         </button>
       </div>
 
@@ -107,7 +111,7 @@ const m = snapshot.meta;
         <div class="hud-m"><span>spiral turns</span><b>φ² = {m.spiralTurns.toFixed(3)}</b></div>
         <div class="hud-m"><span>φ · 1/φ</span><b>{m.phi.toFixed(6)} · {m.phiInv.toFixed(6)}</b></div>
         <div class="hud-m"><span>phase lock</span><b id="hud-phase">counter-rotation · synced</b></div>
-        <div class="hud-m"><span>break event</span><b>spherical pulse · 1 / cycle</b></div>
+        <div class="hud-m"><span>break event</span><b>converge → focus → emit</b></div>
         <div class="hud-src">source: neural-structure-snapshot.json</div>
       </div>
 
@@ -357,6 +361,7 @@ const m = snapshot.meta;
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
+      quantumBelt: { windings: number[]; waist: number; strands: number[][][] };
       jitterbug: {
         targets13: number[][];
         coreTargetIndex: number;
@@ -848,10 +853,12 @@ const m = snapshot.meta;
     // carries the energy of the symmetry break outward through the structure
     // and decoheres the balance. It fires once per breathe cycle, at the break.
     const PULSE_MAX_R = 1.4;
+    const PULSE_WARM = 0xffe9c0; // emission — the diverging wave, out
+    const PULSE_COOL = 0x9fd0ff; // absorption — the converging inverse, in
     const pulseSphere = new THREE.Mesh(
       new THREE.SphereGeometry(1, 32, 24),
       new THREE.MeshBasicMaterial({
-        color: 0xffe9c0,
+        color: PULSE_WARM,
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -861,24 +868,70 @@ const m = snapshot.meta;
     equilibrium.add(pulseSphere);
     const pulseWire = new THREE.LineSegments(
       new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1, 2)),
-      new THREE.LineBasicMaterial({ color: 0xffe9c0, transparent: true, opacity: 0 })
+      new THREE.LineBasicMaterial({ color: PULSE_WARM, transparent: true, opacity: 0 })
     );
     equilibrium.add(pulseWire);
+    // the pulse's plane shadow — a ring on y=0 that expands (out) or contracts (in)
+    const PSHADOW_SEGS = 48;
+    const pShadowPos = new Float32Array((PSHADOW_SEGS + 1) * 3);
+    const pShadowGeo = new THREE.BufferGeometry();
+    pShadowGeo.setAttribute('position', new THREE.BufferAttribute(pShadowPos, 3));
+    const pShadow = new THREE.Line(
+      pShadowGeo,
+      new THREE.LineBasicMaterial({ color: PULSE_WARM, transparent: true, opacity: 0 })
+    );
+    equilibrium.add(pShadow);
+    // Time-symmetric event: an inverse wave CONVERGES from the far side (cool),
+    // focuses at the vacancy at the break, then EMITS outward (warm). Absorption
+    // → event → emission. The break is the focus the cycle turns through.
     function updatePulse(ph: number) {
       const u = ((((ph * 0.5) / (2 * Math.PI)) % 1) + 1) % 1; // position in the breathe cycle
-      const fired = u >= 0.5; // the break is at the peak (u = 0.5); the pulse expands after it
-      pulseSphere.visible = fired;
-      pulseWire.visible = fired;
-      if (!fired) return;
-      const t = (u - 0.5) / 0.5; // 0 at the break → 1 fully expanded
-      const r = 0.02 + t * PULSE_MAX_R;
+      let r: number, fade: number, col: number;
+      if (u < 0.5) {
+        const t = u / 0.5; // 0 → 1 approaching the break
+        r = 0.02 + (1 - t) * PULSE_MAX_R; // converges inward, through the other side
+        fade = t * t; // brightens as it focuses
+        col = PULSE_COOL;
+      } else {
+        const t = (u - 0.5) / 0.5; // 0 at the break → 1 fully expanded
+        r = 0.02 + t * PULSE_MAX_R; // diverges outward
+        fade = (1 - t) * (1 - t);
+        col = PULSE_WARM;
+      }
       pulseSphere.scale.setScalar(r);
       pulseWire.scale.setScalar(r);
-      const fade = (1 - t) * (1 - t);
-      (pulseSphere.material as THREE.MeshBasicMaterial).opacity = 0.08 * fade;
-      (pulseWire.material as THREE.MeshBasicMaterial).opacity = 0.35 * fade;
+      (pulseSphere.material as THREE.MeshBasicMaterial).color.setHex(col);
+      (pulseWire.material as THREE.MeshBasicMaterial).color.setHex(col);
+      (pulseSphere.material as THREE.MeshBasicMaterial).opacity = 0.07 * fade;
+      (pulseWire.material as THREE.MeshBasicMaterial).opacity = 0.32 * fade;
+      const sm = pShadow.material as THREE.LineBasicMaterial;
+      sm.color.setHex(col);
+      sm.opacity = 0.3 * fade;
+      for (let k = 0; k <= PSHADOW_SEGS; k++) {
+        const a = (2 * Math.PI * k) / PSHADOW_SEGS;
+        pShadowPos[k * 3] = r * Math.cos(a);
+        pShadowPos[k * 3 + 1] = 0;
+        pShadowPos[k * 3 + 2] = r * Math.sin(a);
+      }
+      pShadowGeo.attributes.position.needsUpdate = true;
     }
     updatePulse(0);
+
+    // ── the quantum belt: phi-woven frequencies, strung between the loci ──
+    // Strands wind at Fibonacci frequencies (1,2,3,5,8 — ratios that ARE phi),
+    // golden-angle offset so they weave without colliding: phi as the regulator
+    // that lets distinct frequencies coexist woven instead of locking into one.
+    const belt = new THREE.Group();
+    world.add(belt);
+    const beltCols = [0x6ea8ff, 0x55e9d0, 0xb79cff, 0xffe45c, 0xff9e5c];
+    snap.quantumBelt.strands.forEach((strand: number[][], i: number) => {
+      belt.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(strand.map(V3)),
+          new THREE.LineBasicMaterial({ color: beltCols[i % beltCols.length], transparent: true, opacity: 0.62 })
+        )
+      );
+    });
 
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
@@ -949,6 +1002,7 @@ const m = snapshot.meta;
       threads: threads.userData.parts,
       envelope: [envelope],
       equilibrium: [equilibrium],
+      belt: [belt],
       vessel: [vessel],
       ghost: [ghost],
     };
@@ -1015,6 +1069,7 @@ const m = snapshot.meta;
         updatePulse(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
+      belt.rotation.y += frozen ? 0 : dt * 0.09; // the woven belt, turning
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
       equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();
