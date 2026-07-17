@@ -97,6 +97,10 @@ const m = snapshot.meta;
           <span class="sw" style="--c:#9fb6ff"></span><b>Jitterbug</b> · 12-around-1, unstable · 12+1 → 13 · an inverse wave
           converges, focuses at the break, then emits
         </button>
+        <button class="lg-row" data-g="belt">
+          <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven · Fibonacci-frequency strands (1·2·3·5·8)
+          strung between the loci, golden-angle offset so they never collide
+        </button>
       </div>
 
       <div class="neural-hud" id="neural-hud">
@@ -357,6 +361,7 @@ const m = snapshot.meta;
       vessel: { phiSide: number; invSide: number; orbit: number[][]; snapshotAngleRad: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
+      quantumBelt: { windings: number[]; waist: number; strands: number[][][] };
       jitterbug: {
         targets13: number[][];
         coreTargetIndex: number;
@@ -912,6 +917,22 @@ const m = snapshot.meta;
     }
     updatePulse(0);
 
+    // ── the quantum belt: phi-woven frequencies, strung between the loci ──
+    // Strands wind at Fibonacci frequencies (1,2,3,5,8 — ratios that ARE phi),
+    // golden-angle offset so they weave without colliding: phi as the regulator
+    // that lets distinct frequencies coexist woven instead of locking into one.
+    const belt = new THREE.Group();
+    world.add(belt);
+    const beltCols = [0x6ea8ff, 0x55e9d0, 0xb79cff, 0xffe45c, 0xff9e5c];
+    snap.quantumBelt.strands.forEach((strand: number[][], i: number) => {
+      belt.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(strand.map(V3)),
+          new THREE.LineBasicMaterial({ color: beltCols[i % beltCols.length], transparent: true, opacity: 0.62 })
+        )
+      );
+    });
+
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
     world.add(vessel);
@@ -981,6 +1002,7 @@ const m = snapshot.meta;
       threads: threads.userData.parts,
       envelope: [envelope],
       equilibrium: [equilibrium],
+      belt: [belt],
       vessel: [vessel],
       ghost: [ghost],
     };
@@ -1047,6 +1069,7 @@ const m = snapshot.meta;
         updatePulse(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
+      belt.rotation.y += frozen ? 0 : dt * 0.09; // the woven belt, turning
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
       equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();

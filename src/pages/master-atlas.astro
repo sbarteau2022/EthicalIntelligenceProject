@@ -119,6 +119,10 @@ const nm = neural.meta;
             <span class="sw" style="--c:#9fb6ff"></span><b>Jitterbug</b> · 12-around-1, unstable · 12+1 → 13 · inverse wave
             converges, then emits
           </button>
+          <button class="lg-row" data-g="nBelt">
+            <span class="sw" style="--c:#55e9d0"></span><b>Quantum belt</b> · φ-woven Fibonacci strands strung between the
+            loci, golden-angle offset
+          </button>
         </div>
       </div>
 
@@ -454,6 +458,7 @@ const nm = neural.meta;
       lockRing: { radius: number; y: number };
       metatronGhost: { circleRadius: number; centers: number[][]; edges: number[][] };
       vectorEquilibrium: { radius: number; vertices: number[][]; edges: number[][] };
+      quantumBelt: { windings: number[]; waist: number; strands: number[][][] };
       jitterbug: {
         targets13: number[][];
         coreTargetIndex: number;
@@ -1129,6 +1134,23 @@ const nm = neural.meta;
     applyPhaseLock(H.vessel.snapshotAngleRad);
 
     // ════ the master selector + the per-structure legend ════
+
+    // ── the quantum belt: phi-woven frequencies, strung between the loci ──
+    // Strands wind at Fibonacci frequencies (1,2,3,5,8 — ratios that ARE phi),
+    // golden-angle offset so they weave without colliding: phi as the regulator
+    // that lets distinct frequencies coexist woven instead of locking into one.
+    const belt = new THREE.Group();
+    neuralGrp.add(belt);
+    const beltCols = [0x6ea8ff, 0x55e9d0, 0xb79cff, 0xffe45c, 0xff9e5c];
+    N.quantumBelt.strands.forEach((strand: number[][], i: number) => {
+      belt.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(strand.map(V3)),
+          new THREE.LineBasicMaterial({ color: beltCols[i % beltCols.length], transparent: true, opacity: 0.62 })
+        )
+      );
+    });
+
     const registry: Record<string, THREE.Object3D[]> = {
       uPillars: [uPillars],
       uFlower: [uFlower],
@@ -1140,6 +1162,7 @@ const nm = neural.meta;
       nLobes: nLobeParts,
       nThreads: nThreadParts,
       nEnvelope: [nEnvelope],
+      nBelt: [belt],
       equilibrium: [equilibrium],
       singularity: [singularity],
       vessel: [vessel],
@@ -1211,6 +1234,7 @@ const nm = neural.meta;
         (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
+      belt.rotation.y += frozen ? 0 : dt * 0.09;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
       equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
       controls.update();
