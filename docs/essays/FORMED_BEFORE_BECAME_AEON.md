@@ -42,9 +42,9 @@ talking about intelligence the way utilities talk about electricity.
 
 Sam Altman describes a future in which intelligence runs on a meter — a
 commodity you draw from the grid and pay for by consumption, like power.
-The industrial buildout matches the metaphor: the biggest labs are now
-signing enterprise deployments measured in billions of dollars, fielding
-teams of a hundred engineers inside the world's largest asset managers.
+The industrial buildout matches the metaphor: Anthropic and BlackRock —
+the world's largest asset manager — have announced a partnership worth a
+billion and a half dollars, deploying hundred-engineer enterprise teams.
 Intelligence as infrastructure. Cognition by the kilowatt-hour.
 
 The metaphor is honest about what these systems are becoming, and that is
@@ -404,11 +404,13 @@ _~170 words:_
 
 ### Editorial notes (not for submission)
 
-- **Verify before sending:** the Altman metered-intelligence line
-  (paraphrase is currently soft-attributed) and any enterprise-deployment
-  specifics if made concrete (current draft keeps them generic:
-  "billions," "hundred-engineer teams" — check against a citable report
-  or keep generic).
+- **Sources in hand (Stewart):** Altman's metered-intelligence remarks
+  (multiple recorded talks) and the Anthropic–BlackRock $1.5B /
+  hundred-engineer-teams partnership (announcement email). Now named
+  directly in "The meter" — have the two citations ready if Aeon's
+  fact-check asks; swap in the exact Altman quote from the video you
+  prefer before submission if you want a direct quotation rather than
+  the current paraphrase.
 - **Claims audit (all verified in-repo):** φ² ≈ 2.618 trust asymmetry and
   open rails (`recovery.ts`); four-state grounding gate + non-corroboration
   (`harmonic-coherence.ts`, `convergence.ts`); six refuted
