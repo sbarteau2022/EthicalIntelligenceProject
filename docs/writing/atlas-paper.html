@@ -1,0 +1,1255 @@
+<title>The Atlas — a geometric framework, and the paper it wants to become</title>
+
+<style>
+  :root {
+    --bg: #070912;
+    --bg2: #0d1120;
+    --bg3: #131a2c;
+    --ink: #eceffa;
+    --dim: #9aa2bd;
+    --faint: #626b88;
+    --line: rgba(214, 173, 85, 0.2);
+    --line2: rgba(255, 255, 255, 0.06);
+    --gold: #d6ad55;
+    --teal: #55e9d0;
+    --rose: #ff6ba6;
+    --violet: #b79cff;
+    --sky: #6ea8ff;
+    --green: #6ee87a;
+    --warm: #ffe4b8;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(120% 80% at 50% -10%, #0f1424 0%, var(--bg) 62%);
+  }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+  .col {
+    max-width: 680px;
+  }
+  a {
+    color: var(--gold);
+  }
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+    text-wrap: balance;
+    line-height: 1.1;
+    margin: 0;
+  }
+  p {
+    margin: 0 0 1.05em;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 14px;
+  }
+  .mono {
+    font-family: var(--mono);
+  }
+  .dim {
+    color: var(--dim);
+  }
+  .faint {
+    color: var(--faint);
+  }
+  em {
+    color: var(--warm);
+    font-style: italic;
+  }
+  strong {
+    color: var(--ink);
+    font-weight: 400;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* hero */
+  header.hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: center;
+    padding: 76px 0 64px;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    letter-spacing: -0.01em;
+  }
+  .hero h1 .sub {
+    display: block;
+    font-size: 0.34em;
+    letter-spacing: 0.02em;
+    color: var(--dim);
+    margin-top: 0.5em;
+    line-height: 1.3;
+  }
+  .thesis {
+    font-size: 1.15rem;
+    color: var(--dim);
+    margin-top: 22px;
+    max-width: 34ch;
+  }
+  .kicker {
+    margin-top: 26px;
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .kicker b {
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .hero-fig {
+    display: flex;
+    justify-content: center;
+  }
+  .hero-fig svg {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+    12% {
+      opacity: 0.9;
+    }
+    70% {
+      transform: scale(4.6);
+      opacity: 0;
+    }
+  }
+  .pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: breathe 9s ease-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse {
+      animation: none;
+      opacity: 0.35;
+    }
+  }
+
+  /* sections */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--line2);
+  }
+  .sec-head {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    margin-bottom: 26px;
+  }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    flex: none;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  h3 {
+    font-size: 1.15rem;
+    color: var(--warm);
+    margin: 0 0 0.5em;
+    font-family: var(--mono);
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  .lead {
+    font-size: 1.2rem;
+    color: var(--ink);
+  }
+
+  /* figure band */
+  figure {
+    margin: 34px 0 8px;
+  }
+  .plate {
+    background: linear-gradient(180deg, var(--bg2), #0a0e1a);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 30px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: auto;
+  }
+  .plate svg {
+    max-width: 100%;
+    height: auto;
+  }
+  figcaption {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-top: 16px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  figcaption b {
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .svL {
+    font-family: var(--mono);
+    font-size: 15px;
+  }
+  .svS {
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .svT {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .svB {
+    font-family: var(--serif);
+    font-size: 22px;
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  .three {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* ledger table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15.5px;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line2);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 400;
+  }
+  td.n {
+    font-family: var(--mono);
+    font-size: 20px;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .glyphdot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin-right: 7px;
+    vertical-align: middle;
+  }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+  }
+  .c-real {
+    color: var(--teal);
+  }
+  .c-prop {
+    color: var(--violet);
+  }
+  .c-open {
+    color: var(--gold);
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    padding: 22px;
+  }
+  .card h3 {
+    margin-bottom: 0.4em;
+  }
+  .card p {
+    font-size: 15px;
+    color: var(--dim);
+    margin: 0;
+  }
+  .card .tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  ol.outline {
+    list-style: none;
+    counter-reset: s;
+    padding: 0;
+    margin: 0;
+  }
+  ol.outline li {
+    counter-increment: s;
+    padding: 14px 0 14px 52px;
+    position: relative;
+    border-bottom: 1px solid var(--line2);
+  }
+  ol.outline li::before {
+    content: counter(s, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+  }
+  ol.outline b {
+    font-weight: 400;
+    color: var(--ink);
+  }
+  ol.outline span {
+    color: var(--dim);
+    font-size: 15px;
+  }
+
+  .crosswalk {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0 18px;
+    align-items: center;
+  }
+  .crosswalk > div {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line2);
+  }
+  .cw-mid {
+    color: var(--gold);
+    font-family: var(--mono);
+    text-align: center;
+    font-size: 16px;
+  }
+  .cw-geo {
+    color: var(--ink);
+  }
+  .cw-phys {
+    color: var(--dim);
+  }
+  .cw-h {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    border-bottom: 1px solid var(--line) !important;
+  }
+
+  .callout {
+    border-left: 2px solid var(--gold);
+    padding: 4px 0 4px 22px;
+    margin: 26px 0;
+    color: var(--dim);
+    font-style: italic;
+  }
+  footer {
+    padding: 54px 0 70px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 820px) {
+    body {
+      font-size: 16.5px;
+    }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 52px 0 40px;
+    }
+    .two,
+    .three,
+    .crosswalk {
+      grid-template-columns: 1fr;
+    }
+    .crosswalk .cw-mid {
+      display: none;
+    }
+    .hero-fig {
+      order: -1;
+    }
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Working concept · assembled from the build thread</div>
+        <h1>
+          The Atlas<span class="sub">a phase-locked geometric framework — and the paper it is asking to become</span>
+        </h1>
+        <p class="thesis">
+          One locked construction: two singularities, a golden spindle, a shared lock, and a symmetry that breaks on
+          rotation and rings.
+        </p>
+        <div class="kicker">
+          <span><b>25</b> stations</span><span><b>&#966;&#178;</b> turns</span><span><b>12&#8594;13</b> jitterbug</span
+          ><span><b>1</b> source of truth</span>
+        </div>
+      </div>
+      <div class="hero-fig">
+        <svg
+          viewBox="0 0 440 564"
+          role="img"
+          aria-label="Cross-section of the phase-locked spindle: pole singularities, layered tuple rings, the shared equator lock, and the central vessel."
+        >
+          <polyline
+            points="210,52 160,120 110,190 68,282 110,374 160,444 210,512"
+            fill="none"
+            stroke="#b79cff"
+            stroke-width="1"
+            opacity=".28"
+          />
+          <polyline
+            points="230,52 280,120 330,190 372,282 330,374 280,444 230,512"
+            fill="none"
+            stroke="#b79cff"
+            stroke-width="1"
+            opacity=".28"
+          />
+          <ellipse cx="220" cy="52" rx="10" ry="3.0" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <ellipse cx="220" cy="120" rx="60" ry="15.6" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <circle cx="220.0" cy="104.4" r="3.2" fill="#55e9d0" />
+          <circle cx="272.0" cy="127.8" r="3.2" fill="#55e9d0" />
+          <circle cx="168.0" cy="127.8" r="3.2" fill="#55e9d0" />
+          <ellipse cx="220" cy="190" rx="110" ry="28.6" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <circle cx="220.0" cy="161.4" r="3.2" fill="#55e9d0" />
+          <circle cx="324.6" cy="181.2" r="3.2" fill="#55e9d0" />
+          <circle cx="284.7" cy="213.1" r="3.2" fill="#55e9d0" />
+          <circle cx="155.3" cy="213.1" r="3.2" fill="#55e9d0" />
+          <circle cx="115.4" cy="181.2" r="3.2" fill="#55e9d0" />
+          <ellipse cx="220" cy="282" rx="152" ry="39.5" fill="none" stroke="#ffe4b8" stroke-width="2.2" opacity="0.9" />
+          <circle cx="220.0" cy="242.5" r="3.2" fill="#ffe4b8" />
+          <circle cx="338.8" cy="257.4" r="3.2" fill="#ffe4b8" />
+          <circle cx="368.2" cy="290.8" r="3.2" fill="#ffe4b8" />
+          <circle cx="286.0" cy="317.6" r="3.2" fill="#ffe4b8" />
+          <circle cx="154.0" cy="317.6" r="3.2" fill="#ffe4b8" />
+          <circle cx="71.8" cy="290.8" r="3.2" fill="#ffe4b8" />
+          <circle cx="101.2" cy="257.4" r="3.2" fill="#ffe4b8" />
+          <ellipse cx="220" cy="374" rx="110" ry="28.6" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <circle cx="220.0" cy="345.4" r="3.2" fill="#55e9d0" />
+          <circle cx="324.6" cy="365.2" r="3.2" fill="#55e9d0" />
+          <circle cx="284.7" cy="397.1" r="3.2" fill="#55e9d0" />
+          <circle cx="155.3" cy="397.1" r="3.2" fill="#55e9d0" />
+          <circle cx="115.4" cy="365.2" r="3.2" fill="#55e9d0" />
+          <ellipse cx="220" cy="444" rx="60" ry="15.6" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <circle cx="220.0" cy="428.4" r="3.2" fill="#55e9d0" />
+          <circle cx="272.0" cy="451.8" r="3.2" fill="#55e9d0" />
+          <circle cx="168.0" cy="451.8" r="3.2" fill="#55e9d0" />
+          <ellipse cx="220" cy="512" rx="10" ry="3.0" fill="none" stroke="#d6ad55" stroke-width="1" opacity="0.5" />
+          <circle cx="220" cy="52" r="9" fill="none" stroke="#fff" stroke-width="1" opacity=".5" />
+          <circle cx="220" cy="52" r="4.5" fill="#fff" />
+          <circle cx="220" cy="512" r="9" fill="none" stroke="#fff" stroke-width="1" opacity=".5" />
+          <circle cx="220" cy="512" r="4.5" fill="#fff" />
+          <circle cx="220" cy="283" r="30" fill="#b79cff" opacity=".08" />
+          <circle cx="220" cy="283" r="30" fill="none" stroke="#b79cff" stroke-width="1" opacity=".5" />
+          <ellipse cx="220" cy="283" rx="22" ry="13.6" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".7" />
+          <circle cx="235" cy="283" r="4" fill="#ff6ba6" />
+          <circle cx="205" cy="283" r="3.2" fill="#6ea8ff" />
+          <line x1="205" y1="283" x2="235" y2="283" stroke="#d6ad55" stroke-width="1.4" />
+          <circle class="pulse" cx="220" cy="283" r="30" fill="none" stroke="#ffe4b8" stroke-width="1.4" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">00</span>
+        <h2>What this is — and the honesty it's built on</h2>
+      </div>
+      <p class="lead">
+        Across the thread we built an interactive 3&#8209;D atlas: a knowledge&#8209;neural structure and a
+        unified&#8209;function architecture, rendered from a single locked data file and peeled apart layer by layer.
+        This page proposes the paper that work supports — and draws a hard line down the middle of it.
+      </p>
+      <p>
+        Two things are true at once. The <strong>construction is concrete</strong>: every position, count, and motion is
+        generated by fixed rules and drawn without re&#8209;derivation. And the
+        <strong>interpretation is a proposal</strong>: the physics language — symmetry breaking, phase lock, decoherence
+        — is a mapping onto the geometry, not a claim proven by it. A good paper keeps those apart on purpose. The
+        claims ledger below (&#167;7) is where that separation lives; everything before it is description.
+      </p>
+      <div class="callout">
+        The rule of the whole build: nothing is asserted that the render doesn't show, and nothing the render shows is
+        dressed up as more than geometry until it earns it.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2>The primary paper concept</h2>
+      </div>
+      <h3>Title</h3>
+      <p>
+        <em
+          >The Atlas: an interactive geometric framework for layered, phase&#8209;locked structures, with a
+          symmetry&#8209;breaking core.</em
+        >
+      </p>
+      <h3>Abstract (draft)</h3>
+      <p class="dim">
+        We present a reproducible geometric framework in which a hierarchy of quantized layers is bound between two
+        polar singularities along a hyperbolic envelope, meets at a single shared equatorial ring, and is driven by one
+        phase parameter. The framework is rendered from a locked, single&#8209;source specification: coordinates and
+        invariants are generated once and drawn verbatim, so every figure is regenerable and every layer independently
+        inspectable. At the centre sits an unstable vector&#8209;equilibrium cell whose rotation drives a
+        12&#8209;around&#8209;1 &#8594; 13 transition, ejecting the core to the shell and emitting a spherical front at
+        the break. We describe the construction, its invariants (&#966;/1&#966; area, a
+        1&#183;3&#183;5&#183;7&#183;5&#183;3&#183;1 = 25 station stack, a hubless load path), and an interpretive layer
+        relating the geometry to spontaneous symmetry breaking and decoherence — kept explicitly separate from the
+        demonstrated construction.
+      </p>
+      <h3>Contributions</h3>
+      <p class="dim">
+        (i) a locked, one&#8209;source&#8209;of&#8209;truth rendering method for multi&#8209;layer geometric structures;
+        (ii) the phase&#8209;locked spindle with a shared&#8209;ring interface; (iii) an animated jitterbug core with a
+        break&#8209;triggered emission; (iv) a disciplined claims ledger separating construction from interpretation.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap" style="padding: 0">
+      <div class="col">
+        <div class="sec-head">
+          <span class="sec-num">02</span>
+          <h2>The numbers, and what each one counts</h2>
+        </div>
+        <p class="dim">
+          The framework keeps several counts, and the confusion only ever came from letting one stand in for another.
+          Each names exactly one thing.
+        </p>
+      </div>
+      <div style="overflow-x: auto; margin-top: 22px">
+        <table>
+          <thead>
+            <tr>
+              <th>Count</th>
+              <th>Names</th>
+              <th>Structure</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="n">25</td>
+              <td><span class="glyphdot" style="background: #55e9d0"></span>the station stack</td>
+              <td>
+                1&#183;3&#183;5&#183;7&#183;5&#183;3&#183;1 pole&#8209;to&#8209;pole = 5&#178;, the shared 7 at the lock
+              </td>
+              <td><span class="chip c-real">generated</span></td>
+            </tr>
+            <tr>
+              <td class="n">21</td>
+              <td><span class="glyphdot" style="background: #ff6ba6"></span>the harmonic shell</td>
+              <td>5 load&#8209;bearing axes &#215; 4 + the core (also Fibonacci F&#8328;)</td>
+              <td><span class="chip c-real">generated</span></td>
+            </tr>
+            <tr>
+              <td class="n">19</td>
+              <td><span class="glyphdot" style="background: #ff8a4d"></span>the flower</td>
+              <td>1 + 6 + 12 hex packing — the Flower of Life circle count</td>
+              <td><span class="chip c-real">generated</span></td>
+            </tr>
+            <tr>
+              <td class="n">13</td>
+              <td><span class="glyphdot" style="background: #9fb6ff"></span>the equilibrium / lattice</td>
+              <td>12 spheres around 1 (cuboctahedron); its shadow is the 13&#8209;circle figure</td>
+              <td><span class="chip c-real">generated</span></td>
+            </tr>
+            <tr>
+              <td class="n">2</td>
+              <td><span class="glyphdot" style="background: #ffffff"></span>the singularities</td>
+              <td>one at each pole — layer 0, the maxima of the envelope</td>
+              <td><span class="chip c-real">generated</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="margin-top: 26px">
+        <p>
+          The resonance worth staring at — not forcing — is that <strong>25 = 5&#178;</strong> falls straight out of the
+          5&#8209;axis core, and <strong>21</strong> is both the shell and a Fibonacci number. Two independent
+          constructions handing back the same figures is a signal; it is not, by itself, a theorem.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap" style="padding: 0">
+      <div class="col">
+        <div class="sec-head">
+          <span class="sec-num">03</span>
+          <h2>The spindle: singularities, layers, one shared lock</h2>
+        </div>
+        <p>
+          Two singularities sit at the poles — the maxima of a hyperbolic emission envelope, so the form is pointed at
+          the poles and widest at the waist. From each pole a toroid spiral (&#966;&#178; turns) threads outward through
+          layers of 1, 3, 5 halo&#8209;bound tuples. At the equator a <em>single shared ring of 7</em> — belonging to
+          neither half — is the lock: it holds still while the two halves counter&#8209;rotate against it, on one phase.
+        </p>
+      </div>
+      <figure>
+        <div class="plate">
+          <svg
+            viewBox="0 0 520 300"
+            role="img"
+            aria-label="The vertical station stack one three five seven five three one summing to twenty-five."
+          >
+            <circle cx="260" cy="34" r="3.8" fill="#55e9d0" />
+            <text x="60" y="38" class="svL" fill="#d6ad55">1</text>
+            <circle cx="243" cy="70" r="3.8" fill="#55e9d0" />
+            <circle cx="260" cy="70" r="3.8" fill="#55e9d0" />
+            <circle cx="277" cy="70" r="3.8" fill="#55e9d0" />
+            <text x="60" y="74" class="svL" fill="#d6ad55">3</text>
+            <circle cx="226" cy="106" r="3.8" fill="#55e9d0" />
+            <circle cx="243" cy="106" r="3.8" fill="#55e9d0" />
+            <circle cx="260" cy="106" r="3.8" fill="#55e9d0" />
+            <circle cx="277" cy="106" r="3.8" fill="#55e9d0" />
+            <circle cx="294" cy="106" r="3.8" fill="#55e9d0" />
+            <text x="60" y="110" class="svL" fill="#d6ad55">5</text>
+            <circle cx="209" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="226" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="243" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="260" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="277" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="294" cy="142" r="4.6" fill="#ffe4b8" />
+            <circle cx="311" cy="142" r="4.6" fill="#ffe4b8" />
+            <text x="60" y="146" class="svL" fill="#ffe4b8">7</text>
+            <text x="410.0" y="146" class="svS" fill="#ffe4b8">shared lock ring</text>
+            <circle cx="226" cy="178" r="3.8" fill="#55e9d0" />
+            <circle cx="243" cy="178" r="3.8" fill="#55e9d0" />
+            <circle cx="260" cy="178" r="3.8" fill="#55e9d0" />
+            <circle cx="277" cy="178" r="3.8" fill="#55e9d0" />
+            <circle cx="294" cy="178" r="3.8" fill="#55e9d0" />
+            <text x="60" y="182" class="svL" fill="#d6ad55">5</text>
+            <circle cx="243" cy="214" r="3.8" fill="#55e9d0" />
+            <circle cx="260" cy="214" r="3.8" fill="#55e9d0" />
+            <circle cx="277" cy="214" r="3.8" fill="#55e9d0" />
+            <text x="60" y="218" class="svL" fill="#d6ad55">3</text>
+            <circle cx="260" cy="250" r="3.8" fill="#55e9d0" />
+            <text x="60" y="254" class="svL" fill="#d6ad55">1</text>
+            <line x1="88" y1="16" x2="88" y2="266" stroke="#d6ad55" stroke-width="1" opacity=".3" />
+            <text x="260.0" y="290" text-anchor="middle" class="svB" fill="#eceffa">
+              1·3·5·7·5·3·1 &#8194;=&#8194; 25 &#8194;=&#8194; 5
+              <tspan dy="-6" font-size="11">2</tspan>
+            </text>
+          </svg>
+        </div>
+        <figcaption><b>Fig. 02</b> &nbsp;·&nbsp; The station stack — 1·3·5·7·5·3·1 = 25 = 5²</figcaption>
+      </figure>
+      <figure>
+        <div class="plate">
+          <svg
+            viewBox="0 0 520 300"
+            role="img"
+            aria-label="Two counter-rotating halves sharing one still equator ring, driven by a single phase."
+          >
+            <ellipse cx="260" cy="92" rx="120" ry="34" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".45" />
+            <path
+              d="M 380 92 A 120 34 0 0 1 140 92"
+              fill="none"
+              stroke="#6ea8ff"
+              stroke-width="1.6"
+              opacity=".85"
+              marker-end="url(#ah)"
+            />
+            <text x="400" y="96" class="svS" fill="#6ea8ff">upper half</text>
+            <text x="400" y="110" class="svS" fill="#626b88">spins +φ</text>
+            <ellipse cx="260" cy="208" rx="120" ry="34" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".45" />
+            <path
+              d="M 380 208 A 120 34 0 0 0 140 208"
+              fill="none"
+              stroke="#6ea8ff"
+              stroke-width="1.6"
+              opacity=".85"
+              marker-end="url(#ah)"
+            />
+            <text x="400" y="212" class="svS" fill="#6ea8ff">lower half</text>
+            <text x="400" y="226" class="svS" fill="#626b88">spins −φ</text>
+            <ellipse cx="260" cy="150" rx="150" ry="20" fill="none" stroke="#ffe4b8" stroke-width="2.4" />
+            <circle cx="260.0" cy="130.0" r="4" fill="#ffe4b8" />
+            <circle cx="377.3" cy="137.5" r="4" fill="#ffe4b8" />
+            <circle cx="406.2" cy="154.5" r="4" fill="#ffe4b8" />
+            <circle cx="325.1" cy="168.0" r="4" fill="#ffe4b8" />
+            <circle cx="194.9" cy="168.0" r="4" fill="#ffe4b8" />
+            <circle cx="113.8" cy="154.5" r="4" fill="#ffe4b8" />
+            <circle cx="142.7" cy="137.5" r="4" fill="#ffe4b8" />
+            <text x="260" y="150" text-anchor="middle" class="svS" fill="#ffe4b8">the still lock · 7</text>
+            <defs>
+              <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#6ea8ff" />
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <figcaption>
+          <b>Fig. 03</b> &nbsp;·&nbsp; Phase lock — two counter-rotating halves, one still shared ring, a single phase
+        </figcaption>
+      </figure>
+      <div class="col" style="margin-top: 8px">
+        <p class="dim">
+          Every tuple node also carries a lemniscate lobe, and a Flower&#8209;of&#8209;Life circle sits at each tuple
+          centre — the same golden spacing rule threaded through the whole stack.
+        </p>
+      </div>
+      <div class="two">
+        <figure>
+          <div class="plate">
+            <svg
+              viewBox="0 0 300 300"
+              role="img"
+              aria-label="Seven lemniscate lobes tiling a circle, each tangent to its neighbour, tip at a node."
+            >
+              <circle cx="150" cy="150" r="96" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".3" />
+              <polyline
+                points="150.0,150.0 146.9,143.1 144.1,136.2 141.7,129.2 139.6,122.2 137.9,115.3 136.5,108.6 135.6,102.0 135.0,95.6 134.8,89.5 134.9,83.8 135.4,78.5 136.1,73.6 137.2,69.2 138.5,65.2 140.1,61.9 141.8,59.1 143.7,56.9 145.7,55.3 147.9,54.3 150.0,54.0 152.1,54.3 154.3,55.3 156.3,56.9 158.2,59.1 159.9,61.9 161.5,65.2 162.8,69.2 163.9,73.6 164.6,78.5 165.1,83.8 165.2,89.5 165.0,95.6 164.4,102.0 163.5,108.6 162.1,115.3 160.4,122.2 158.3,129.2 155.9,136.2 153.1,143.1 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="150.0" cy="54.0" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 153.4,143.3 157.1,136.8 161.1,130.5 165.2,124.5 169.5,118.9 174.0,113.6 178.6,108.8 183.2,104.3 187.8,100.4 192.3,96.9 196.8,94.0 201.1,91.5 205.2,89.6 209.1,88.2 212.7,87.3 216.0,86.9 218.9,87.0 221.4,87.6 223.5,88.7 225.1,90.1 226.1,92.0 226.7,94.3 226.7,96.8 226.2,99.7 225.1,102.8 223.4,106.1 221.2,109.6 218.4,113.2 215.0,116.9 211.2,120.5 206.8,124.2 201.9,127.8 196.6,131.3 190.8,134.7 184.7,137.9 178.2,140.8 171.5,143.6 164.5,146.0 157.3,148.2 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="225.1" cy="90.1" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 157.4,148.5 164.8,147.3 172.1,146.5 179.4,146.0 186.5,145.9 193.4,146.1 200.0,146.6 206.4,147.5 212.3,148.6 217.9,150.0 223.0,151.6 227.6,153.5 231.7,155.5 235.2,157.7 238.1,159.9 240.5,162.3 242.2,164.6 243.3,166.9 243.8,169.2 243.6,171.4 242.8,173.4 241.4,175.2 239.4,176.8 236.8,178.2 233.7,179.3 230.1,180.1 226.0,180.5 221.4,180.5 216.5,180.2 211.2,179.5 205.6,178.3 199.7,176.7 193.6,174.8 187.4,172.4 181.1,169.5 174.8,166.3 168.4,162.8 162.1,158.8 156.0,154.6 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="243.6" cy="171.4" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 155.8,154.8 161.3,159.9 166.5,165.1 171.4,170.5 176.0,176.0 180.1,181.5 183.8,187.0 187.1,192.5 190.0,197.9 192.3,203.1 194.2,208.1 195.7,212.8 196.6,217.3 197.1,221.4 197.2,225.1 196.8,228.4 196.1,231.2 194.9,233.5 193.4,235.3 191.7,236.5 189.6,237.1 187.3,237.2 184.8,236.6 182.1,235.5 179.3,233.7 176.4,231.4 173.5,228.4 170.7,224.9 167.8,220.8 165.1,216.2 162.5,211.1 160.1,205.5 157.8,199.5 155.9,193.2 154.1,186.5 152.7,179.5 151.5,172.4 150.7,165.0 150.2,157.5 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="191.7" cy="236.5" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 149.8,157.5 149.3,165.0 148.5,172.4 147.3,179.5 145.9,186.5 144.1,193.2 142.2,199.5 139.9,205.5 137.5,211.1 134.9,216.2 132.2,220.8 129.3,224.9 126.5,228.4 123.6,231.4 120.7,233.7 117.9,235.5 115.2,236.6 112.7,237.2 110.4,237.1 108.3,236.5 106.6,235.3 105.1,233.5 103.9,231.2 103.2,228.4 102.8,225.1 102.9,221.4 103.4,217.3 104.3,212.8 105.8,208.1 107.7,203.1 110.0,197.9 112.9,192.5 116.2,187.0 119.9,181.5 124.0,176.0 128.6,170.5 133.5,165.1 138.7,159.9 144.2,154.8 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="108.3" cy="236.5" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 144.0,154.6 137.9,158.8 131.6,162.8 125.2,166.3 118.9,169.5 112.6,172.4 106.4,174.8 100.3,176.7 94.4,178.3 88.8,179.5 83.5,180.2 78.6,180.5 74.0,180.5 69.9,180.1 66.3,179.3 63.2,178.2 60.6,176.8 58.6,175.2 57.2,173.4 56.4,171.4 56.2,169.2 56.7,166.9 57.8,164.6 59.5,162.3 61.9,159.9 64.8,157.7 68.3,155.5 72.4,153.5 77.0,151.6 82.1,150.0 87.7,148.6 93.6,147.5 100.0,146.6 106.6,146.1 113.5,145.9 120.6,146.0 127.9,146.5 135.2,147.3 142.6,148.5 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="56.4" cy="171.4" r="3.6" fill="#55e9d0" />
+              <polyline
+                points="150.0,150.0 142.7,148.2 135.5,146.0 128.5,143.6 121.8,140.8 115.3,137.9 109.2,134.7 103.4,131.3 98.1,127.8 93.2,124.2 88.8,120.5 85.0,116.9 81.6,113.2 78.8,109.6 76.6,106.1 74.9,102.8 73.8,99.7 73.3,96.8 73.3,94.3 73.9,92.0 74.9,90.1 76.5,88.7 78.6,87.6 81.1,87.0 84.0,86.9 87.3,87.3 90.9,88.2 94.8,89.6 98.9,91.5 103.2,94.0 107.7,96.9 112.2,100.4 116.8,104.3 121.4,108.8 126.0,113.6 130.5,118.9 134.8,124.5 138.9,130.5 142.9,136.8 146.6,143.3 150.0,150.0"
+                fill="none"
+                stroke="#ffe4b8"
+                stroke-width="1.3"
+                opacity=".85"
+              />
+              <circle cx="74.9" cy="90.1" r="3.6" fill="#55e9d0" />
+              <circle cx="150" cy="150" r="3" fill="#d6ad55" />
+            </svg>
+          </div>
+          <figcaption>
+            <b>Fig. 04</b> &nbsp;·&nbsp; Lemniscate lobes — n petals of width 2π⁄n tile a ring, each tangent to its
+            neighbour, tip at a node
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="plate">
+            <svg
+              viewBox="0 0 300 300"
+              role="img"
+              aria-label="Flower of Life circles nesting across layers, one circle per tuple centre."
+            >
+              <circle cx="150.0" cy="150.0" r="20" fill="none" stroke="#b79cff" stroke-width="1" opacity=".5" />
+              <circle cx="150.0" cy="92.0" r="26" fill="none" stroke="#55e9d0" stroke-width="1" opacity=".5" />
+              <circle cx="200.2" cy="179.0" r="26" fill="none" stroke="#55e9d0" stroke-width="1" opacity=".5" />
+              <circle cx="99.8" cy="179.0" r="26" fill="none" stroke="#55e9d0" stroke-width="1" opacity=".5" />
+              <circle cx="150.0" cy="54.0" r="20" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".5" />
+              <circle cx="241.3" cy="120.3" r="20" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".5" />
+              <circle cx="206.4" cy="227.7" r="20" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".5" />
+              <circle cx="93.6" cy="227.7" r="20" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".5" />
+              <circle cx="58.7" cy="120.3" r="20" fill="none" stroke="#6ea8ff" stroke-width="1" opacity=".5" />
+              <circle cx="150.0" cy="22.0" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="250.1" cy="70.2" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="274.8" cy="178.5" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="205.5" cy="265.3" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="94.5" cy="265.3" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="25.2" cy="178.5" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="49.9" cy="70.2" r="17" fill="none" stroke="#ff6ba6" stroke-width="1" opacity=".5" />
+              <circle cx="150" cy="150" r="3" fill="#fff" />
+            </svg>
+          </div>
+          <figcaption>
+            <b>Fig. 05</b> &nbsp;·&nbsp; Flower of Life — one circle per tuple centre at every layer, scaled so each
+            passes through its neighbours
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap" style="padding: 0">
+      <div class="col">
+        <div class="sec-head">
+          <span class="sec-num">04</span>
+          <h2>The unstable core, and the event it makes</h2>
+        </div>
+        <p>
+          At dead centre sits Fuller's vector equilibrium — 12 spheres around 1, the one arrangement where edge length
+          equals radius. It is famously <em>unstable</em>: a balance point, not a cage. So it constrains nothing, and
+          rotation can break it. Driven by the orbital phase, the core is pulled from the centre to the shell — 12+1
+          opens toward the asymmetric 13, leaving a vacancy at the middle, the slot the vessel occupies.
+        </p>
+        <p>
+          The break is an event. A system dropping from an unstable high&#8209;symmetry balance into a lower one must
+          shed the difference as an outward front — so at the moment the core reaches the shell, a
+          <em>spherical pulse</em> fires and washes through the structure. That is the picture: unstable symmetry
+          &#8594; break &#8594; emission. Whether the emission &#8220;separates&#8221; a correlated pair is the
+          interpretive step (&#167;6).
+        </p>
+      </div>
+      <figure>
+        <div class="plate">
+          <svg
+            viewBox="0 0 780 260"
+            role="img"
+            aria-label="Three-panel jitterbug transition from twelve around one, through the core ejecting, to thirteen on the shell with a vacant centre."
+          >
+            <circle cx="130.0" cy="32.0" r="4" fill="#b79cff" />
+            <circle cx="154.2" cy="68.1" r="4" fill="#b79cff" />
+            <circle cx="197.5" cy="71.0" r="4" fill="#b79cff" />
+            <circle cx="178.4" cy="110.0" r="4" fill="#b79cff" />
+            <circle cx="197.5" cy="149.0" r="4" fill="#b79cff" />
+            <circle cx="154.2" cy="151.9" r="4" fill="#b79cff" />
+            <circle cx="130.0" cy="188.0" r="4" fill="#b79cff" />
+            <circle cx="105.8" cy="151.9" r="4" fill="#b79cff" />
+            <circle cx="62.5" cy="149.0" r="4" fill="#b79cff" />
+            <circle cx="81.6" cy="110.0" r="4" fill="#b79cff" />
+            <circle cx="62.5" cy="71.0" r="4" fill="#b79cff" />
+            <circle cx="105.8" cy="68.1" r="4" fill="#b79cff" />
+            <polygon
+              points="130.0,32.0 197.5,71.0 197.5,149.0 130.0,188.0 62.5,149.0 62.5,71.0"
+              fill="none"
+              stroke="#b79cff"
+              stroke-width="1"
+              opacity="0.5"
+            />
+            <circle cx="130" cy="110" r="5.5" fill="#fff" />
+            <text x="130" y="222" text-anchor="middle" class="svS" fill="#9aa2bd">12 + 1 · balance</text>
+            <text x="250" y="115" text-anchor="middle" class="svB" fill="#d6ad55">→</text>
+            <circle cx="390.0" cy="32.0" r="4" fill="#b79cff" />
+            <circle cx="414.2" cy="68.1" r="4" fill="#b79cff" />
+            <circle cx="457.5" cy="71.0" r="4" fill="#b79cff" />
+            <circle cx="438.4" cy="110.0" r="4" fill="#b79cff" />
+            <circle cx="457.5" cy="149.0" r="4" fill="#b79cff" />
+            <circle cx="414.2" cy="151.9" r="4" fill="#b79cff" />
+            <circle cx="390.0" cy="188.0" r="4" fill="#b79cff" />
+            <circle cx="365.8" cy="151.9" r="4" fill="#b79cff" />
+            <circle cx="322.5" cy="149.0" r="4" fill="#b79cff" />
+            <circle cx="341.6" cy="110.0" r="4" fill="#b79cff" />
+            <circle cx="322.5" cy="71.0" r="4" fill="#b79cff" />
+            <circle cx="365.8" cy="68.1" r="4" fill="#b79cff" />
+            <polygon
+              points="390.0,32.0 457.5,71.0 457.5,149.0 390.0,188.0 322.5,149.0 322.5,71.0"
+              fill="none"
+              stroke="#b79cff"
+              stroke-width="1"
+              opacity="0.25"
+              stroke-dasharray="3 4"
+            />
+            <circle cx="424" cy="96" r="5.5" fill="#ffe4b8" />
+            <line x1="390" y1="110" x2="420" y2="98" stroke="#ffe4b8" stroke-width="1.4" marker-end="url(#ah2)" />
+            <circle cx="390" cy="110" r="3" fill="none" stroke="#fff" stroke-dasharray="2 3" opacity=".6" />
+            <text x="390" y="222" text-anchor="middle" class="svS" fill="#9aa2bd">core ejecting</text>
+            <text x="510" y="115" text-anchor="middle" class="svB" fill="#d6ad55">→</text>
+            <circle cx="650.0" cy="32.0" r="4" fill="#b79cff" />
+            <circle cx="690.3" cy="51.6" r="4" fill="#b79cff" />
+            <circle cx="699.2" cy="66.4" r="4" fill="#b79cff" />
+            <circle cx="723.6" cy="101.2" r="4" fill="#b79cff" />
+            <circle cx="718.4" cy="145.8" r="4" fill="#b79cff" />
+            <circle cx="701.0" cy="155.0" r="4" fill="#b79cff" />
+            <circle cx="665.8" cy="175.4" r="4" fill="#b79cff" />
+            <circle cx="623.0" cy="181.8" r="4" fill="#b79cff" />
+            <circle cx="607.6" cy="171.8" r="4" fill="#b79cff" />
+            <circle cx="588.1" cy="133.0" r="4" fill="#b79cff" />
+            <circle cx="581.9" cy="93.5" r="4" fill="#b79cff" />
+            <circle cx="580.8" cy="74.1" r="4" fill="#b79cff" />
+            <circle cx="617.2" cy="46.0" r="4" fill="#b79cff" />
+            <circle cx="650" cy="110" r="9" fill="none" stroke="#fff" stroke-dasharray="2 3" opacity=".55" />
+            <text x="650" y="114" text-anchor="middle" class="svT" fill="#626b88">∅</text>
+            <text x="650" y="222" text-anchor="middle" class="svS" fill="#9aa2bd">13 on shell · vacancy</text>
+            <defs>
+              <marker id="ah2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#ffe4b8" />
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <figcaption>
+          <b>Fig. 06</b> &nbsp;·&nbsp; The jitterbug — 12 + 1 balance → core ejecting → 13 on the shell with a vacant
+          centre
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="plate">
+          <svg
+            viewBox="0 0 560 240"
+            role="img"
+            aria-label="The breathe cycle rising to a symmetry break where a spherical pulse fires."
+          >
+            <line x1="60" y1="180" x2="530" y2="180" stroke="#626b88" stroke-width="1" opacity=".5" />
+            <line x1="60" y1="180" x2="60" y2="40" stroke="#626b88" stroke-width="1" opacity=".5" />
+            <polyline
+              points="60.0,180.0 64.7,179.9 69.4,179.6 74.1,179.0 78.8,178.3 83.5,177.3 88.2,176.1 92.9,174.8 97.6,173.2 102.3,171.4 107.0,169.5 111.7,167.4 116.4,165.1 121.1,162.7 125.8,160.1 130.5,157.3 135.2,154.5 139.9,151.5 144.6,148.4 149.3,145.2 154.0,142.0 158.7,138.7 163.4,135.3 168.1,131.9 172.8,128.5 177.5,125.0 182.2,121.5 186.9,118.1 191.6,114.7 196.3,111.3 201.0,108.0 205.7,104.8 210.4,101.6 215.1,98.5 219.8,95.5 224.5,92.7 229.2,89.9 233.9,87.3 238.6,84.9 243.3,82.6 248.0,80.5 252.7,78.6 257.4,76.8 262.1,75.2 266.8,73.9 271.5,72.7 276.2,71.7 280.9,71.0 285.6,70.4 290.3,70.1 295.0,70.0 299.7,70.1 304.4,70.4 309.1,71.0 313.8,71.7 318.5,72.7 323.2,73.9 327.9,75.2 332.6,76.8 337.3,78.6 342.0,80.5 346.7,82.6 351.4,84.9 356.1,87.3 360.8,89.9 365.5,92.7 370.2,95.5 374.9,98.5 379.6,101.6 384.3,104.8 389.0,108.0 393.7,111.3 398.4,114.7 403.1,118.1 407.8,121.5 412.5,125.0 417.2,128.5 421.9,131.9 426.6,135.3 431.3,138.7 436.0,142.0 440.7,145.2 445.4,148.4 450.1,151.5 454.8,154.5 459.5,157.3 464.2,160.1 468.9,162.7 473.6,165.1 478.3,167.4 483.0,169.5 487.7,171.4 492.4,173.2 497.1,174.8 501.8,176.1 506.5,177.3 511.2,178.3 515.9,179.0 520.6,179.6 525.3,179.9 530.0,180.0"
+              fill="none"
+              stroke="#55e9d0"
+              stroke-width="2"
+            />
+            <circle cx="295" cy="70" r="10" fill="none" stroke="#ffe4b8" stroke-width="1.4" opacity="0.9" />
+            <circle cx="295" cy="70" r="20" fill="none" stroke="#ffe4b8" stroke-width="1.4" opacity="0.5" />
+            <circle cx="295" cy="70" r="30" fill="none" stroke="#ffe4b8" stroke-width="1.4" opacity="0.25" />
+            <circle cx="295" cy="70" r="4" fill="#ffe4b8" />
+            <text x="295" y="32" text-anchor="middle" class="svS" fill="#ffe4b8">break · spherical pulse</text>
+            <text x="52" y="74" text-anchor="end" class="svT" fill="#626b88">13</text>
+            <text x="52" y="184" text-anchor="end" class="svT" fill="#626b88">12+1</text>
+            <text x="530" y="202" text-anchor="end" class="svT" fill="#626b88">phase →</text>
+          </svg>
+        </div>
+        <figcaption>
+          <b>Fig. 07</b> &nbsp;·&nbsp; The breathe cycle — the transition rises to a symmetry break where the spherical
+          pulse fires, once per cycle
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="plate">
+          <svg
+            viewBox="0 0 520 300"
+            role="img"
+            aria-label="The cuboctahedron of twelve around one casting the thirteen-circle Fruit of Life lattice as its plane shadow."
+          >
+            <line x1="170.0" y1="38.0" x2="220.2" y2="67.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="170.0" y1="38.0" x2="119.8" y2="67.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="188.0" y1="64.9" x2="188.0" y2="127.1" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="188.0" y1="64.9" x2="134.0" y2="96.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="220.2" y1="67.0" x2="220.2" y2="125.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="206.0" y1="96.0" x2="152.0" y2="127.1" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="206.0" y1="96.0" x2="152.0" y2="64.9" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="220.2" y1="125.0" x2="170.0" y2="154.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="188.0" y1="127.1" x2="134.0" y2="96.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="170.0" y1="154.0" x2="119.8" y2="125.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="152.0" y1="127.1" x2="152.0" y2="64.9" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <line x1="119.8" y1="125.0" x2="119.8" y2="67.0" stroke="#6ea8ff" stroke-width=".7" opacity=".4" />
+            <circle cx="170.0" cy="38.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="188.0" cy="64.9" r="3.4" fill="#6ea8ff" />
+            <circle cx="220.2" cy="67.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="206.0" cy="96.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="220.2" cy="125.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="188.0" cy="127.1" r="3.4" fill="#6ea8ff" />
+            <circle cx="170.0" cy="154.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="152.0" cy="127.1" r="3.4" fill="#6ea8ff" />
+            <circle cx="119.8" cy="125.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="134.0" cy="96.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="119.8" cy="67.0" r="3.4" fill="#6ea8ff" />
+            <circle cx="152.0" cy="64.9" r="3.4" fill="#6ea8ff" />
+            <circle cx="170" cy="96" r="4" fill="#fff" />
+            <text x="170" y="24" text-anchor="middle" class="svS" fill="#6ea8ff">12 around 1 · the body</text>
+            <line x1="170" y1="158" x2="170" y2="188" stroke="#d6ad55" stroke-width="1.4" marker-end="url(#ah3)" />
+            <circle cx="360.0" cy="150.0" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="386.0" cy="150.0" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="373.0" cy="172.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="347.0" cy="172.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="334.0" cy="150.0" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="347.0" cy="127.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="373.0" cy="127.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="399.0" cy="172.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="360.0" cy="195.0" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="321.0" cy="172.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="321.0" cy="127.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="360.0" cy="105.0" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <circle cx="399.0" cy="127.5" r="26" fill="none" stroke="#d6ad55" stroke-width="1" opacity=".55" />
+            <text x="360" y="217" text-anchor="middle" class="svS" fill="#d6ad55">
+              the 13-circle lattice · its shadow
+            </text>
+            <defs>
+              <marker id="ah3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#d6ad55" />
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <figcaption>
+          <b>Fig. 08</b> &nbsp;·&nbsp; The lattice is a shadow — the cuboctahedral body of 12-around-1 projects to the
+          13-circle figure
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2>Method: one locked source, many peelable layers</h2>
+      </div>
+      <p>
+        The rendering discipline is the part most ready for a methods paper. A single specification file holds every
+        coordinate, count, and invariant; the renderer <em>draws</em> it and re&#8209;derives nothing. Each structure is
+        an independently toggleable layer, so the whole can be examined in pieces — the same figure can be shown as ten
+        separate demonstrations without ten separate builds.
+      </p>
+      <div class="crosswalk" style="margin-top: 24px">
+        <div class="cw-h">upstream</div>
+        <div class="cw-h" style="text-align: center">bind</div>
+        <div class="cw-h">what it guarantees</div>
+        <div class="cw-geo mono" style="font-size: 14px">generative math</div>
+        <div class="cw-mid">&#8594;</div>
+        <div class="cw-phys">invariants computed once, never in the renderer</div>
+        <div class="cw-geo mono" style="font-size: 14px">locked snapshot</div>
+        <div class="cw-mid">&#8594;</div>
+        <div class="cw-phys">one source of truth; every figure regenerable</div>
+        <div class="cw-geo mono" style="font-size: 14px">renderer</div>
+        <div class="cw-mid">&#8594;</div>
+        <div class="cw-phys">draws verbatim; no hidden re-derivation</div>
+        <div class="cw-geo mono" style="font-size: 14px">toggleable layers</div>
+        <div class="cw-mid">&#8594;</div>
+        <div class="cw-phys">the whole, examinable in isolation or overlay</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2>The interpretive layer — flagged as such</h2>
+      </div>
+      <p class="dim">
+        These are the analogies the geometry <em>suggests</em>. Each has a real mechanism it echoes and a boundary it
+        must not cross. This is a discussion section, not a results section.
+      </p>
+      <div class="crosswalk" style="margin-top: 20px">
+        <div class="cw-h">geometry in the render</div>
+        <div class="cw-h" style="text-align: center">↔</div>
+        <div class="cw-h">the mechanism it echoes</div>
+        <div class="cw-geo">core ejected, 12+1 → asymmetric 13</div>
+        <div class="cw-mid">↔</div>
+        <div class="cw-phys">spontaneous symmetry breaking (13 has no symmetric arrangement)</div>
+        <div class="cw-geo">spherical pulse at the break</div>
+        <div class="cw-mid">↔</div>
+        <div class="cw-phys">energy released as an outward front at a transition</div>
+        <div class="cw-geo">emission carries state outward</div>
+        <div class="cw-mid">↔</div>
+        <div class="cw-phys">decoherence — an emitted record separates correlated parts</div>
+        <div class="cw-geo">two halves, one shared phase</div>
+        <div class="cw-mid">↔</div>
+        <div class="cw-phys">a pair returning to itself only over a doubled cycle (spinor / belt)</div>
+      </div>
+      <p style="margin-top: 20px" class="dim">
+        The boundary, stated plainly: these map the <em>shape</em> of the physics, not its equations. &#8220;Entangled
+        particles,&#8221; &#8220;trinity,&#8221; &#8220;720&#176; reset&#8221; are evocative labels for the geometry's
+        behaviour, and the paper must present them as interpretation for the reader to weigh — never as measured result.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">07</span>
+        <h2>The claims ledger</h2>
+      </div>
+      <p class="dim">The spine of the paper's credibility. Two columns, and every statement lives in exactly one.</p>
+    </div>
+    <div class="two" style="margin-top: 22px">
+      <div class="card">
+        <span class="tag" style="color: var(--teal)">Demonstrated in the render</span>
+        <ul style="margin: 0; padding-left: 18px; color: var(--dim); font-size: 15px; line-height: 1.7">
+          <li>the 25&#8209;station stack and its 5&#178; identity</li>
+          <li>a hubless load path — measured low degree&#8209;Gini, no privileged node</li>
+          <li>the &#966;/1&#966; area invariant of the vessel orbit</li>
+          <li>the shared&#8209;ring phase lock under counter&#8209;rotation</li>
+          <li>the 12&#8594;13 jitterbug and its break&#8209;triggered pulse</li>
+          <li>the cuboctahedron&#8594;13&#8209;circle plane projection</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag" style="color: var(--violet)">Proposed interpretation</span>
+        <ul style="margin: 0; padding-left: 18px; color: var(--dim); font-size: 15px; line-height: 1.7">
+          <li>the break as a physical symmetry&#8209;breaking event</li>
+          <li>the pulse as a decohering emission that &#8220;separates&#8221;</li>
+          <li>the phase lock as an entanglement analogue</li>
+          <li>the stack's numerology as structurally meaningful</li>
+          <li>the whole as a model of a real physical object</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <p class="faint mono" style="margin-top: 22px; font-size: 13px">
+        Left column: defensible today. Right column: the research programme — each item a hypothesis with a stated test.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="sec-head">
+        <span class="sec-num">08</span>
+        <h2>Proposed structure &amp; figure list</h2>
+      </div>
+      <ol class="outline">
+        <li>
+          <b>Introduction</b> &mdash; <span>the atlas, and the one&#8209;source&#8209;of&#8209;truth discipline</span>
+        </li>
+        <li>
+          <b>The spindle</b> &mdash;
+          <span>singularities, the &#966;&#178; toroid, the 25 stack &nbsp;(Figs. 1&#8211;3)</span>
+        </li>
+        <li><b>Layer geometry</b> &mdash; <span>lobes, flower, halos &nbsp;(Figs. 4&#8211;5)</span></li>
+        <li><b>The unstable core</b> &mdash; <span>jitterbug, break, emission &nbsp;(Figs. 6&#8211;8)</span></li>
+        <li><b>Method</b> &mdash; <span>locked snapshot &#8594; renderer &#8594; toggleable layers</span></li>
+        <li><b>Discussion</b> &mdash; <span>the interpretive crosswalk, bounded</span></li>
+        <li><b>Claims ledger &amp; limitations</b> &mdash; <span>demonstrated vs. proposed</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap" style="padding: 0">
+      <div class="col">
+        <div class="sec-head">
+          <span class="sec-num">09</span>
+          <h2>Three ways to frame it</h2>
+        </div>
+        <p class="dim">Same material, three venues. Pick by audience.</p>
+      </div>
+      <div class="three" style="margin-top: 22px">
+        <div class="card">
+          <span class="tag">Recommended</span>
+          <h3>Methods / tool</h3>
+          <p>
+            An interactive&#8209;visualization paper: the locked&#8209;source framework and its layerable rendering,
+            physics kept to a bounded discussion. Most defensible; ships first.
+          </p>
+        </div>
+        <div class="card">
+          <span class="tag">Ambitious</span>
+          <h3>Theory / position</h3>
+          <p>
+            A geometric&#8209;language proposal: the framework as a candidate structure, the interpretive layer as its
+            central conjecture. Higher risk, higher ceiling.
+          </p>
+        </div>
+        <div class="card">
+          <span class="tag">Approachable</span>
+          <h3>Pedagogy</h3>
+          <p>
+            Teaching symmetry breaking, spinor topology, and packing/kissing numbers through the interactive atlas.
+            Broadest reach, cleanest claims.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>The Atlas &#183; working concept assembled from the build thread</span>
+    <span>construction concrete &#183; interpretation proposed &#183; the line held</span>
+  </div>
+</footer>
