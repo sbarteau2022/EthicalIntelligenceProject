@@ -2535,6 +2535,20 @@
     "coreAxis": [0.38462, 0.92308, 0.0],
     "shadowCircleR": 0.3
   },
+  "goldenSplit": {
+    "nearShare": 0.6180339887498948,
+    "farShare": 0.3819660112501051,
+    "shareSum": 0.9999999999999999,
+    "towardY": 1,
+    "beltParity": {
+      "windings": [1, 2, 3, 5, 8],
+      "odd_strands": 3,
+      "even_strands": 2,
+      "odd_weight": 9,
+      "even_weight": 10
+    },
+    "note": "Post-break emission partition (prediction, not measurement): pre-break the loci emit equal magnitude with opposite handedness; the 12+1 -> 13 break displaces the core toward the towardY pole, after which that side carries 1/phi (~61.8%) and the far side 1/phi^2 (~38.2%) \u2014 the golden section, the unique self-similar unequal split. The belt parity asymmetry (3 odd vs 2 even Fibonacci windings) is forced, not predicted."
+  },
   "quantumBelt": {
     "windings": [1, 2, 3, 5, 8],
     "waist": 0.95,

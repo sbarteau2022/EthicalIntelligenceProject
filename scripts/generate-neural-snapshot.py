@@ -211,6 +211,43 @@ jitterbug = {
     "shadowCircleR": round(mr, 5),
 }
 
+# ---- the golden split: how the break partitions the emission between poles ----
+# Pre-break the spindle is mirror-symmetric, so the two loci emit equal
+# magnitude with opposite handedness — anything unequal there would violate the
+# conservation built into the counter-rotation. The break is what buys
+# inequality: the 12+1 -> 13 transition displaces the core toward ONE pole
+# (the sign of the core target's y), and from then on the loci are not
+# equivalent. The predicted partition is the golden section — the only unequal
+# split that is self-similar (1/phi + 1/phi^2 = 1 exactly, and
+# whole:larger = larger:smaller) — so no new arbitrary constant enters.
+# Alongside it, one asymmetry that is forced rather than predicted: the belt's
+# Fibonacci windings (1,2,3,5,8) cannot split evenly by twist parity — 3 odd
+# (spinor class, home only at 720 deg) vs 2 even (home at 360 deg), weight 9:10.
+_split_toward = 1 if _targets13[_core_idx][1] >= 0 else -1
+_odd_w = [w for w in [1, 2, 3, 5, 8] if w % 2 == 1]
+_even_w = [w for w in [1, 2, 3, 5, 8] if w % 2 == 0]
+goldenSplit = {
+    "nearShare": PHI_INV,          # the pole the core displaced toward
+    "farShare": PHI_INV * PHI_INV, # the opposite pole
+    "shareSum": PHI_INV + PHI_INV * PHI_INV,  # == 1.0, the identity the split rests on
+    "towardY": _split_toward,      # sign of the core target's y: which pole gains
+    "beltParity": {
+        "windings": [1, 2, 3, 5, 8],
+        "odd_strands": len(_odd_w),
+        "even_strands": len(_even_w),
+        "odd_weight": sum(_odd_w),
+        "even_weight": sum(_even_w),
+    },
+    "note": (
+        "Post-break emission partition (prediction, not measurement): pre-break "
+        "the loci emit equal magnitude with opposite handedness; the 12+1 -> 13 "
+        "break displaces the core toward the towardY pole, after which that side "
+        "carries 1/phi (~61.8%) and the far side 1/phi^2 (~38.2%) — the golden "
+        "section, the unique self-similar unequal split. The belt parity "
+        "asymmetry (3 odd vs 2 even Fibonacci windings) is forced, not predicted."
+    ),
+}
+
 
 
 # ---- the quantum belt: frequencies woven by phi, strung between the loci ----
@@ -276,6 +313,7 @@ snapshot = {
     "metatronGhost": metatronGhost,
     "vectorEquilibrium": vectorEquilibrium,
     "jitterbug": jitterbug,
+    "goldenSplit": goldenSplit,
     "quantumBelt": quantumBelt,
     "singularity": {"radius": 0.2},
 }
