@@ -18,8 +18,7 @@ be stood behind, and every claim is labeled with what kind of standing it has.**
 
 ```mermaid
 flowchart TD
-    subgraph GEOMETRY["The structure (built first — the constraints)"
-        ]
+    subgraph GEOMETRY["The structure (built first — the constraints)"]
         A["/atlas<br/>Harmonic Atlas<br/><i>the unified function</i>"]
         N["/neural-atlas<br/>Neural Atlas<br/><i>the knowledge structure</i>"]
         M["/master-atlas<br/>Master Atlas<br/><i>everything, one rendering</i>"]
