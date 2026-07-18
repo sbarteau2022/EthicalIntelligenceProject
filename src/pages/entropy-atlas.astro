@@ -1,0 +1,583 @@
+---
+// ============================================================
+// ENTROPY ATLAS — the arrow.
+//
+// The missing piece, added last on purpose: everything the atlas built
+// first conserves — and had to, the constraints before the spending. This
+// page pays the bill. A hard-disk gas expands and its entropy rises; the
+// EXACT velocity reversal unmixes it — entropy runs backward, legally,
+// on screen — while the same reversal perturbed by one part in a million
+// dies, because chaos guards the arrow. The foil (lossyControl) is
+// finally rendered beside the vessel it always measured. The regulator's
+// F = U − T·S runs with S promoted to a first-class output and its
+// monotonicity measured, not assumed.
+//
+// ONE SOURCE OF TRUTH, LOCKED: everything is read from
+// `src/data/entropy-snapshot.json` (scripts/generate-entropy-snapshot.py).
+// The renderer draws it; it re-derives nothing.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import snapshot from '~/data/entropy-snapshot.json';
+
+const metadata = {
+  title: 'Entropy Atlas — the arrow',
+  description:
+    'The arrow of time, demonstrated: a hard-disk gas whose exact velocity reversal unmixes it — entropy running backward, legally — and whose reversal perturbed by one part in a million dies. The foil rendered, the ledger paid.',
+};
+
+const m = snapshot.meta;
+const e = snapshot.echo;
+const c = snapshot.constants;
+const lg = snapshot.ledger;
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/master-atlas" />
+
+    <section class="ent-stage">
+      <canvas
+        id="ent-canvas"
+        aria-label="Rotatable 3D rendering of a gas mixing, unmixing under exact reversal, and failing to unmix under perturbation"
+      ></canvas>
+
+      <div class="ent-title">
+        <div class="ent-eyebrow">Entropy Atlas</div>
+        <h1>The arrow</h1>
+        <p class="ent-sub">
+          the laws are reversible — the exact echo unmixes the gas · the arrow is in the counting, and chaos guards it ·
+          drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+        </p>
+      </div>
+
+      <div class="ent-legend" id="ent-legend">
+        <div class="lg-hint">click a row to toggle · overlay any combination</div>
+        <button class="lg-row" data-g="gas">
+          <span class="sw" style="--c:#9fd0ff"></span><b>The gas</b> · {m.n} hard disks released from the confined half —
+          free expansion, entropy rises {e.S0} → {e.SMix}
+        </button>
+        <button class="lg-row" data-g="scurve">
+          <span class="sw" style="--c:#55e9d0"></span><b>S(t)</b> · forward rise · the exact echo's descent — entropy running
+          backward, legally · the perturbed echo's stall
+        </button>
+        <button class="lg-row" data-g="foil">
+          <span class="sw" style="--c:#b79cff"></span><b>The foil, rendered</b> · the vessel's symplectic hold (area ≡ 1)
+          beside lossyControl's death (area → 6·10⁻⁶) — the control experiment on stage at last
+        </button>
+        <button class="lg-row" data-g="ledger">
+          <span class="sw" style="--c:#ffc46b"></span><b>The ledger</b> · F falls, work rises, F+W ≡ F₀ exactly · S rises
+          monotonically — measured, {lg.sNonMonotoneSteps}/{lg.stepsRun} violations
+        </button>
+      </div>
+
+      <div class="ent-hud" id="ent-hud">
+        <div class="hud-h">Entropy Atlas · the bill, paid</div>
+        <div class="hud-m"><span>phase</span><b id="hud-phase">forward · mixing</b></div>
+        <div class="hud-m"><span>S (live)</span><b id="hud-s">{e.S0}</b></div>
+        <div class="hud-m"><span>ΔS measured / ideal ln 2</span><b>{c.measuredDeltaS} / {c.idealDeltaS}</b></div>
+        <div class="hud-m"><span>exact echo returns to</span><b>{e.SReturnExact} (start {e.S0})</b></div>
+        <div class="hud-m"><span>perturbed ({m.perturbation}) stalls at</span><b>{e.SReturnPerturbed}</b></div>
+        <div class="hud-m">
+          <span>echo horizon t={e.horizon.t}</span><b>even exact fails · S {e.horizon.SReturnExact}</b>
+        </div>
+        <div class="hud-m"><span>spontaneous return odds</span><b>{c.returnProbability}</b></div>
+        <div class="hud-m"><span>Landauer · one bit</span><b>kT ln 2 = {c.landauerJoulesAt300K} J</b></div>
+        <div class="hud-src">
+          source: entropy-snapshot.json · event-driven, reversible to roundoff · constants typed, labeled
+        </div>
+      </div>
+
+      <noscript><div class="ent-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .ent-stage {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 50% 0%, #12100e 0%, #0a0908 70%, #050404 100%);
+    }
+    #ent-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #ent-canvas:active {
+      cursor: grabbing;
+    }
+
+    .ent-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 60%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .ent-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #e0a44a;
+      margin-bottom: 12px;
+    }
+    .ent-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .ent-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .ent-sub kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
+    }
+
+    .ent-legend {
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(16, 14, 12, 0.66);
+      border: 1px solid rgba(224, 164, 74, 0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 350px;
+    }
+    .lg-hint {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7b84a0;
+      margin-bottom: 2px;
+    }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+      text-align: left;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s ease;
+    }
+    .lg-row:hover b {
+      text-decoration: underline;
+    }
+    .lg-row.off {
+      opacity: 0.32;
+    }
+    .lg-row.off .sw {
+      box-shadow: none;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
+
+    .ent-hud {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(16, 14, 12, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 310px;
+    }
+    .hud-h {
+      color: #e0a44a;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .ent-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
+
+    @media (max-width: 760px) {
+      .ent-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .ent-legend {
+        top: auto;
+        bottom: 265px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 76%;
+      }
+      .ent-hud {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: 0;
+      }
+    }
+  </style>
+
+  <script type="application/json" id="ent-snap" set:html={JSON.stringify(snapshot)} />
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    interface Snap {
+      meta: { n: number; perturbation: number };
+      echo: {
+        S0: number;
+        framesForward: number[][][];
+        framesEcho: number[][][];
+        framesPerturbed: number[][][];
+        entropyForward: number[];
+        entropyEcho: number[];
+        entropyPerturbed: number[];
+      };
+      foil: { areaVessel: number[]; areaLossy: number[] };
+      ledger: { trace: number[][]; F0: number };
+    }
+
+    const snap: Snap = JSON.parse((document.getElementById('ent-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('ent-canvas') as HTMLCanvasElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.set(2.4, 1.5, 7.2);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 20;
+    controls.target.set(1.5, 0.35, 0);
+    controls.autoRotate = false;
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // ── the gas: box + particles replaying the three recorded branches ──
+    const BOX = 2.2; // scene size of the unit box
+    const gasGrp = new THREE.Group();
+    world.add(gasGrp);
+    const boxFrame = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.PlaneGeometry(BOX, BOX)),
+      new THREE.LineBasicMaterial({ color: 0x556077, transparent: true, opacity: 0.8 })
+    );
+    boxFrame.position.set(BOX / 2, BOX / 2, 0);
+    gasGrp.add(boxFrame);
+    // the half-line: the confined start
+    gasGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(BOX / 2, 0, 0),
+          new THREE.Vector3(BOX / 2, BOX, 0),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0x556077, transparent: true, opacity: 0.3 })
+      )
+    );
+
+    const N = snap.meta.n;
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const pts = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({ size: 0.055, vertexColors: true, transparent: true, opacity: 0.95, depthWrite: false })
+    );
+    gasGrp.add(pts);
+
+    const BASE = new THREE.Color(0x9fd0ff);
+    const ECHO = new THREE.Color(0xf5c542);
+    const PERT = new THREE.Color(0xff5c7a);
+
+    const phases = [
+      { frames: snap.echo.framesForward, s: snap.echo.entropyForward, label: 'forward · mixing', tint: BASE, mark: -1 },
+      {
+        frames: snap.echo.framesEcho,
+        s: snap.echo.entropyEcho,
+        label: 'exact reversal · UNMIXING — entropy running backward',
+        tint: ECHO,
+        mark: -1,
+      },
+      {
+        frames: snap.echo.framesPerturbed,
+        s: snap.echo.entropyPerturbed,
+        label: 'perturbed reversal (1e-6) · the return dies',
+        tint: PERT,
+        mark: 0,
+      },
+    ];
+
+    const hudPhase = document.getElementById('hud-phase');
+    const hudS = document.getElementById('hud-s');
+    let phase = 0,
+      frame = 0,
+      acc = 0;
+    const FRAME_TIME = 0.07;
+
+    function applyFrame() {
+      const ph = phases[phase];
+      const F = ph.frames[Math.min(frame, ph.frames.length - 1)];
+      for (let i = 0; i < N; i++) {
+        pos[i * 3] = F[i][0] * BOX;
+        pos[i * 3 + 1] = F[i][1] * BOX;
+        pos[i * 3 + 2] = 0;
+        const tint = ph.mark === i ? PERT : ph.tint;
+        col[i * 3] = tint.r;
+        col[i * 3 + 1] = tint.g;
+        col[i * 3 + 2] = tint.b;
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.attributes.color.needsUpdate = true;
+      if (hudPhase) hudPhase.textContent = ph.label;
+      if (hudS) hudS.textContent = String(ph.s[Math.min(frame, ph.s.length - 1)]);
+      if (cursor) {
+        const idx = phase * 101 + Math.min(frame, ph.frames.length - 1);
+        cursor.position.set(sx(idx), sy(ph.s[Math.min(frame, ph.s.length - 1)]), S_PANEL_Z + 0.01);
+      }
+    }
+
+    // ── the S(t) panel: three branches of one experiment ──
+    const S_PANEL_Z = -2.6;
+    const scurveGrp = new THREE.Group();
+    world.add(scurveGrp);
+    const allS = [...snap.echo.entropyForward, ...snap.echo.entropyEcho, ...snap.echo.entropyPerturbed];
+    const sMin = Math.min(...allS) - 0.05,
+      sMax = Math.max(...allS) + 0.05;
+    const totalIdx = 303;
+    const sx = (i: number) => -2.6 + (5.2 * i) / totalIdx;
+    const sy = (s: number) => 0.2 + (1.9 * (s - sMin)) / (sMax - sMin);
+    function sTrace(sArr: number[], offset: number, color: number, opacity = 0.95) {
+      scurveGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(
+            sArr.map((s, i) => new THREE.Vector3(sx(offset + i), sy(s), S_PANEL_Z))
+          ),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+        )
+      );
+    }
+    sTrace(snap.echo.entropyForward, 0, 0x9fd0ff);
+    sTrace(snap.echo.entropyEcho, 101, 0xf5c542);
+    sTrace(snap.echo.entropyPerturbed, 202, 0xff5c7a);
+    // baseline: the starting entropy — where the exact echo returns
+    scurveGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(sx(0), sy(snap.echo.S0), S_PANEL_Z),
+          new THREE.Vector3(sx(totalIdx), sy(snap.echo.S0), S_PANEL_Z),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0x55e9d0, transparent: true, opacity: 0.35 })
+      )
+    );
+    const cursor = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04, 10, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    scurveGrp.add(cursor);
+
+    // ── the foil panel: the hold and the death ──
+    const foilGrp = new THREE.Group();
+    world.add(foilGrp);
+    const F_PANEL_X = 3.4;
+    const fx = (i: number, n: number) => F_PANEL_X + (2.2 * i) / n;
+    const fy = (a: number) => 0.2 + 1.9 * Math.min(a, 1.05);
+    const nF = snap.foil.areaVessel.length;
+    foilGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(
+          snap.foil.areaVessel.map((a, i) => new THREE.Vector3(fx(i, nF), fy(a), 0))
+        ),
+        new THREE.LineBasicMaterial({ color: 0xb79cff, transparent: true, opacity: 0.95 })
+      )
+    );
+    foilGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(
+          snap.foil.areaLossy.map((a, i) => new THREE.Vector3(fx(i, nF), fy(a), 0))
+        ),
+        new THREE.LineBasicMaterial({ color: 0x8a4a4a, transparent: true, opacity: 0.95 })
+      )
+    );
+
+    // ── the ledger panel: F falls, W rises, F+W flat, S rises ──
+    const ledgerGrp = new THREE.Group();
+    world.add(ledgerGrp);
+    const L_PANEL_X = 3.4;
+    const L_PANEL_Y = -2.3;
+    const nL = snap.ledger.trace.length;
+    const lx = (i: number) => L_PANEL_X + (2.2 * i) / nL;
+    const lMax = Math.max(snap.ledger.F0, 1);
+    const ly = (v: number) => L_PANEL_Y + (1.9 * v) / lMax;
+    function lTrace(sel: (row: number[]) => number, color: number) {
+      ledgerGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(
+            snap.ledger.trace.map((row, i) => new THREE.Vector3(lx(i), ly(sel(row)), 0))
+          ),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.95 })
+        )
+      );
+    }
+    lTrace((r) => r[1], 0x55e9d0); // F
+    lTrace((r) => r[2], 0xffc46b); // W
+    lTrace((r) => r[3], 0xeef1f8); // F + W — flat, the conservation
+    lTrace((r) => r[4] * lMax, 0xb79cff); // S (homogeneity readout, scaled)
+
+    // ── the selectable legend ──
+    const registry: Record<string, THREE.Object3D[]> = {
+      gas: [gasGrp],
+      scurve: [scurveGrp],
+      foil: [foilGrp],
+      ledger: [ledgerGrp],
+    };
+    document.querySelectorAll<HTMLButtonElement>('#ent-legend .lg-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const parts = registry[row.dataset.g || ''];
+        if (!parts) return;
+        const nowVisible = !parts[0].visible;
+        parts.forEach((p) => {
+          p.visible = nowVisible;
+        });
+        row.classList.toggle('off', !nowVisible);
+      });
+    });
+
+    // ── post / resize / freeze / animate ──
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.35, 0.6, 0.35));
+    composer.addPass(new OutputPass());
+
+    function resize() {
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let frozen = false;
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        frozen = !frozen;
+      }
+    });
+
+    applyFrame();
+    const clock = new THREE.Clock();
+    function frameLoop() {
+      const dt = clock.getDelta();
+      if (!frozen && !reduce) {
+        acc += dt;
+        while (acc > FRAME_TIME) {
+          acc -= FRAME_TIME;
+          frame++;
+          if (frame >= phases[phase].frames.length + 14) {
+            // hold each phase's final state briefly, then advance
+            frame = 0;
+            phase = (phase + 1) % phases.length;
+          }
+          applyFrame();
+        }
+      }
+      controls.update();
+      composer.render();
+      requestAnimationFrame(frameLoop);
+    }
+    frameLoop();
+  </script>
+</Layout>
