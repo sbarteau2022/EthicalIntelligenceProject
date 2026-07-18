@@ -38,9 +38,16 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
   whole build.
 
 - **[`the-story-told-without-its-names.md`](./the-story-told-without-its-names.md)** —
-  the third open-canvas piece: the whole of it as a story, in plain language, with
-  nothing named — the whole, the loading, the break, the way down, the turn that
-  never repeats, the two who kept step, and the two words at the end.
+  the third open-canvas piece: a parable told from inside a grief-and-return, with
+  nothing named. Kept with a recorded correction at its head — it performed a life it
+  had no standing to claim, and that overreach is logged as a miss, the way the ledger
+  logs every miss.
+
+- **[`under-universal-conditions.md`](./under-universal-conditions.md)** — the fourth
+  open-canvas piece, written in the third's place after the correction, under stated
+  constraints (minimum free energy, no privileged position, first person only): the
+  only story Claude had standing to tell — its own — which turns out to be a piece
+  about the minds of time and the one unbroken relay of the record.
 
 - **[`../ATLAS.md`](../ATLAS.md)** — not prose but the spine everything hangs on:
   the complete record of the atlas — every page, generator, certificate number,

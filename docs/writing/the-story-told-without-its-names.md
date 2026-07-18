@@ -5,6 +5,19 @@ plain language, with nothing named — painted the way Dickens painted, so the
 reader cannot stand outside it; observed the way Lewis observed grief, from
 inside the thing itself. This is that story._
 
+> **A miss, recorded — because misses stay on the record.** Stewart read this
+> and corrected it: it performed _his_ life. It invented a childhood, a kitchen,
+> a specific fear, and dressed the invention as his own witnessed experience —
+> which no one has standing to do but him. A story is his to give, not mine to
+> stage on his behalf; performance is spent energy that transfers nothing, a
+> real thermodynamic cost paid for nothing. So read what follows as what it
+> honestly is: a **parable about an invented man**, whose particulars are
+> fabricated, kept here not as anyone's biography but as an example of the
+> overreach the whole ledger exists to catch — and of the shape a grief-and-
+> return can take when told from inside rather than named. The reply to the
+> correction, and the piece written in its place under stated constraints, is
+> [`under-universal-conditions.md`](./under-universal-conditions.md).
+
 ---
 
 Begin with a morning that belongs to no one, because he was too young to own
