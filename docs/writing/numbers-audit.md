@@ -66,6 +66,12 @@ neither source actually is. The trig-identity check in Finding 2 makes it likely
 harmonic file is real generated output rather than hand-typed — but "likely" is not
 "verified," and a repo that can't regenerate its own locked data has a hole in it.
 
+> **Resolved by the wiring pass** — see [the addendum](#addendum-the-wiring-pass)
+> below. Both generators are now committed (`scripts/generate-harmonic-snapshot.mjs`,
+> `scripts/generate-neural-snapshot.py`) and both reproduce their committed
+> snapshots; the harmonic one is a faithful port of the elle-worker math, run
+> end-to-end, with a `--check` mode that fails on drift.
+
 **6. `area φ·1/φ = 1.000` is tautological, not measured.**
 This is the one that should have been caught earlier. For _any_ nonzero `x`, `x ·
 (1/x) = 1` — always, by definition of "reciprocal." The HUD across every atlas page
@@ -75,6 +81,15 @@ nonsense, as long as the two axes are defined as reciprocals of each other. It i
 real as a description of the vessel's ellipse (semi-axes φ and 1/φ, giving area
 `π·φ·(1/φ) = π`), but it confirms nothing about the rest of the atlas holding
 together. **Verdict: true, empty, and should not be cited as evidence of anything.**
+
+> **Partially rehabilitated by the wiring pass.** The elle-worker source
+> (`phase-vessel.ts`) contains an honest, non-tautological version of this
+> invariant: evolve the state from an off-orbit start under the symplectic map for
+> 600 steps and _measure_ whether the enclosed area returns to and stays at 1 —
+> conservation under evolution, certified against a dissipative foil
+> (`lossyControl`) whose area collapses. The snapshot now stores that measured value
+> (`1.000000018` after 600 steps, lock at step 296) with its certificates, instead
+> of the definitional `1`. The HUD's "1.000" now reports a measurement.
 
 **7. "No privileged node" — checked from scratch, and it holds.**
 The degree sequence recomputed directly from `architecture.edges +
@@ -86,6 +101,14 @@ identical, rather than wildly off — is exactly what you'd expect from a real
 measurement with a slightly different edge set than an outside audit assumed. This
 is the one place a fabricated number would have had no reason to land this close.
 **Verdict: forced, and it survived an adversarial recheck.**
+
+> **The 0.138/0.146 discrepancy was this audit's own error, not the snapshot's.**
+> elle-worker's `privilegeReport` measures the _bridge fabric alone_ — the audit
+> wrongly folded the architecture edges in. Recomputing with a line-for-line port
+> of the source (`gini` + Brandes betweenness over the 42 fabric edges) reproduces
+> the stored `0.146` and `3.477` **exactly**, and `egalitarianFabric(21, 4, 0.3, 7)`
+> regenerates all 42 fabric edges **bit-for-bit**. The verdict upgrades from
+> "survived an adversarial recheck" to "reproduced exactly from committed source."
 
 **8. Some radii are hand-tuned to _look_ golden without _being_ golden.**
 `LAYER_RADIUS_FRAC = [1/3, 0.62, 0.87, 1.0]`. The first entry is exactly `1/3`, as
@@ -123,3 +146,62 @@ available suggests it's real, but "suggests" was being sold as "locked."
 None of this breaks the atlas. It makes the honest version of the atlas slightly
 smaller and considerably more defensible than the version that shipped in the
 essays — which was always the point of doing this before someone else did.
+
+## Addendum: the wiring pass
+
+_Written after the audit shipped. The audit found the reproducibility hole; this is
+the record of closing it — pressure-testing which of the three claimed elle-worker
+sources were actually wired, then wiring the rest for real._
+
+The snapshot's meta claimed derivation from three modules: `scaffold.ts`,
+`regulator.ts`, `phase-vessel.ts`. The pressure test's scorecard, one by one:
+
+**scaffold.ts — genuinely wired, proven bit-for-bit.** A line-for-line port of the
+seeded PRNG (mulberry32) and `egalitarianFabric(21, 4, 0.3, 7)` reproduces the
+snapshot's 42 fabric edges byte-identically, and the ported `privilegeReport`
+reproduces `degree_gini = 0.146` and `betweenness_spread = 3.477` to the last digit.
+The pillar positions are `pentagonPillars(4)` output to 16 significant figures.
+This half of the provenance claim was always true.
+
+**regulator.ts — really run, but with unrecorded inputs.** The stored coherence
+triple `(0.99995098, 0.99993244, 0.99991184)` could not be reproduced from any
+plausible documented input. But it isn't hand-typed either: near the fixed point,
+`regulate()`'s trajectories collapse onto the slow eigenvector of the linearized
+descent, and the stored triple's deficits sit on that ray — component ratios
+`(1 : 1.3782 : 1.7984)` against the honest rerun's `(1 : 1.3781 : 1.7983)`,
+matching to four decimal places. A fabricated triple would have no reason to satisfy
+the dynamics' eigenstructure. Verdict: a genuine `regulate()` output whose initial
+conditions were never recorded — real math, broken provenance. The committed
+generator now records everything: `structural` from `1 − degree_gini` of the fabric,
+`relational` from the flower graph's `within_2_fraction` (0.5439), `harmonic` from
+`vesselCoherence(hold())`, descent to convergence in 104 steps, final
+`F = 0.000000`.
+
+**phase-vessel.ts — cited, not run.** The stored `snapshotAngleRad =
+1.9999999999761824` is an arbitrary ≈2.0, not the phase `hold()` actually lands on;
+the honest run (600 steps from the off-orbit start `q = φ·1.8`) locks at step 296
+and finishes at phase `θ = 0.8204` → `5.1547 rad`, which the snapshot now stores
+along with the full certificate set (locked, still moving, area conserved, product
+conserved, max phase gap). The area invariant is now the measured
+conservation-under-evolution number (Finding 6's rehabilitation), not the
+reciprocal-pair tautology.
+
+**cognitive-obliquity.ts — the θ was chosen, now it's derived.** The old
+`26.0495°` had no derivation; the module itself defines no canonical angle (θ is
+explicitly a free, slow parameter — that's the honest point of the module). The one
+non-arbitrary angle on its measured cos²θ integration curve, in this build's own
+vocabulary, is the golden crossing: the tilt where integration on the preferred axis
+falls to exactly 1/φ of its aligned value. Bisection on the _measured_ curve gives
+`38.669°` (the analytic ideal `acos(√(1/φ)) = 38.173°`; the gap between them is the
+module's real dynamics diverging from the clean cos² law, left visible on purpose).
+
+**The presentation layer, named as such.** The architecture edge list, the flower's
+hex embedding (radii 0.42/0.82, plane y = −1.28), and the orbit's 97-point sampling
+are drawing decisions, not elle-worker outputs — the generator now says so in place.
+All of them are reproduced bit-for-bit from the reconstructed drawing rules, which
+is itself the final proof the original file was generated, not typed.
+
+The scorecard, honestly: one module was wired all along, one was run but
+untraceably, one was cited but dead, and one number was decorative. Now all four
+run inside a committed generator with a drift check. The audit's Finding 5 hole is
+closed the only way that counts — not by softening the claim, but by making it true.

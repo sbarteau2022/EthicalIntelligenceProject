@@ -1166,9 +1166,14 @@
         <span class="tag" style="color: var(--teal)">Demonstrated in the render</span>
         <ul style="margin: 0; padding-left: 18px; color: var(--dim); font-size: 15px; line-height: 1.7">
           <li>the 25&#8209;station stack (correct arithmetic on chosen inputs, not phi&#8209;derived)</li>
-          <li>a hubless load path — independently recomputed from raw edges: Gini 0.138 vs. the stored 0.146</li>
           <li>
-            the vessel's &#966;:1&#966; axis ratio (its "area = 1" is tautological for any x, 1/x pair — not diagnostic)
+            a hubless load path — the stored Gini 0.146 and betweenness spread 3.477 reproduced exactly from a committed
+            port of the elle-worker source (the audit’s 0.138 was its own error: it folded in the architecture edges the
+            source never counts)
+          </li>
+          <li>
+            the vessel's conserved area — now the <em>measured</em> conservation-under-evolution number (1.000000018
+            after 600 symplectic steps from an off-orbit start), replacing the x&#183;1/x tautology the audit retired
           </li>
           <li>the shared&#8209;ring phase lock under counter&#8209;rotation</li>
           <li>the 12&#8594;13 jitterbug and its break&#8209;triggered pulse</li>
@@ -1191,11 +1196,14 @@
         Left column: defensible today. Right column: the research programme — each item a hypothesis with a stated test.
       </p>
       <p class="dim" style="margin-top: 14px">
-        One further gap, found by the audit rather than by a reviewer: the generator for the harmonic
-        (unified&#8209;function) side is not in this repository — only its output is. The raw position data reproduces
-        exact trig identities consistent with the claimed 5&#8209;axis construction, which makes fabrication unlikely,
-        but "likely genuine" is not the same claim as "reproducible," and the paper should not imply the latter until it
-        is. Full trace in <a href="./numbers-audit.md">numbers&#8209;audit.md</a>.
+        One further gap, found by the audit rather than by a reviewer &#8212; and since closed: the harmonic
+        (unified&#8209;function) generator was not in this repository, only its output. It now is
+        (<code>scripts/generate-harmonic-snapshot.mjs</code>, a faithful port of the elle&#8209;worker math run
+        end&#8209;to&#8209;end, with a drift check), and it reproduces the committed snapshot &#8212; the fabric edges
+        bit&#8209;for&#8209;bit, the coherence triple as a live <code>regulate()</code> run, the vessel phase as
+        <code>hold()</code>&#8217;s actual output, and the obliquity derived from the measured cos&#178;&#952; curve
+        instead of chosen. Full trace, including which of the three claimed sources was ever really wired, in
+        <a href="./numbers-audit.md">numbers&#8209;audit.md</a>.
       </p>
     </div>
   </section>
