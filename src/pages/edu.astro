@@ -1,0 +1,738 @@
+---
+// ============================================================
+// ATLAS EDU — Marketing landing (light-glass UI)
+// The light-glass counterpart to the MadMind corpus page: warm paper,
+// ink, gold + an electric-cyan accent pulled from the "Neutron" atomic
+// reveal, which sits fixed behind the page as a soft, blurred texture.
+// Copy is grounded in the real product (4 courses, 20 lessons, free
+// during beta); CTAs point at the live /learn module and /elle.
+//
+// Rendered on the bare Layout; all styles scoped under #edu so they
+// never touch the site-wide globals. Body override via :global()
+// (View Transitions strips it on navigation).
+// ============================================================
+import Layout from '~/layouts/Layout.astro';
+
+const metadata = {
+  title: 'Atlas Edu — AI, explained like you’re a person',
+  description:
+    '4 free plain-language AI courses, 20 lessons: what a model actually is, building your own AI with ethics baked in, automating a pipeline, and coding with Elle. Free during beta.',
+};
+
+const VALUE_PROPS = [
+  {
+    t: 'Readable, not gated.',
+    b: 'Every lesson is on the page — no email wall, no video you can’t skim. Five minutes each.',
+  },
+  {
+    t: 'Ask the AI about the AI.',
+    b: 'Each lesson ends with a question you can take straight to Elle — a live walkthrough of exactly that idea.',
+  },
+  {
+    t: 'Ethics in every track.',
+    b: 'Not a module at the end — a design decision in every lesson, the way it was built into Elle.',
+  },
+];
+
+const STEPS = [
+  { n: '1', t: 'Read a lesson', b: 'Short, plain-language lessons: five minutes each, no jargon, no math required.' },
+  {
+    n: '2',
+    t: 'Take it to Elle',
+    b: 'Every lesson has an “Ask Elle” prompt that opens a live conversation on that idea.',
+  },
+  {
+    n: '3',
+    t: 'Build something small',
+    b: 'The build courses end each lesson with a thing that runs — a prompt, a pipeline map, a page.',
+  },
+  {
+    n: '4',
+    t: 'Track your progress',
+    b: 'Mark lessons complete as you go; progress saves on your device during beta.',
+  },
+];
+
+const COURSES = [
+  {
+    badge: 'Course 01 · Free · Start here',
+    title: 'AI, in Plain Language',
+    body: 'What a model actually is, why it gets things wrong, and how to ask better questions.',
+    chips: ['Beginner', '5 lessons', '~25 min'],
+  },
+  {
+    badge: 'Course 02 · Build',
+    title: 'Build Your Own AI — Ethics Baked In',
+    body: 'Pick the job, ground it in something true, and ship it with the guardrails designed in.',
+    chips: ['Intermediate', '5 lessons', '~25 min'],
+  },
+  {
+    badge: 'Course 03 · Automate',
+    title: 'Automate a Pipeline',
+    body: 'Stop-loss first: find the leak, wire the watcher, get one finding instead of forty charts.',
+    chips: ['Intermediate', '5 lessons', '~25 min'],
+  },
+  {
+    badge: 'Course 04 · Code',
+    title: 'Learn to Code with ElleAI',
+    body: 'Ship real things with Elle at your elbow — from first commit to deployed.',
+    chips: ['Beginner', '5 lessons', '~25 min'],
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <div id="edu">
+    <!-- Fixed atomic-reveal field, blurred + lightened into a soft texture. -->
+    <div class="bg-media" aria-hidden="true">
+      <video autoplay muted loop playsinline preload="metadata" poster="/media/neutron-poster.jpg">
+        <source src="/media/neutron-hero.mp4" type="video/mp4" />
+      </video>
+      <div class="bg-scrim"></div>
+    </div>
+
+    <nav class="site-nav glass">
+      <div class="logo">
+        <div class="mark"></div>
+        <div>Atlas Edu<small>The education platform of the MadMind Institute</small></div>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="#catalog">Catalog</a>
+        <a class="nav-link" href="#how">How it works</a>
+        <a class="nav-link" href="#elle">Elle</a>
+        <a class="nav-link" href="/glass">Corpus ↗</a>
+      </div>
+      <a class="btn gold" href="/learn">Browse the catalog</a>
+    </nav>
+
+    <div class="wrap">
+      <!-- HERO -->
+      <section class="hero">
+        <span class="eyebrow">Atlas Edu · Free during beta</span>
+        <h1>AI, explained like<br /><em>you’re a person.</em></h1>
+        <p class="lede">
+          4 courses, 20 lessons, all in plain language — what AI actually is, how to build your own with ethics baked
+          in, how to automate a real pipeline, and how to learn coding with Elle at your elbow. Every lesson is readable
+          right here, and every lesson can be taken straight into a live conversation with Elle.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn gold" href="/learn">Browse the catalog</a>
+          <a class="btn" href="/elle">Talk to Elle →</a>
+        </div>
+        <div class="hero-proof">
+          <div class="proof"><b>4</b><span>Courses</span></div>
+          <div class="proof"><b>20</b><span>Lessons</span></div>
+          <div class="proof"><b>~5 min</b><span>Each</span></div>
+          <div class="proof"><b>Free</b><span>During beta</span></div>
+        </div>
+      </section>
+
+      <!-- VALUE PROPS -->
+      <div class="sec-h"><span class="num">I</span><h2>Why it’s built this way</h2><div class="rule"></div></div>
+      <div class="props-grid">
+        {
+          VALUE_PROPS.map((p) => (
+            <div class="prop glass">
+              <b>{p.t}</b>
+              <span>{p.b}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div id="how" class="sec-h"><span class="num">II</span><h2>How it works</h2><div class="rule"></div></div>
+      <div class="steps-grid">
+        {
+          STEPS.map((s) => (
+            <div class="step glass">
+              <div class="step-n">{s.n}</div>
+              <b>{s.t}</b>
+              <span>{s.b}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- CATALOG -->
+      <div id="catalog" class="sec-h"><span class="num">III</span><h2>The catalog</h2><div class="rule"></div></div>
+      <div class="course-grid">
+        {
+          COURSES.map((c) => (
+            <a class="course glass" href="/learn">
+              <span class="badge">{c.badge}</span>
+              <div class="c-title">{c.title}</div>
+              <div class="c-body">{c.body}</div>
+              <div class="chips">
+                {c.chips.map((ch) => (
+                  <span class="chip">{ch}</span>
+                ))}
+              </div>
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- ELLE -->
+      <div id="elle" class="sec-h">
+        <span class="num">IV</span><h2>Ask the AI about the AI</h2><div class="rule"></div>
+      </div>
+      <div class="elle-band glass">
+        <blockquote>
+          The best way to understand AI is to have one explain itself.
+          <footer>Every course runs alongside Elle</footer>
+        </blockquote>
+        <div class="elle-copy">
+          <p>
+            Every course here runs alongside Elle — grounded, transparent, and free to talk to during beta. When a
+            lesson says models compose answers instead of retrieving them, you can ask the model.
+          </p>
+          <p>When it says grounded answers can be checked, ask “says who?” and watch her cite.</p>
+          <a class="btn cyan" href="/elle">Talk to Elle →</a>
+        </div>
+      </div>
+
+      <!-- FINAL CTA -->
+      <div class="final glass">
+        <div class="final-in">
+          <h3>Start with one lesson. It’s five minutes.</h3>
+          <p>
+            Course 01 assumes nothing — not a line of code, not a day of math. If AI is going to be in your work either
+            way, understand it on your terms.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn gold" href="/learn">Start Course 01 →</a>
+            <a class="btn" href="/auth">Create a free account</a>
+          </div>
+          <span class="beta"
+            >All courses are free with an account during beta — and beta learners keep their pricing indefinitely.</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="f-bottom">
+          <span
+            >© 2026 Atlas Edu · the education platform of the MadMind Institute, a 501(c)(3) initiative of the Ethical
+            Intelligence Project</span
+          >
+          <span class="f-motto">Understand the thing before you trust it.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  #edu {
+    --paper: #f6f4ee;
+    --card: rgba(255, 255, 255, 0.62);
+    --card-strong: rgba(255, 255, 255, 0.82);
+    --border: rgba(25, 21, 9, 0.1);
+    --border-bright: rgba(25, 21, 9, 0.2);
+    --ink: #1a1712;
+    --t2: #57503f;
+    --t3: #8b8371;
+    --gold: #9a7524;
+    --gold-bright: #b8892e;
+    --gold-dim: rgba(154, 117, 36, 0.1);
+    --cyan: #1f86c7;
+    --cyan-bright: #2b9fe0;
+    --cyan-dim: rgba(31, 134, 199, 0.1);
+    --r: 16px;
+    --r-btn: 999px;
+    --blur: 16px;
+    --snap: 140ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    --serif: 'Cormorant Garamond', 'Georgia', serif;
+
+    color: var(--ink);
+    font-family:
+      'Inter',
+      -apple-system,
+      'Segoe UI',
+      sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+  }
+  #edu * {
+    box-sizing: border-box;
+  }
+  #edu .site-nav,
+  #edu .wrap,
+  #edu .site-footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FIXED ATOMIC FIELD (light) ===== */
+  #edu .bg-media {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  #edu .bg-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Lighten + blur into a soft blueprint texture; hides baked-in wordmark. */
+    filter: brightness(1.1) saturate(1.05) blur(6px);
+    transform: scale(1.12);
+  }
+  #edu .bg-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(900px 520px at 82% -6%, rgba(31, 134, 199, 0.12), transparent 60%),
+      radial-gradient(820px 640px at 4% 40%, rgba(154, 117, 36, 0.08), transparent 55%),
+      linear-gradient(
+        180deg,
+        rgba(246, 244, 238, 0.86) 0%,
+        rgba(246, 244, 238, 0.9) 45%,
+        rgba(246, 244, 238, 0.96) 100%
+      );
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #edu .bg-media video {
+      display: none;
+    }
+    #edu .bg-media {
+      background: var(--paper) url('/media/neutron-poster.jpg') center / cover no-repeat;
+    }
+  }
+  :global(html:has(#edu)) {
+    scroll-behavior: smooth;
+  }
+  :global(body:has(#edu)) {
+    background: #f6f4ee;
+  }
+
+  /* ===== PRIMITIVES ===== */
+  #edu .glass {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    backdrop-filter: blur(var(--blur)) saturate(1.2);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.2);
+    box-shadow:
+      0 8px 30px rgba(25, 21, 9, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  #edu .btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 11px 22px;
+    border-radius: var(--r-btn);
+    border: 1px solid var(--border-bright);
+    background: var(--card-strong);
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      background var(--snap),
+      border-color var(--snap),
+      transform var(--snap),
+      box-shadow var(--snap);
+  }
+  #edu .btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--ink);
+  }
+  #edu .btn.gold {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fbf7ec;
+  }
+  #edu .btn.gold:hover {
+    background: var(--gold-bright);
+    box-shadow: 0 8px 22px rgba(154, 117, 36, 0.28);
+  }
+  #edu .btn.cyan {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: #f4fbff;
+  }
+  #edu .btn.cyan:hover {
+    background: var(--cyan-bright);
+    box-shadow: 0 8px 22px rgba(31, 134, 199, 0.28);
+  }
+  #edu .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== NAV ===== */
+  #edu .site-nav {
+    position: sticky;
+    top: 14px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1120px;
+    margin: 16px auto 0;
+    padding: 9px 12px 9px 18px;
+  }
+  #edu .logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  #edu .logo small {
+    display: block;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  #edu .mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--cyan);
+    flex: none;
+    background:
+      radial-gradient(circle at 35% 30%, rgba(43, 159, 224, 0.5), transparent 60%),
+      conic-gradient(from 20deg, transparent 0 44%, rgba(154, 117, 36, 0.35) 52%, transparent 60%);
+    box-shadow: 0 0 16px rgba(31, 134, 199, 0.28);
+  }
+  #edu .nav-links {
+    display: flex;
+    gap: 2px;
+  }
+  #edu .nav-link {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--t2);
+    text-decoration: none;
+    transition:
+      background var(--snap),
+      color var(--snap);
+  }
+  #edu .nav-link:hover {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ===== HERO ===== */
+  #edu .hero {
+    padding: 80px 0 34px;
+    max-width: 760px;
+  }
+  #edu .eyebrow {
+    font-family: ui-monospace, 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #edu .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 68px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    margin: 14px 0 18px;
+  }
+  #edu .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  #edu .hero .lede {
+    color: var(--t2);
+    max-width: 620px;
+    font-size: 16.5px;
+    margin: 0;
+  }
+  #edu .hero-ctas {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
+  #edu .hero-proof {
+    display: flex;
+    gap: 26px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+  #edu .proof {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  #edu .proof b {
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    font-family: var(--serif);
+  }
+  #edu .proof span {
+    font-size: 11px;
+    color: var(--t3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  #edu .sec-h {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 60px 0 20px;
+  }
+  #edu .sec-h .num {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  #edu .sec-h h2 {
+    margin: 0;
+    font-size: 24px;
+    font-family: var(--serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  #edu .sec-h .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-bright), transparent);
+  }
+
+  /* ===== VALUE PROPS ===== */
+  #edu .props-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  #edu .prop {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 2px solid var(--cyan);
+  }
+  #edu .prop b {
+    font-size: 15px;
+  }
+  #edu .prop span {
+    color: var(--t2);
+    font-size: 13.5px;
+  }
+
+  /* ===== STEPS ===== */
+  #edu .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  #edu .step {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #edu .step-n {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    background: var(--gold-dim);
+    margin-bottom: 4px;
+  }
+  #edu .step b {
+    font-size: 14.5px;
+  }
+  #edu .step span {
+    color: var(--t2);
+    font-size: 13px;
+  }
+
+  /* ===== COURSES ===== */
+  #edu .course-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  #edu .course {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--snap),
+      border-color var(--snap),
+      box-shadow var(--snap);
+  }
+  #edu .course:hover {
+    transform: translateY(-3px);
+    border-color: rgba(154, 117, 36, 0.4);
+    box-shadow: 0 14px 40px rgba(25, 21, 9, 0.12);
+  }
+  #edu .badge {
+    align-self: flex-start;
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--gold-dim);
+    color: var(--gold);
+  }
+  #edu .c-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  #edu .c-body {
+    color: var(--t2);
+    font-size: 13.5px;
+  }
+  #edu .chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 6px;
+  }
+  #edu .chip {
+    font-family: ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--t3);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  /* ===== ELLE BAND ===== */
+  #edu .elle-band {
+    margin-top: 8px;
+    padding: 36px 38px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 34px;
+    align-items: center;
+    border-left: 2px solid var(--cyan);
+  }
+  #edu .elle-band blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.32;
+    color: var(--ink);
+  }
+  #edu .elle-band blockquote footer {
+    font-style: normal;
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    color: var(--t3);
+    margin-top: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  #edu .elle-copy p {
+    color: var(--t2);
+    margin: 0 0 14px;
+    font-size: 14.5px;
+  }
+
+  /* ===== FINAL CTA ===== */
+  #edu .final {
+    margin-top: 22px;
+    padding: 44px;
+    text-align: center;
+  }
+  #edu .final-in {
+    max-width: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  #edu .final h3 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.4vw, 36px);
+    font-weight: 600;
+    line-height: 1.14;
+  }
+  #edu .final p {
+    color: var(--t2);
+    margin: 0;
+  }
+  #edu .final .hero-ctas {
+    justify-content: center;
+    margin-top: 8px;
+  }
+  #edu .beta {
+    font-family: ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--t3);
+    margin-top: 6px;
+  }
+
+  /* ===== FOOTER ===== */
+  #edu .site-footer {
+    margin-top: 70px;
+    border-top: 1px solid var(--border);
+    padding: 26px 0 30px;
+  }
+  #edu .f-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    color: var(--t3);
+    font-size: 11.5px;
+  }
+  #edu .f-motto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    #edu .props-grid,
+    #edu .steps-grid,
+    #edu .course-grid,
+    #edu .elle-band {
+      grid-template-columns: 1fr;
+    }
+    #edu .f-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+    #edu .f-motto {
+      white-space: normal;
+    }
+  }
+</style>

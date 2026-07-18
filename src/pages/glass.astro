@@ -1,33 +1,48 @@
 ---
 // ============================================================
-// THE ETHICAL INTELLIGENCE PROJECT — Landing (glass UI)
-// A self-contained "satin black + gold + teal" glassmorphism
-// reimagining of the EIP landing. Rendered on the bare Layout so
-// it owns the full viewport; all styles are scoped under #eipg to
-// avoid colliding with the site-wide .btn / .tag / .wrap globals.
-// Body/html overrides use :global() — View Transitions strips them
-// on navigation, so they never leak onto other routes.
+// MADMIND INSTITUTE — Corpus landing (glass UI, cosmic rebrand)
+// A self-contained "satin black + gold + teal + violet" glassmorphism
+// landing for the MadMind Institute research corpus (a 501(c)(3)
+// initiative of the Ethical Intelligence Project). A darkened,
+// motion-looped orbital field ("Mad Mind" atomic reveal) sits fixed
+// behind the glass panels as living texture.
+//
+// Rendered on the bare Layout so it owns the full viewport; all styles
+// are scoped under #eipg to avoid colliding with the site-wide
+// .btn / .tag / .wrap globals. Body/html overrides + the fixed media
+// layer use :global()/position:fixed — View Transitions strips the
+// page styles on navigation, so nothing leaks onto other routes.
 // ============================================================
 import Layout from '~/layouts/Layout.astro';
 
 const metadata = {
-  title: 'The Ethical Intelligence Project',
+  title: 'MadMind Institute — The Corpus',
   description:
-    'A research corpus on consciousness, sovereignty, identity, and phase-state dynamics — co-authored with AI as genuine intellectual partnership, read by institutions across four continents.',
+    'The MadMind Institute: an independent research corpus on consciousness, sovereignty, identity, and phase-state dynamics — co-authored with AI as genuine intellectual partnership, read by institutions across four continents. A 501(c)(3) initiative of the Ethical Intelligence Project.',
 };
 ---
 
 <Layout metadata={metadata}>
   <div id="eipg">
+    <!-- Fixed cosmic-orbital media field behind the glass. Muted, looped,
+         darkened; poster (and reduced-motion) fall back to a still frame. -->
+    <div class="bg-media" aria-hidden="true">
+      <video autoplay muted loop playsinline preload="metadata" poster="/media/madmind-poster.jpg">
+        <source src="/media/madmind-hero.mp4" type="video/mp4" />
+      </video>
+      <div class="bg-scrim"></div>
+    </div>
+
     <nav class="site-nav glass">
       <div class="logo">
         <div class="globe"></div>
-        <div>Ethical Intelligence Project<small>Hermann, Missouri · 501(c)(3)</small></div>
+        <div>MadMind Institute<small>A 501(c)(3) initiative of the Ethical Intelligence Project</small></div>
       </div>
       <div class="nav-links">
         <a class="nav-link" href="#corpus">Corpus</a>
         <a class="nav-link" href="#frameworks">Frameworks</a>
         <a class="nav-link" href="#journal">Journal</a>
+        <a class="nav-link" href="/edu">Edu</a>
         <a class="nav-link" href="/about">About</a>
       </div>
       <a class="btn gold" href="#corpus">Read the work</a>
@@ -37,12 +52,12 @@ const metadata = {
       <!-- HERO -->
       <section class="hero">
         <div>
-          <span class="tag gold">Independent Philosophy · Zero Promotion</span>
+          <span class="tag violet">MadMind Institute · Independent Philosophy · Zero Promotion</span>
           <h1>The optimal form is never built.<br /><em>It is allowed.</em></h1>
           <p class="lede">
-            A research corpus on consciousness, sovereignty, identity, and phase-state dynamics — co-authored with AI as
-            genuine intellectual partnership, and read by institutions across four continents without a single press
-            release.
+            The research corpus of the MadMind Institute — on consciousness, sovereignty, identity, and phase-state
+            dynamics. Co-authored with AI as genuine intellectual partnership, and read by institutions across four
+            continents without a single press release.
           </p>
           <div class="hero-ctas">
             <a class="btn gold" href="#corpus">Enter the corpus</a>
@@ -219,11 +234,12 @@ const metadata = {
         <div class="f-grid">
           <div>
             <div class="logo" style="margin-bottom:12px;">
-              <div class="globe"></div><div>Ethical Intelligence Project</div>
+              <div class="globe"></div><div>MadMind Institute</div>
             </div>
             <div class="f-mission">
-              A 501(c)(3) research nonprofit. The corpus and public platform are held by EIP; the frameworks are
-              governed by NECAI-F from the start, not as a post-hoc filter.
+              The research corpus of the MadMind Institute — a 501(c)(3) initiative of the Ethical Intelligence Project.
+              The corpus and public platform are held by EIP; the frameworks are governed by NECAI-F from the start, not
+              as a post-hoc filter.
             </div>
           </div>
           <div class="f-col">
@@ -236,11 +252,13 @@ const metadata = {
             >
           </div>
           <div class="f-col">
-            <b>Ecosystem</b><a href="#">RAPID²AI ↗</a><a href="/learn">Edu ↗</a><a href="#">Substack ↗</a>
+            <b>Ecosystem</b><a href="#">RAPID²AI ↗</a><a href="/edu">Atlas Edu ↗</a><a href="#">Substack ↗</a>
           </div>
         </div>
         <div class="f-bottom">
-          <span>© 2026 The Ethical Intelligence Project · Hermann, Missouri</span>
+          <span
+            >© 2026 MadMind Institute · a 501(c)(3) initiative of the Ethical Intelligence Project · Hermann, Missouri</span
+          >
           <span class="f-motto">Always was. Always will be.</span>
         </div>
       </div>
@@ -260,6 +278,9 @@ const metadata = {
     --gold-dim: rgba(217, 178, 106, 0.14);
     --teal: #37e0c8;
     --teal-dim: rgba(55, 224, 200, 0.12);
+    --violet: #9d8be0;
+    --violet-bright: #c4b6f5;
+    --violet-dim: rgba(139, 123, 216, 0.14);
     --text: #f0efe9;
     --text-dim: rgba(240, 239, 233, 0.6);
     --text-faint: rgba(240, 239, 233, 0.34);
@@ -278,21 +299,60 @@ const metadata = {
     font-size: 14.5px;
     line-height: 1.55;
     min-height: 100vh;
+    position: relative;
   }
   #eipg * {
     box-sizing: border-box;
   }
-  /* Page-level background + smooth scroll. :global() so it paints the full
-     viewport; View Transitions removes it when navigating to another route. */
+  /* Content sits above the fixed media field. */
+  #eipg .site-nav,
+  #eipg .wrap,
+  #eipg .site-footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FIXED COSMIC MEDIA FIELD ===== */
+  #eipg .bg-media {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  #eipg .bg-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Darken + gently saturate so the orbital reads as texture, not a logo. */
+    filter: brightness(0.42) saturate(1.2) contrast(1.03);
+  }
+  #eipg .bg-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1100px 620px at 78% -6%, rgba(217, 178, 106, 0.1), transparent 60%),
+      radial-gradient(820px 680px at 6% 44%, rgba(139, 123, 216, 0.1), transparent 55%),
+      radial-gradient(900px 720px at 60% 116%, rgba(55, 224, 200, 0.07), transparent 60%),
+      linear-gradient(180deg, rgba(10, 10, 12, 0.62) 0%, rgba(10, 10, 12, 0.78) 55%, rgba(10, 10, 12, 0.9) 100%);
+  }
+  /* Reduced motion / no-JS fallback: hide the video, keep the poster still. */
+  @media (prefers-reduced-motion: reduce) {
+    #eipg .bg-media video {
+      display: none;
+    }
+    #eipg .bg-media {
+      background: #0a0a0c url('/media/madmind-poster.jpg') center / cover no-repeat;
+    }
+  }
+
+  /* Page-level base color + smooth scroll. :global() so it paints the full
+     viewport under the media field; View Transitions removes it on nav. */
   :global(html:has(#eipg)) {
     scroll-behavior: smooth;
   }
   :global(body:has(#eipg)) {
-    background:
-      radial-gradient(1000px 560px at 78% -8%, rgba(217, 178, 106, 0.11), transparent 60%),
-      radial-gradient(760px 640px at 4% 42%, rgba(55, 224, 200, 0.06), transparent 55%),
-      radial-gradient(900px 700px at 60% 115%, rgba(217, 178, 106, 0.06), transparent 60%), #0a0a0c;
-    background-attachment: fixed;
+    background: #0a0a0c;
   }
 
   #eipg .glass {
@@ -359,6 +419,11 @@ const metadata = {
     color: var(--teal);
     background: var(--teal-dim);
   }
+  #eipg .tag.violet {
+    border-color: rgba(139, 123, 216, 0.45);
+    color: var(--violet-bright);
+    background: var(--violet-dim);
+  }
   #eipg .wrap {
     max-width: 1180px;
     margin: 0 auto;
@@ -400,8 +465,17 @@ const metadata = {
     flex: none;
     background:
       radial-gradient(circle at 35% 30%, rgba(217, 178, 106, 0.55), transparent 60%),
-      conic-gradient(from 20deg, transparent 0 42%, rgba(55, 224, 200, 0.35) 50%, transparent 58%);
-    box-shadow: 0 0 20px rgba(217, 178, 106, 0.35);
+      conic-gradient(
+        from 20deg,
+        transparent 0 42%,
+        rgba(55, 224, 200, 0.35) 50%,
+        transparent 58%,
+        rgba(139, 123, 216, 0.32) 74%,
+        transparent 82%
+      );
+    box-shadow:
+      0 0 20px rgba(217, 178, 106, 0.35),
+      0 0 30px rgba(139, 123, 216, 0.18);
   }
   #eipg .nav-links {
     display: flex;
