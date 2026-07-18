@@ -205,3 +205,19 @@ The scorecard, honestly: one module was wired all along, one was run but
 untraceably, one was cited but dead, and one number was decorative. Now all four
 run inside a committed generator with a drift check. The audit's Finding 5 hole is
 closed the only way that counts — not by softening the claim, but by making it true.
+
+## Postscript: the anchor the sky checks
+
+After the wiring pass, the atlas gained the thing this audit couldn't give it: an
+externally validated claim. The Orbital Atlas (`/orbital-atlas`, generator
+`scripts/generate-orbital-snapshot.py`) runs the standard map live and measures
+the KAM survival landscape — rational windings die first, the golden torus breaks
+last (our transport-proxy breakup at `1.059` against Greene's literature
+`K_c = 0.971635`, with the proxy's error and its conjugacy check stored in the
+snapshot). Kepler's third law then maps the rational graves onto the asteroid
+belt with no free parameters: computed gap centers `2.502, 2.825, 2.958, 3.279`
+AU against observed Kirkwood centers `2.502, 2.825, 2.958, 3.279` AU. Every other
+number in this audit was checked against the construction; these four are checked
+against the sky. The golden winding itself lies outside the belt's winding window
+and the page says so — the golden claim stays in phase space, which is exactly
+where KAM puts it.
