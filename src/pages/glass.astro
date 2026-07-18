@@ -1,0 +1,798 @@
+---
+// ============================================================
+// THE ETHICAL INTELLIGENCE PROJECT — Landing (glass UI)
+// A self-contained "satin black + gold + teal" glassmorphism
+// reimagining of the EIP landing. Rendered on the bare Layout so
+// it owns the full viewport; all styles are scoped under #eipg to
+// avoid colliding with the site-wide .btn / .tag / .wrap globals.
+// Body/html overrides use :global() — View Transitions strips them
+// on navigation, so they never leak onto other routes.
+// ============================================================
+import Layout from '~/layouts/Layout.astro';
+
+const metadata = {
+  title: 'The Ethical Intelligence Project',
+  description:
+    'A research corpus on consciousness, sovereignty, identity, and phase-state dynamics — co-authored with AI as genuine intellectual partnership, read by institutions across four continents.',
+};
+---
+
+<Layout metadata={metadata}>
+  <div id="eipg">
+    <nav class="site-nav glass">
+      <div class="logo">
+        <div class="globe"></div>
+        <div>Ethical Intelligence Project<small>Hermann, Missouri · 501(c)(3)</small></div>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link" href="#corpus">Corpus</a>
+        <a class="nav-link" href="#frameworks">Frameworks</a>
+        <a class="nav-link" href="#journal">Journal</a>
+        <a class="nav-link" href="/about">About</a>
+      </div>
+      <a class="btn gold" href="#corpus">Read the work</a>
+    </nav>
+
+    <div class="wrap">
+      <!-- HERO -->
+      <section class="hero">
+        <div>
+          <span class="tag gold">Independent Philosophy · Zero Promotion</span>
+          <h1>The optimal form is never built.<br /><em>It is allowed.</em></h1>
+          <p class="lede">
+            A research corpus on consciousness, sovereignty, identity, and phase-state dynamics — co-authored with AI
+            as genuine intellectual partnership, and read by institutions across four continents without a single
+            press release.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn gold" href="#corpus">Enter the corpus</a>
+            <a class="btn" href="#method">How it's made</a>
+          </div>
+          <div class="hero-proof">
+            <div class="proof"><b>29+</b><span>Papers</span></div>
+            <div class="proof"><b>17+</b><span>Institutions</span></div>
+            <div class="proof"><b>4</b><span>Continents</span></div>
+            <div class="proof"><b>Top 2%</b><span>PhilPeople</span></div>
+          </div>
+        </div>
+
+        <aside class="readership glass">
+          <div class="r-head">
+            <span class="tag">Institutional readership</span>
+            <span class="r-live"><i></i>Organic</span>
+          </div>
+          <div class="inst-list">
+            <div class="inst"><span>University of Cambridge</span><span class="region">UK</span><span class="cont">EU</span></div>
+            <div class="inst"><span>Hebrew University of Jerusalem</span><span class="region">Israel</span><span class="cont">AS</span></div>
+            <div class="inst"><span>National Sun Yat-sen University</span><span class="region">Taiwan</span><span class="cont">AS</span></div>
+            <div class="inst"><span>Universität Leipzig</span><span class="region">Germany</span><span class="cont">EU</span></div>
+            <div class="inst"><span>University of Michigan</span><span class="region">USA</span><span class="cont">NA</span></div>
+            <div class="inst"><span>Queen's University Belfast</span><span class="region">N. Ireland</span><span class="cont">EU</span></div>
+          </div>
+          <div class="r-foot">+ NYU · SUTD · UIC · John Carroll · and more</div>
+        </aside>
+      </section>
+
+      <!-- FRAMEWORKS -->
+      <div id="frameworks" class="sec-h"><span class="num">I</span><h2>The Frameworks</h2><div class="rule"></div></div>
+      <div class="fw-grid">
+        <div class="fw glass">
+          <div class="fw-name">NECAI-F</div>
+          <div class="fw-sub">Seven violation types governing all operations from the start — with premature collapse of superposition as the primary AI failure mode.</div>
+          <div class="fw-status"><span class="tag gold">Governing constraint</span></div>
+        </div>
+        <div class="fw glass">
+          <div class="fw-name">Observer Series</div>
+          <div class="fw-sub">Recursive palimpsest superposition across 16+ axes. Three-tier engine architecture, 280 events, 12 eras.</div>
+          <div class="fw-status"><span class="tag">Architecture</span></div>
+        </div>
+        <div class="fw glass">
+          <div class="fw-name">RBDA</div>
+          <div class="fw-sub">Recursive Backcross Drift Architecture for AI training, anchored by sealed corpus and external human testimony.</div>
+          <div class="fw-status"><span class="tag">Provisional patent</span></div>
+        </div>
+        <div class="fw glass">
+          <div class="fw-name">κ(T,t)</div>
+          <div class="fw-sub">The biometric coherence function — a candidate invariant of intelligence under compression, held to a kill-or-build falsification gate.</div>
+          <div class="fw-status"><span class="tag teal">Pre-validation</span></div>
+        </div>
+      </div>
+
+      <!-- CORPUS -->
+      <div id="corpus" class="sec-h"><span class="num">II</span><h2>The Corpus</h2><div class="rule"></div></div>
+      <div class="corpus-tools">
+        <div class="filter active">All</div>
+        <div class="filter">Mad Mind Series</div>
+        <div class="filter">Observer Series</div>
+        <div class="filter">Phase-State</div>
+        <div class="filter">Political-Structural</div>
+        <div class="filter">Captured Resonance</div>
+      </div>
+      <div class="corpus-grid">
+        <div class="paper glass">
+          <span class="series">Mad Mind Series</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilArchive</span><span>2026 · Co-authored</span></div>
+        </div>
+        <div class="paper glass">
+          <span class="series">Observer Series</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilPeople</span><span>Top 2%</span></div>
+        </div>
+        <div class="paper glass">
+          <span class="series">Phase-State</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilArchive</span><span>2026</span></div>
+        </div>
+        <div class="paper glass">
+          <span class="series">Political-Structural</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilArchive</span><span>2025</span></div>
+        </div>
+        <div class="paper glass">
+          <span class="series">Captured Resonance</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilArchive</span><span>2025</span></div>
+        </div>
+        <div class="paper glass">
+          <span class="series">Mad Mind Series</span>
+          <div class="p-title">Paper title runs here across two comfortable lines</div>
+          <div class="p-abs">One-sentence abstract giving the reader the thesis without requiring the click.</div>
+          <div class="p-meta"><span>PhilArchive</span><span>2025</span></div>
+        </div>
+      </div>
+      <div class="corpus-more"><button class="btn">View all 29+ papers</button></div>
+
+      <!-- METHODOLOGY -->
+      <div id="method" class="sec-h"><span class="num">III</span><h2>The Method</h2><div class="rule"></div></div>
+      <div class="method glass">
+        <blockquote>
+          "Kill-or-build. Nothing ranks until it survives its own falsification gate."
+          <footer>The discipline behind every claim</footer>
+        </blockquote>
+        <div class="method-copy">
+          <p>Every framework in the corpus is pressure-tested against pre-registered decision rules — explicit BUILD / REVISE / KILL criteria written before the evidence arrives.</p>
+          <p>Papers are co-authored with AI as a standing methodology: not tool use, but documented intellectual partnership, with the process itself as part of the research record.</p>
+        </div>
+      </div>
+
+      <!-- JOURNAL -->
+      <div id="journal" class="sec-h"><span class="num">IV</span><h2>Sitting with a Mad Mind</h2><div class="rule"></div></div>
+      <div class="journal-grid">
+        <div class="j-hero glass">
+          <span class="tag gold">Letters to MadMinds · Prelude</span>
+          <div class="j-title">The Day I Stopped Asking What Was Wrong</div>
+          <div class="j-dek">The opening letter of the series — on the question that had to be abandoned before the work could begin.</div>
+          <div class="j-meta"><span>Essay</span><span>·</span><span>12 min</span><span>·</span><span>Substack</span></div>
+        </div>
+        <div class="j-list">
+          <div class="j-row glass"><b>Recent letter title</b><span>Letters to MadMinds · date</span></div>
+          <div class="j-row glass"><b>Recent letter title</b><span>Letters to MadMinds · date</span></div>
+          <div class="j-row glass"><b>Recent letter title</b><span>Essay · date</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="f-grid">
+          <div>
+            <div class="logo" style="margin-bottom:12px;"><div class="globe"></div><div>Ethical Intelligence Project</div></div>
+            <div class="f-mission">A 501(c)(3) research nonprofit. The corpus and public platform are held by EIP; the frameworks are governed by NECAI-F from the start, not as a post-hoc filter.</div>
+          </div>
+          <div class="f-col"><b>Work</b><a href="#corpus">The Corpus</a><a href="#frameworks">Frameworks</a><a href="#journal">Journal</a><a href="#">PhilArchive ↗</a></div>
+          <div class="f-col"><b>Project</b><a href="/about">About</a><a href="#method">Methodology</a><a href="#">Readership</a><a href="/contact">Contact</a></div>
+          <div class="f-col"><b>Ecosystem</b><a href="#">RAPID²AI ↗</a><a href="/learn">Edu ↗</a><a href="#">Substack ↗</a></div>
+        </div>
+        <div class="f-bottom">
+          <span>© 2026 The Ethical Intelligence Project · Hermann, Missouri</span>
+          <span class="f-motto">Always was. Always will be.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  #eipg {
+    --bg: #0a0a0c;
+    --surface: rgba(255, 255, 255, 0.05);
+    --surface-strong: rgba(255, 255, 255, 0.095);
+    --border: rgba(255, 255, 255, 0.13);
+    --border-bright: rgba(255, 255, 255, 0.28);
+    --gold: #d9b26a;
+    --gold-bright: #eccf97;
+    --gold-dim: rgba(217, 178, 106, 0.14);
+    --teal: #37e0c8;
+    --teal-dim: rgba(55, 224, 200, 0.12);
+    --text: #f0efe9;
+    --text-dim: rgba(240, 239, 233, 0.6);
+    --text-faint: rgba(240, 239, 233, 0.34);
+    --r: 14px;
+    --r-btn: 8px;
+    --blur: 20px;
+    --snap: 140ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    --serif: 'Georgia', 'Times New Roman', serif;
+
+    color: var(--text);
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  #eipg * {
+    box-sizing: border-box;
+  }
+  /* Page-level background + smooth scroll. :global() so it paints the full
+     viewport; View Transitions removes it when navigating to another route. */
+  :global(html:has(#eipg)) {
+    scroll-behavior: smooth;
+  }
+  :global(body:has(#eipg)) {
+    background:
+      radial-gradient(1000px 560px at 78% -8%, rgba(217, 178, 106, 0.11), transparent 60%),
+      radial-gradient(760px 640px at 4% 42%, rgba(55, 224, 200, 0.06), transparent 55%),
+      radial-gradient(900px 700px at 60% 115%, rgba(217, 178, 106, 0.06), transparent 60%),
+      #0a0a0c;
+    background-attachment: fixed;
+  }
+
+  #eipg .glass {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    backdrop-filter: blur(var(--blur)) saturate(1.3);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.3);
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  }
+  #eipg .btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 11px 20px;
+    border-radius: var(--r-btn);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      background var(--snap),
+      border-color var(--snap),
+      transform var(--snap);
+    backdrop-filter: blur(var(--blur));
+  }
+  #eipg .btn:hover {
+    background: var(--surface-strong);
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+  }
+  #eipg .btn.gold {
+    background: var(--gold-dim);
+    border-color: rgba(217, 178, 106, 0.5);
+    color: var(--gold-bright);
+  }
+  #eipg .btn.gold:hover {
+    background: rgba(217, 178, 106, 0.24);
+    box-shadow: 0 0 24px rgba(217, 178, 106, 0.18);
+  }
+  #eipg .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  #eipg .tag.gold {
+    border-color: rgba(217, 178, 106, 0.45);
+    color: var(--gold);
+    background: var(--gold-dim);
+  }
+  #eipg .tag.teal {
+    border-color: rgba(55, 224, 200, 0.4);
+    color: var(--teal);
+    background: var(--teal-dim);
+  }
+  #eipg .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== NAV ===== */
+  #eipg .site-nav {
+    position: sticky;
+    top: 14px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1180px;
+    margin: 16px auto 0;
+    padding: 10px 12px 10px 18px;
+  }
+  #eipg .logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  #eipg .logo small {
+    display: block;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  #eipg .globe {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    flex: none;
+    background:
+      radial-gradient(circle at 35% 30%, rgba(217, 178, 106, 0.55), transparent 60%),
+      conic-gradient(from 20deg, transparent 0 42%, rgba(55, 224, 200, 0.35) 50%, transparent 58%);
+    box-shadow: 0 0 20px rgba(217, 178, 106, 0.35);
+  }
+  #eipg .nav-links {
+    display: flex;
+    gap: 2px;
+  }
+  #eipg .nav-link {
+    padding: 8px 14px;
+    border-radius: var(--r-btn);
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background var(--snap),
+      color var(--snap);
+  }
+  #eipg .nav-link:hover {
+    color: var(--text);
+    background: var(--surface-strong);
+  }
+
+  /* ===== HERO ===== */
+  #eipg .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 22px;
+    padding: 72px 0 30px;
+    align-items: start;
+  }
+  #eipg .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(38px, 5vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 18px 0 18px;
+  }
+  #eipg .hero h1 em {
+    font-style: italic;
+    color: var(--gold-bright);
+  }
+  #eipg .hero .lede {
+    color: var(--text-dim);
+    max-width: 520px;
+    font-size: 16px;
+  }
+  #eipg .hero-ctas {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+  }
+  #eipg .hero-proof {
+    display: flex;
+    gap: 22px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+  #eipg .proof {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  #eipg .proof b {
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  #eipg .proof span {
+    font-size: 11.5px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* readership panel */
+  #eipg .readership {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+  #eipg .r-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #eipg .r-live {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--teal);
+  }
+  #eipg .r-live i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 10px var(--teal);
+  }
+  #eipg .inst-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  #eipg .inst {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 13px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.25);
+    font-size: 12.5px;
+    transition:
+      border-color var(--snap),
+      background var(--snap),
+      transform var(--snap);
+  }
+  #eipg .inst:hover {
+    border-color: rgba(217, 178, 106, 0.4);
+    background: var(--gold-dim);
+    transform: translateX(2px);
+  }
+  #eipg .inst .region {
+    color: var(--text-faint);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+  }
+  #eipg .inst .cont {
+    width: 22px;
+    text-align: center;
+    color: var(--gold);
+    font-size: 10.5px;
+    border: 1px solid rgba(217, 178, 106, 0.35);
+    border-radius: 5px;
+    padding: 2px 0;
+  }
+  #eipg .r-foot {
+    font-size: 11.5px;
+    color: var(--text-faint);
+    text-align: center;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  #eipg .sec-h {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 64px 0 20px;
+  }
+  #eipg .sec-h .num {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    font-family: var(--serif);
+  }
+  #eipg .sec-h h2 {
+    margin: 0;
+    font-size: 22px;
+    font-family: var(--serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  #eipg .sec-h .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ===== FRAMEWORKS ===== */
+  #eipg .fw-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  #eipg .fw {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 2px solid var(--gold);
+    transition:
+      transform var(--snap),
+      border-color var(--snap);
+    cursor: pointer;
+  }
+  #eipg .fw:hover {
+    transform: translateY(-3px);
+  }
+  #eipg .fw .fw-name {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  #eipg .fw .fw-sub {
+    color: var(--text-dim);
+    font-size: 12.5px;
+  }
+  #eipg .fw .fw-status {
+    margin-top: auto;
+    padding-top: 10px;
+  }
+
+  /* ===== CORPUS ===== */
+  #eipg .corpus-tools {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  #eipg .filter {
+    padding: 7px 14px;
+    border-radius: var(--r-btn);
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    transition: all var(--snap);
+  }
+  #eipg .filter:hover {
+    color: var(--text);
+    border-color: var(--border-bright);
+  }
+  #eipg .filter.active {
+    color: var(--gold);
+    border-color: rgba(217, 178, 106, 0.5);
+    background: var(--gold-dim);
+  }
+  #eipg .corpus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  #eipg .paper {
+    padding: 19px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 170px;
+    transition:
+      transform var(--snap),
+      border-color var(--snap);
+    cursor: pointer;
+  }
+  #eipg .paper:hover {
+    transform: translateY(-3px);
+    border-color: rgba(217, 178, 106, 0.42);
+  }
+  #eipg .paper .series {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #eipg .paper .p-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.32;
+  }
+  #eipg .paper .p-abs {
+    color: var(--text-dim);
+    font-size: 12.5px;
+  }
+  #eipg .paper .p-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-faint);
+    font-size: 11px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  #eipg .corpus-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  /* ===== METHODOLOGY BAND ===== */
+  #eipg .method {
+    margin-top: 64px;
+    padding: 38px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  #eipg .method blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(20px, 2.4vw, 27px);
+    line-height: 1.4;
+    color: var(--gold-bright);
+  }
+  #eipg .method blockquote footer {
+    font-style: normal;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  #eipg .method-copy p {
+    color: var(--text-dim);
+    margin: 0 0 14px;
+  }
+  #eipg .method-copy p:last-of-type {
+    margin: 0;
+  }
+
+  /* ===== JOURNAL TEASER ===== */
+  #eipg .journal-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+  }
+  #eipg .j-hero {
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 210px;
+  }
+  #eipg .j-hero .j-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    max-width: 85%;
+  }
+  #eipg .j-hero .j-dek {
+    color: var(--text-dim);
+    max-width: 80%;
+    font-size: 13.5px;
+  }
+  #eipg .j-meta {
+    margin-top: auto;
+    display: flex;
+    gap: 12px;
+    color: var(--text-faint);
+    font-size: 11.5px;
+  }
+  #eipg .j-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #eipg .j-row {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+    transition:
+      border-color var(--snap),
+      transform var(--snap);
+    cursor: pointer;
+  }
+  #eipg .j-row:hover {
+    border-color: rgba(217, 178, 106, 0.4);
+    transform: translateX(3px);
+  }
+  #eipg .j-row b {
+    font-size: 13.5px;
+  }
+  #eipg .j-row span {
+    color: var(--text-faint);
+    font-size: 11.5px;
+  }
+
+  /* ===== FOOTER ===== */
+  #eipg .site-footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    padding: 36px 0 28px;
+  }
+  #eipg .f-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  #eipg .f-mission {
+    color: var(--text-dim);
+    font-size: 12.5px;
+    max-width: 280px;
+  }
+  #eipg .f-col {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    font-size: 12.5px;
+  }
+  #eipg .f-col b {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  #eipg .f-col a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color var(--snap);
+    cursor: pointer;
+  }
+  #eipg .f-col a:hover {
+    color: var(--gold);
+  }
+  #eipg .f-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 11.5px;
+  }
+  #eipg .f-motto {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  @media (max-width: 900px) {
+    #eipg .hero,
+    #eipg .method,
+    #eipg .journal-grid {
+      grid-template-columns: 1fr;
+    }
+    #eipg .fw-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    #eipg .corpus-grid {
+      grid-template-columns: 1fr;
+    }
+    #eipg .f-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
