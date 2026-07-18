@@ -1,0 +1,611 @@
+---
+// ============================================================
+// ORBITAL ATLAS — where the atlas's stability logic touches measurable sky.
+//
+// The KAM anchor. The survival curve (computed live by the committed
+// generator: standard-map transport sweep) shows why rational windings die
+// and the golden winding is the last torus to break; Kepler's third law
+// (forced arithmetic) maps the rational graves onto the asteroid belt,
+// where they are the observed Kirkwood gaps. The rendered belt's density
+// is carved by the computed curve — the gaps you see are cut by the
+// mechanism and land on the data.
+//
+// ONE SOURCE OF TRUTH, LOCKED: everything is read from
+// `src/data/orbital-snapshot.json` (scripts/generate-orbital-snapshot.py).
+// The renderer draws it; it re-derives nothing.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import snapshot from '~/data/orbital-snapshot.json';
+
+const metadata = {
+  title: 'Orbital Atlas — the KAM anchor',
+  description:
+    'The standard-map survival landscape — rational windings die first, the golden torus breaks last — mapped through Kepler onto the asteroid belt, where the rational graves are the observed Kirkwood gaps. Computed mechanism, forced arithmetic, measured sky.',
+};
+
+const m = snapshot.meta;
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/master-atlas" />
+
+    <section class="orbital-stage">
+      <canvas
+        id="orbital-canvas"
+        aria-label="Rotatable 3D rendering of the asteroid belt and the KAM survival landscape"></canvas>
+
+      <div class="orbital-title">
+        <div class="orbital-eyebrow">Orbital Atlas</div>
+        <h1>The KAM anchor</h1>
+        <p class="orbital-sub">
+          rational windings die first · the golden torus breaks last · Kepler maps the graves onto the belt — the
+          Kirkwood gaps · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+        </p>
+      </div>
+
+      <div class="orbital-legend" id="orbital-legend">
+        <div class="lg-hint">click a row to toggle · overlay any combination</div>
+        <button class="lg-row" data-g="jupiter">
+          <span class="sw" style="--c:#e8b48a"></span><b>Sun & Jupiter</b> · the kicker · every resonance is a ratio with
+          its {m.jupiterAU} AU orbit
+        </button>
+        <button class="lg-row" data-g="belt">
+          <span class="sw" style="--c:#9fb6d8"></span><b>Asteroid belt</b> · density carved by the computed survival curve,
+          moving at real Kepler rates
+        </button>
+        <button class="lg-row" data-g="gaps">
+          <span class="sw" style="--c:#ff5c7a"></span><b>Kirkwood gaps</b> · 3:1, 5:2, 7:3, 2:1 · computed a = a_J·(q/p)^⅔
+          lands on the observed centers
+        </button>
+        <button class="lg-row" data-g="curve">
+          <span class="sw" style="--c:#55e9d0"></span><b>Survival curve</b> · breakup K per winding, computed on the standard
+          map · dips at every rational
+        </button>
+        <button class="lg-row" data-g="graves">
+          <span class="sw" style="--c:#b79cff"></span><b>Grave-lines</b> · each rational dip wired to the gap it becomes in
+          the belt
+        </button>
+        <button class="lg-row" data-g="golden">
+          <span class="sw" style="--c:#f5c542"></span><b>Golden torus</b> · w = 1/φ, the last to break · its Fibonacci convergents
+          are the nearest graves
+        </button>
+      </div>
+
+      <div class="orbital-hud" id="orbital-hud">
+        <div class="hud-h">Orbital Atlas · locked</div>
+        <div class="hud-m"><span>golden torus breakK</span><b>{m.goldenBreakK} (proxy)</b></div>
+        <div class="hud-m"><span>Greene K_c (lit.)</span><b>{m.greeneKc}</b></div>
+        <div class="hud-m"><span>mirror 1−1/φ check</span><b>{m.goldenMirrorBreakK}</b></div>
+        {
+          snapshot.resonances.map((r) => (
+            <div class="hud-m">
+              <span>{r.label} gap · computed / observed</span>
+              <b>
+                {r.computedAU} / {r.observedAU} AU
+              </b>
+            </div>
+          ))
+        }
+        <div class="hud-m">
+          <span>belt winding window</span><b>{snapshot.belt.windingWindow[0]} – {snapshot.belt.windingWindow[1]}</b>
+        </div>
+        <div class="hud-m"><span>state</span><b id="hud-state">orbiting · Kepler shear</b></div>
+        <div class="hud-src">source: orbital-snapshot.json · transport-proxy breakup, stated as such</div>
+      </div>
+
+      <noscript><div class="orbital-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .orbital-stage {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 50% 0%, #0d1220 0%, #070a12 70%, #04060b 100%);
+    }
+    #orbital-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #orbital-canvas:active {
+      cursor: grabbing;
+    }
+
+    .orbital-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 60%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .orbital-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #f5c542;
+      margin-bottom: 12px;
+    }
+    .orbital-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .orbital-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .orbital-sub kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
+    }
+
+    .orbital-legend {
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(13, 14, 22, 0.66);
+      border: 1px solid rgba(245, 197, 66, 0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 330px;
+    }
+    .lg-hint {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7b84a0;
+      margin-bottom: 2px;
+    }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+      text-align: left;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s ease;
+    }
+    .lg-row:hover b {
+      text-decoration: underline;
+    }
+    .lg-row.off {
+      opacity: 0.32;
+    }
+    .lg-row.off .sw {
+      box-shadow: none;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
+
+    .orbital-hud {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(13, 14, 22, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 280px;
+    }
+    .hud-h {
+      color: #55e9d0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .orbital-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
+
+    @media (max-width: 760px) {
+      .orbital-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .orbital-legend {
+        top: auto;
+        bottom: 250px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 74%;
+      }
+      .orbital-hud {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: 0;
+      }
+    }
+  </style>
+
+  <script type="application/json" id="orbital-snap" set:html={JSON.stringify(snapshot)} />
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    interface Snap {
+      meta: {
+        phi: number;
+        phiInv: number;
+        jupiterAU: number;
+        greeneKc: number;
+        goldenBreakK: number;
+        goldenMirrorBreakK: number;
+        curveMaxK: number;
+      };
+      survival: { curve: number[][]; wMin: number; wMax: number; band: number };
+      golden: { w: number; breakK: number; mirrorW: number; mirrorBreakK: number };
+      convergents: { num: number; den: number; w: number; breakK: number }[];
+      resonances: { label: string; w: number; computedAU: number; observedAU: number; breakK: number }[];
+      belt: { aMin: number; aMax: number; windingWindow: number[]; asteroids: number[][] };
+      jupiter: { a: number; periodYears: number };
+    }
+
+    const snap: Snap = JSON.parse((document.getElementById('orbital-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('orbital-canvas') as HTMLCanvasElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const COL = {
+      sun: 0xffd27a,
+      jupiter: 0xe8b48a,
+      belt: 0x9fb6d8,
+      gap: 0xff5c7a,
+      curve: 0x55e9d0,
+      window: 0x55e9d0,
+      golden: 0xf5c542,
+      grave: 0xb79cff,
+      convergent: 0xff9e5c,
+    };
+
+    // scene scale: 0.8 units per AU (a drawing decision)
+    const S = 0.8;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
+    camera.position.set(4.6, 3.4, 6.4);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 2;
+    controls.maxDistance = 30;
+    controls.autoRotate = !reduce;
+    controls.autoRotateSpeed = 0.22;
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // ── the Sun ──
+    const sun = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 18), new THREE.MeshBasicMaterial({ color: COL.sun }));
+    world.add(sun);
+    world.add(new THREE.PointLight(COL.sun, 6, 40));
+
+    // ── Jupiter: the kicker ──
+    const jupiterGrp = new THREE.Group();
+    world.add(jupiterGrp);
+    const jOrbitPts: THREE.Vector3[] = [];
+    for (let i = 0; i <= 128; i++) {
+      const a = (i / 128) * Math.PI * 2;
+      jOrbitPts.push(new THREE.Vector3(Math.cos(a) * snap.jupiter.a * S, 0, Math.sin(a) * snap.jupiter.a * S));
+    }
+    jupiterGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(jOrbitPts),
+        new THREE.LineBasicMaterial({ color: COL.jupiter, transparent: true, opacity: 0.35 })
+      )
+    );
+    const jupiter = new THREE.Mesh(
+      new THREE.SphereGeometry(0.11, 20, 14),
+      new THREE.MeshBasicMaterial({ color: COL.jupiter })
+    );
+    jupiterGrp.add(jupiter);
+
+    // ── the belt: density carved by the computed survival curve ──
+    // Per-asteroid orbital elements from the snapshot; motion is Kepler's
+    // third law (n ∝ a^-3/2), so the shear you see is the real shear.
+    const beltGrp = new THREE.Group();
+    world.add(beltGrp);
+    const ast = snap.belt.asteroids;
+    const NA = ast.length;
+    const beltPos = new Float32Array(NA * 3);
+    const beltGeo = new THREE.BufferGeometry();
+    beltGeo.setAttribute('position', new THREE.BufferAttribute(beltPos, 3));
+    const beltPts = new THREE.Points(
+      beltGeo,
+      new THREE.PointsMaterial({ color: COL.belt, size: 0.018, transparent: true, opacity: 0.85, depthWrite: false })
+    );
+    beltGrp.add(beltPts);
+    const N_BASE = 0.22; // scaled mean motion at 1 AU (drawing rate)
+    function placeBelt(t: number) {
+      for (let i = 0; i < NA; i++) {
+        const a = ast[i][0],
+          ph0 = ast[i][1],
+          inc = ast[i][2],
+          node = ast[i][3];
+        const ang = ph0 + N_BASE * Math.pow(a, -1.5) * t;
+        const r = a * S;
+        const x = Math.cos(ang) * r,
+          z = Math.sin(ang) * r;
+        beltPos[i * 3] = x;
+        beltPos[i * 3 + 1] = Math.sin(ang + node) * Math.sin(inc) * r * 0.5;
+        beltPos[i * 3 + 2] = z;
+      }
+      beltGeo.attributes.position.needsUpdate = true;
+    }
+    placeBelt(0);
+
+    // ── the Kirkwood gaps: rings at the computed (Kepler-forced) radii ──
+    const gapsGrp = new THREE.Group();
+    world.add(gapsGrp);
+    for (const r of snap.resonances) {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(r.computedAU * S, 0.006, 8, 128),
+        new THREE.MeshBasicMaterial({ color: COL.gap, transparent: true, opacity: 0.5 })
+      );
+      ring.rotation.x = Math.PI / 2;
+      gapsGrp.add(ring);
+    }
+
+    // ── the survival curve: the KAM landscape, as a curtain behind the belt ──
+    // Panel mapping (drawing decision): w ∈ [wMin,wMax] → x ∈ [−3,3];
+    // K ∈ [0,curveMax] → y ∈ [0.15, 2.05]; the panel hangs at z = −5.
+    const curveGrp = new THREE.Group();
+    world.add(curveGrp);
+    const PANEL_Z = -5;
+    const kMax = snap.meta.curveMaxK;
+    const px = (w: number) => -3 + (6 * (w - snap.survival.wMin)) / (snap.survival.wMax - snap.survival.wMin);
+    const py = (k: number) => 0.15 + 1.9 * (k / kMax);
+    const curvePts = snap.survival.curve.map(([w, k]) => new THREE.Vector3(px(w), py(k), PANEL_Z));
+    curveGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(curvePts),
+        new THREE.LineBasicMaterial({ color: COL.curve, transparent: true, opacity: 0.9 })
+      )
+    );
+    // baseline
+    curveGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(px(snap.survival.wMin), py(0), PANEL_Z),
+          new THREE.Vector3(px(snap.survival.wMax), py(0), PANEL_Z),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0x39415c, transparent: true, opacity: 0.8 })
+      )
+    );
+    // the belt's winding window, shaded on the panel
+    const [w0, w1] = snap.belt.windingWindow;
+    const windowMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(px(w1) - px(w0), 2.1),
+      new THREE.MeshBasicMaterial({
+        color: COL.window,
+        transparent: true,
+        opacity: 0.05,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    );
+    windowMesh.position.set((px(w0) + px(w1)) / 2, 0.15 + 1.05, PANEL_Z - 0.01);
+    curveGrp.add(windowMesh);
+
+    // ── grave-lines: each rational dip wired to the gap it becomes ──
+    const gravesGrp = new THREE.Group();
+    world.add(gravesGrp);
+    for (const r of snap.resonances) {
+      // marker on the panel at the dip
+      const mark = new THREE.Mesh(
+        new THREE.SphereGeometry(0.035, 10, 8),
+        new THREE.MeshBasicMaterial({ color: COL.grave })
+      );
+      mark.position.set(px(r.w), py(r.breakK), PANEL_Z);
+      gravesGrp.add(mark);
+      // arc from the dip down to the gap ring's nearest point
+      const from = new THREE.Vector3(px(r.w), py(r.breakK), PANEL_Z);
+      const to = new THREE.Vector3(0, 0, -r.computedAU * S); // ring point facing the panel
+      const mid = new THREE.Vector3((from.x + to.x) / 2, from.y + 0.7, (from.z + to.z) / 2);
+      const curve3 = new THREE.QuadraticBezierCurve3(from, mid, to);
+      gravesGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve3.getPoints(32)),
+          new THREE.LineBasicMaterial({ color: COL.grave, transparent: true, opacity: 0.4 })
+        )
+      );
+    }
+
+    // ── the golden torus: the last to break, and its convergent graves ──
+    const goldenGrp = new THREE.Group();
+    world.add(goldenGrp);
+    const goldLine = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(px(snap.golden.w), py(0), PANEL_Z),
+        new THREE.Vector3(px(snap.golden.w), py(snap.golden.breakK), PANEL_Z),
+      ]),
+      new THREE.LineBasicMaterial({ color: COL.golden, transparent: true, opacity: 0.95 })
+    );
+    goldenGrp.add(goldLine);
+    const goldTip = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 12, 10),
+      new THREE.MeshBasicMaterial({ color: COL.golden })
+    );
+    goldTip.position.set(px(snap.golden.w), py(snap.golden.breakK), PANEL_Z);
+    goldenGrp.add(goldTip);
+    // the mirror winding 1−1/φ — the conjugacy check, fainter
+    goldenGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(px(snap.golden.mirrorW), py(0), PANEL_Z),
+          new THREE.Vector3(px(snap.golden.mirrorW), py(snap.golden.mirrorBreakK), PANEL_Z),
+        ]),
+        new THREE.LineBasicMaterial({ color: COL.golden, transparent: true, opacity: 0.35 })
+      )
+    );
+    // Fibonacci convergents: the rational graves marching toward the survivor
+    for (const c of snap.convergents) {
+      if (c.w < snap.survival.wMin || c.w > snap.survival.wMax) continue;
+      const dot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.03, 10, 8),
+        new THREE.MeshBasicMaterial({ color: COL.convergent })
+      );
+      dot.position.set(px(c.w), py(c.breakK), PANEL_Z);
+      goldenGrp.add(dot);
+    }
+
+    // ── the selectable legend ──
+    const registry: Record<string, THREE.Object3D[]> = {
+      jupiter: [jupiterGrp],
+      belt: [beltGrp],
+      gaps: [gapsGrp],
+      curve: [curveGrp],
+      graves: [gravesGrp],
+      golden: [goldenGrp],
+    };
+    document.querySelectorAll<HTMLButtonElement>('#orbital-legend .lg-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const parts = registry[row.dataset.g || ''];
+        if (!parts) return;
+        const nowVisible = !parts[0].visible;
+        parts.forEach((p) => {
+          p.visible = nowVisible;
+        });
+        row.classList.toggle('off', !nowVisible);
+      });
+    });
+
+    // ── post / resize / freeze / animate ──
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.6, 0.25));
+    composer.addPass(new OutputPass());
+
+    function resize() {
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let frozen = false;
+    const hudState = document.getElementById('hud-state');
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        frozen = !frozen;
+        controls.autoRotate = !frozen && !reduce;
+        if (hudState) hudState.textContent = frozen ? 'FROZEN' : 'orbiting · Kepler shear';
+      }
+    });
+
+    const clock = new THREE.Clock();
+    let t = 0;
+    function frame() {
+      const dt = clock.getDelta();
+      if (!frozen && !reduce) {
+        t += dt;
+        placeBelt(t);
+        const jAng = N_BASE * Math.pow(snap.jupiter.a, -1.5) * t;
+        jupiter.position.set(Math.cos(jAng) * snap.jupiter.a * S, 0, Math.sin(jAng) * snap.jupiter.a * S);
+        const pulse = 1 + 0.18 * Math.sin(clock.elapsedTime * 1.4);
+        goldTip.scale.setScalar(pulse);
+      }
+      controls.update();
+      composer.render();
+      requestAnimationFrame(frame);
+    }
+    frame();
+  </script>
+</Layout>

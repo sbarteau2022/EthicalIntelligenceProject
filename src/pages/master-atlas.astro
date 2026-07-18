@@ -49,6 +49,9 @@ const nm = neural.meta;
         <p class="master-sub">
           the unified function nested inside the neural map · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
         </p>
+        <p class="master-sub master-xlink">
+          <a href="/orbital-atlas">→ Orbital Atlas · the KAM anchor: where the math touches the sky</a>
+        </p>
       </div>
 
       <div class="master-mode" id="master-mode" role="group" aria-label="Select which structure family to view">
@@ -212,6 +215,16 @@ const nm = neural.meta;
       color: #9aa3ba;
       margin-top: 12px;
       line-height: 1.5;
+    }
+    .master-xlink {
+      pointer-events: auto;
+    }
+    .master-xlink a {
+      color: #f5c542;
+      text-decoration: none;
+    }
+    .master-xlink a:hover {
+      text-decoration: underline;
     }
     .master-sub kbd {
       font-family: 'DM Mono', monospace;
