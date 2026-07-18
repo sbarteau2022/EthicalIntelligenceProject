@@ -32,7 +32,7 @@
   --font-display: 'Cormorant Garamond', serif;
   --font-ui: 'Instrument Sans', system-ui, sans-serif;
   --font-mono: 'DM Mono', monospace;
-  background: var(--paper);
+  background: var(--paper) url('../images/hub/paper-texture.webp') repeat;
   color: var(--t1);
   font-family: var(--font-ui);
   min-height: 100vh;
