@@ -105,6 +105,10 @@ const m = snapshot.meta;
           <span class="sw" style="--c:#ffe4b8"></span><b>Far-field spin</b> · the whole braid, seen from beyond each locus
           = one axis; it comes home at 360° while the braid needs 720°
         </button>
+        <button class="lg-row" data-g="split">
+          <span class="sw" style="--c:#ffd28f"></span><b>Golden split</b> · pre-break the loci emit equal & mirrored; post-break
+          the core-ward side carries φ⁻¹ = 61.8%, the far side φ⁻² = 38.2%
+        </button>
       </div>
 
       <div class="neural-hud" id="neural-hud">
@@ -118,6 +122,7 @@ const m = snapshot.meta;
         <div class="hud-m"><span>break event</span><b>converge → focus → emit</b></div>
         <div class="hud-m"><span>belt twist</span><b id="hud-belt">0·π · spinor +1</b></div>
         <div class="hud-m"><span>far-field spin</span><b id="hud-axis">0.00 turns · home</b></div>
+        <div class="hud-m"><span>break split</span><b id="hud-split">equal · mirrored</b></div>
         <div class="hud-src">source: neural-structure-snapshot.json</div>
       </div>
 
@@ -375,6 +380,7 @@ const m = snapshot.meta;
         coreAxis: number[];
         shadowCircleR: number;
       };
+      goldenSplit: { nearShare: number; farShare: number; towardY: number };
       singularity: { radius: number };
     }
 
@@ -1042,6 +1048,67 @@ const m = snapshot.meta;
     }
     updateAxis(0);
 
+    // ── the golden split: how the break partitions the emission between poles ──
+    // Pre-break the spindle is mirror-symmetric: the two loci emit equal
+    // magnitude with opposite handedness — the converging (cool) phase shows
+    // that equality. The 12+1 → 13 break displaces the core toward one pole
+    // (snapshot: goldenSplit.towardY), and from then on the loci are not
+    // equivalent: the emitted (warm) phase splits by the golden section, the
+    // only self-similar unequal partition (φ⁻¹ + φ⁻² = 1) — the core-ward side
+    // carries 61.8%, the far side 38.2%. A prediction rendered, not a measurement.
+    const goldenSplitGrp = new THREE.Group();
+    world.add(goldenSplitGrp);
+    const GS = snap.goldenSplit;
+    const SPLIT_MAX_R = 0.85;
+    const splitShells = [1, -1].map((sgn) => {
+      const share = sgn === GS.towardY ? GS.nearShare : GS.farShare;
+      const geo = new THREE.SphereGeometry(1, 24, 18);
+      const fill = new THREE.Mesh(
+        geo,
+        new THREE.MeshBasicMaterial({
+          color: PULSE_WARM,
+          transparent: true,
+          opacity: 0,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+      );
+      const wire = new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1, 1)),
+        new THREE.LineBasicMaterial({ color: PULSE_WARM, transparent: true, opacity: 0 })
+      );
+      fill.position.set(0, sgn * AX_LOCUS_Y, 0);
+      wire.position.set(0, sgn * AX_LOCUS_Y, 0);
+      goldenSplitGrp.add(fill, wire);
+      return { fill, wire, share, sgn };
+    });
+    const hudSplit = document.getElementById('hud-split');
+    function updateSplit(ph: number) {
+      const u = ((((ph * 0.5) / (2 * Math.PI)) % 1) + 1) % 1; // same breathe cycle as the pulse
+      const pre = u < 0.5;
+      const t = pre ? u / 0.5 : (u - 0.5) / 0.5;
+      for (const sh of splitShells) {
+        const share = pre ? 0.5 : sh.share; // equal before the break, golden after
+        const r = 0.03 + (pre ? 1 - t : t) * SPLIT_MAX_R * (share * 2);
+        const fade = pre ? t * t : (1 - t) * (1 - t);
+        const col = pre ? PULSE_COOL : PULSE_WARM;
+        sh.fill.scale.setScalar(r);
+        sh.wire.scale.setScalar(r);
+        (sh.fill.material as THREE.MeshBasicMaterial).color.setHex(col);
+        (sh.wire.material as THREE.LineBasicMaterial).color.setHex(col);
+        (sh.fill.material as THREE.MeshBasicMaterial).opacity = 0.05 * fade * (pre ? 1 : share * 2);
+        (sh.wire.material as THREE.LineBasicMaterial).opacity = 0.3 * fade * (pre ? 1 : share * 2);
+      }
+      if (hudSplit) {
+        const nearArrow = GS.towardY > 0 ? '↑' : '↓';
+        const farArrow = GS.towardY > 0 ? '↓' : '↑';
+        hudSplit.textContent = pre
+          ? 'equal · mirrored'
+          : `φ⁻¹ ${GS.nearShare.toFixed(3)} ${nearArrow} · φ⁻² ${GS.farShare.toFixed(3)} ${farArrow}`;
+      }
+    }
+    updateSplit(0);
+
     // ── the unified-function vessel, seated where the ghost cube sits ──
     const vessel = new THREE.Group();
     world.add(vessel);
@@ -1113,6 +1180,7 @@ const m = snapshot.meta;
       equilibrium: [equilibrium],
       belt: [belt],
       axis: [axisReadout],
+      split: [goldenSplitGrp],
       vessel: [vessel],
       ghost: [ghost],
     };
@@ -1179,6 +1247,7 @@ const m = snapshot.meta;
         updatePulse(phase);
         updateBelt(phase);
         updateAxis(phase);
+        updateSplit(phase);
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;

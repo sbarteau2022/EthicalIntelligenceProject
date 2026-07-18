@@ -648,9 +648,15 @@
       </div>
       <div class="col" style="margin-top: 26px">
         <p>
-          The resonance worth staring at — not forcing — is that <strong>25 = 5&#178;</strong> falls straight out of the
-          5&#8209;axis core, and <strong>21</strong> is both the shell and a Fibonacci number. Two independent
-          constructions handing back the same figures is a signal; it is not, by itself, a theorem.
+          A self&#8209;audit (<a href="./numbers-audit.md">numbers&#8209;audit.md</a>) traced every one of these back to
+          its generator. <strong>21</strong> is genuinely forced — the raw position data reproduces sin/cos(72&#176;) to
+          sixteen significant figures, which only happens if five axes were placed by a real formula, not typed by hand
+          — and it is independently also a Fibonacci number (F&#8328;). <strong>19</strong> and <strong>13</strong> are
+          likewise forced, by hexagonal and cuboctahedral packing rules respectively — but neither has anything to do
+          with &#966;, despite living in the same document as numbers that do. <strong>25 = 5&#178;</strong> is correct
+          arithmetic sitting on top of freely&#8209;chosen inputs (the stack shape 1&#183;3&#183;5&#183;7 was specified,
+          not derived) — it does <em>not</em> fall out of the unrelated 5&#8209;axis core in the other structure, and
+          the two hitting the same square is a coincidence worth mentioning once, not a signal to lean on.
         </p>
       </div>
     </div>
@@ -1159,12 +1165,24 @@
       <div class="card">
         <span class="tag" style="color: var(--teal)">Demonstrated in the render</span>
         <ul style="margin: 0; padding-left: 18px; color: var(--dim); font-size: 15px; line-height: 1.7">
-          <li>the 25&#8209;station stack and its 5&#178; identity</li>
-          <li>a hubless load path — measured low degree&#8209;Gini, no privileged node</li>
-          <li>the &#966;/1&#966; area invariant of the vessel orbit</li>
+          <li>the 25&#8209;station stack (correct arithmetic on chosen inputs, not phi&#8209;derived)</li>
+          <li>
+            a hubless load path — the stored Gini 0.146 and betweenness spread 3.477 reproduced exactly from a committed
+            port of the elle-worker source (the audit’s 0.138 was its own error: it folded in the architecture edges the
+            source never counts)
+          </li>
+          <li>
+            the vessel's conserved area — now the <em>measured</em> conservation-under-evolution number (1.000000018
+            after 600 symplectic steps from an off-orbit start), replacing the x&#183;1/x tautology the audit retired
+          </li>
           <li>the shared&#8209;ring phase lock under counter&#8209;rotation</li>
           <li>the 12&#8594;13 jitterbug and its break&#8209;triggered pulse</li>
           <li>the cuboctahedron&#8594;13&#8209;circle plane projection</li>
+          <li>
+            <b>the orbital anchor (externally validated):</b> the computed KAM survival landscape&#8217;s rational
+            graves, mapped through Kepler&#8217;s third law, land on the observed Kirkwood gap centers &#8212; 2.502,
+            2.825, 2.958, 3.279 AU, computed = observed &#8212; the one claim the sky itself checks
+          </li>
         </ul>
       </div>
       <div class="card">
@@ -1175,12 +1193,26 @@
           <li>the phase lock as an entanglement analogue</li>
           <li>the stack's numerology as structurally meaningful</li>
           <li>the whole as a model of a real physical object</li>
+          <li>
+            the golden split: post&#8209;break pole emission partitioned &#966;&#8315;&#185; / &#966;&#8315;&#178;
+            (61.8% / 38.2%) &#8212; a rendered prediction, awaiting any measurement
+          </li>
         </ul>
       </div>
     </div>
     <div class="col">
       <p class="faint mono" style="margin-top: 22px; font-size: 13px">
         Left column: defensible today. Right column: the research programme — each item a hypothesis with a stated test.
+      </p>
+      <p class="dim" style="margin-top: 14px">
+        One further gap, found by the audit rather than by a reviewer &#8212; and since closed: the harmonic
+        (unified&#8209;function) generator was not in this repository, only its output. It now is
+        (<code>scripts/generate-harmonic-snapshot.mjs</code>, a faithful port of the elle&#8209;worker math run
+        end&#8209;to&#8209;end, with a drift check), and it reproduces the committed snapshot &#8212; the fabric edges
+        bit&#8209;for&#8209;bit, the coherence triple as a live <code>regulate()</code> run, the vessel phase as
+        <code>hold()</code>&#8217;s actual output, and the obliquity derived from the measured cos&#178;&#952; curve
+        instead of chosen. Full trace, including which of the three claimed sources was ever really wired, in
+        <a href="./numbers-audit.md">numbers&#8209;audit.md</a>.
       </p>
     </div>
   </section>
