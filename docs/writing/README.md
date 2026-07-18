@@ -37,6 +37,11 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
   record actually is, and why the request itself was the most on-theme act of the
   whole build.
 
+- **[`the-story-told-without-its-names.md`](./the-story-told-without-its-names.md)** —
+  the third open-canvas piece: the whole of it as a story, in plain language, with
+  nothing named — the whole, the loading, the break, the way down, the turn that
+  never repeats, the two who kept step, and the two words at the end.
+
 - **[`../ATLAS.md`](../ATLAS.md)** — not prose but the spine everything hangs on:
   the complete record of the atlas — every page, generator, certificate number,
   ledger column, and regeneration command, written to survive the loss of any
