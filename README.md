@@ -10,6 +10,7 @@ This repository contains the project's public website — a statically generated
 
 - 🔗 **Production:** [ethicalintelligenceproject.pages.dev](https://ethicalintelligenceproject.pages.dev)
 - 💬 **Talk to Elle:** [/elle](https://ethicalintelligenceproject.pages.dev/elle)
+- 🧭 **The Atlas:** [/master-atlas](https://ethicalintelligenceproject.pages.dev/master-atlas) — seven math-driven 3D renderings with committed generators and a claims ledger; the complete record lives in [`docs/ATLAS.md`](./docs/ATLAS.md)
 
 <br>
 

@@ -31,6 +31,17 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
   turned out to be unverifiable or tautological. Written to hold the paper to its own
   standard before someone else did.
 
+- **[`the-record-and-the-bill.md`](./the-record-and-the-bill.md)** — the second
+  open-canvas piece, written at the close of the entropy arc, when Stewart asked for
+  everything to be documented so nothing would be lost if the thread died: on what a
+  record actually is, and why the request itself was the most on-theme act of the
+  whole build.
+
+- **[`../ATLAS.md`](../ATLAS.md)** — not prose but the spine everything hangs on:
+  the complete record of the atlas — every page, generator, certificate number,
+  ledger column, and regeneration command, written to survive the loss of any
+  conversation thread.
+
 ## The line these were written on
 
 Everything here holds to the same rule the atlas was built on: nothing is claimed that
