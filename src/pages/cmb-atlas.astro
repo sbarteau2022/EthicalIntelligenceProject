@@ -1,0 +1,579 @@
+---
+// ============================================================
+// CMB ATLAS — the sky that decodes.
+//
+// The one sky-pattern that really is a drawn cross-section of interior
+// physics. The spectrum is computed live by a real Boltzmann solver (CAMB
+// at Planck 2018 best-fit LambdaCDM); the sphere shows ONE seeded sky
+// drawn from that spectrum — a statistical sibling of ours, not ours —
+// and the round trip is the proof: the spectrum is recovered from the
+// drawn map alone, scattering around the input by exactly the predicted
+// cosmic variance. Observed peak positions and the acoustic scale are
+// typed Planck literature data, computed-vs-observed in the HUD — the
+// same discipline as the Kirkwood gap centers.
+//
+// ONE SOURCE OF TRUTH, LOCKED: everything is read from
+// `src/data/cmb-snapshot.json` (scripts/generate-cmb-snapshot.py).
+// The renderer draws it; it re-derives nothing.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import snapshot from '~/data/cmb-snapshot.json';
+
+const metadata = {
+  title: 'CMB Atlas — the sky that decodes',
+  description:
+    'The cosmic microwave background as a decoded cross-section: a Boltzmann-computed acoustic spectrum, a sky drawn from it, and the spectrum recovered from that sky alone — with the computed peaks landing on Planck’s measured ones.',
+};
+
+const m = snapshot.meta;
+const co = snapshot.computed;
+const ob = snapshot.observed;
+const cv = snapshot.cosmicVariance;
+---
+
+<Layout metadata={metadata}>
+  <div class="eih">
+    <HubNav current="/master-atlas" />
+
+    <section class="cmb-stage">
+      <canvas
+        id="cmb-canvas"
+        aria-label="Rotatable 3D rendering of the cosmic microwave background sphere and its acoustic power spectrum"
+      ></canvas>
+
+      <div class="cmb-title">
+        <div class="cmb-eyebrow">CMB Atlas</div>
+        <h1>The sky that decodes</h1>
+        <p class="cmb-sub">
+          the last-scattering shell surrounds us — a spherical cross-section of the early universe · its speckle decodes
+          into acoustic physics · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+        </p>
+      </div>
+
+      <div class="cmb-legend" id="cmb-legend">
+        <div class="lg-hint">click a row to toggle · overlay any combination</div>
+        <button class="lg-row" data-g="sphere">
+          <span class="sw" style="--c:#d8663a"></span><b>The shell</b> · one sky drawn from the computed spectrum (seed {
+            m.seed
+          }) — a statistical sibling of ours, not ours
+        </button>
+        <button class="lg-row" data-g="center">
+          <span class="sw" style="--c:#ffffff"></span><b>We are here</b> · the shell is seen from inside; every direction
+          ends on it
+        </button>
+        <button class="lg-row" data-g="spectrum">
+          <span class="sw" style="--c:#55e9d0"></span><b>Acoustic spectrum</b> · lensed TT, computed by a Boltzmann solver
+          at Planck 2018 ΛCDM — the plasma's standing waves
+        </button>
+        <button class="lg-row" data-g="recovered">
+          <span class="sw" style="--c:#ffc46b"></span><b>The round trip</b> · the spectrum recovered from the drawn map alone
+          — scatter is cosmic variance, measured/predicted = {cv.measuredOverPredicted}
+        </button>
+        <button class="lg-row" data-g="peaks">
+          <span class="sw" style="--c:#f5c542"></span><b>Peaks · computed vs observed</b> · {co.peaks_ell.join(', ')} vs Planck's
+          {ob.peaks_ell.join(', ')}
+        </button>
+        <button class="lg-row" data-g="patch">
+          <span class="sw" style="--c:#b79cff"></span><b>The acoustic patch</b> · the first peak's angular scale wired from
+          the spectrum onto the shell — the ~1° speckle grain
+        </button>
+      </div>
+
+      <div class="cmb-hud" id="cmb-hud">
+        <div class="hud-h">CMB Atlas · locked</div>
+        <div class="hud-m"><span>peak 1 · computed / observed</span><b>{co.peaks_ell[0]} / {ob.peaks_ell[0]}</b></div>
+        <div class="hud-m"><span>peak 2 · computed / observed</span><b>{co.peaks_ell[1]} / {ob.peaks_ell[1]}</b></div>
+        <div class="hud-m"><span>peak 3 · computed / observed</span><b>{co.peaks_ell[2]} / {ob.peaks_ell[2]}</b></div>
+        <div class="hud-m"><span>100·θ* · computed / observed</span><b>{co.theta100} / {ob.theta100}</b></div>
+        <div class="hud-m"><span>sound horizon r*</span><b>{co.soundHorizonMpc} Mpc</b></div>
+        <div class="hud-m">
+          <span>cosmic variance · measured / predicted</span><b>{cv.measuredOverPredicted}</b>
+        </div>
+        <div class="hud-m"><span>T</span><b>{ob.T_cmb_K} K</b></div>
+        <div class="hud-m"><span>state</span><b id="hud-state">the shell, turning</b></div>
+        <div class="hud-src">source: cmb-snapshot.json · CAMB {m.cambVersion} · observed values typed Planck data</div>
+      </div>
+
+      <noscript><div class="cmb-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .cmb-stage {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(120% 120% at 50% 0%, #100e17 0%, #090810 70%, #04040a 100%);
+    }
+    #cmb-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    #cmb-canvas:active {
+      cursor: grabbing;
+    }
+
+    .cmb-title {
+      position: absolute;
+      top: 26px;
+      left: 30px;
+      max-width: 60%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .cmb-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #d8663a;
+      margin-bottom: 12px;
+    }
+    .cmb-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: #eef1f8;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .cmb-sub {
+      font-size: 13px;
+      color: #9aa3ba;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .cmb-sub kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #cfd6e6;
+    }
+
+    .cmb-legend {
+      position: absolute;
+      top: 26px;
+      right: 30px;
+      z-index: 2;
+      background: rgba(15, 12, 18, 0.66);
+      border: 1px solid rgba(216, 102, 58, 0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-width: 345px;
+    }
+    .lg-hint {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7b84a0;
+      margin-bottom: 2px;
+    }
+    .lg-row {
+      font-size: 12px;
+      color: #b9c0d2;
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1.35;
+      text-align: left;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s ease;
+    }
+    .lg-row:hover b {
+      text-decoration: underline;
+    }
+    .lg-row.off {
+      opacity: 0.32;
+    }
+    .lg-row.off .sw {
+      box-shadow: none;
+    }
+    .lg-row b {
+      color: #eef1f8;
+      font-weight: 600;
+    }
+    .sw {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex: none;
+      background: var(--c);
+      box-shadow: 0 0 10px var(--c);
+      transform: translateY(1px);
+    }
+
+    .cmb-hud {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 2;
+      background: rgba(15, 12, 18, 0.66);
+      border: 1px solid rgba(85, 233, 208, 0.2);
+      border-radius: 12px;
+      padding: 13px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 300px;
+    }
+    .hud-h {
+      color: #d8663a;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 3px;
+    }
+    .hud-m {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hud-m b {
+      color: #eef1f8;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-src {
+      color: #59617a;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .cmb-fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9aa3ba;
+    }
+
+    @media (max-width: 760px) {
+      .cmb-title {
+        max-width: 88%;
+        left: 18px;
+        top: 18px;
+      }
+      .cmb-legend {
+        top: auto;
+        bottom: 260px;
+        right: 16px;
+        padding: 11px 12px;
+        max-width: 76%;
+      }
+      .cmb-hud {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: 0;
+      }
+    }
+  </style>
+
+  <script type="application/json" id="cmb-snap" set:html={JSON.stringify(snapshot)} />
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    interface Snap {
+      meta: { seed: number; lmaxSky: number };
+      computed: { peaks_ell: number[]; theta100: number };
+      observed: { peaks_ell: number[]; theta100: number };
+      spectrum: { ellDl: number[][] };
+      recoveredFromSky: { ellDl: number[][] };
+      sky: { nTheta: number; nPhi: number; map: number[][] };
+    }
+
+    const snap: Snap = JSON.parse((document.getElementById('cmb-snap') as HTMLElement).textContent || '{}');
+    const canvas = document.getElementById('cmb-canvas') as HTMLCanvasElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.set(3.6, 2.2, 5.6);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 22;
+    controls.target.set(0.4, 0.2, 0);
+    controls.autoRotate = !reduce;
+    controls.autoRotateSpeed = 0.3;
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // ── the classic CMB diverging colormap, applied to the drawn sky ──
+    const COLD = [43, 75, 216];
+    const MID = [232, 230, 223];
+    const HOT = [216, 58, 43];
+    function cmbColor(v: number): [number, number, number] {
+      const lerp = (a: number[], b: number[], t: number) => [
+        a[0] + (b[0] - a[0]) * t,
+        a[1] + (b[1] - a[1]) * t,
+        a[2] + (b[2] - a[2]) * t,
+      ];
+      const c = v < 0.5 ? lerp(COLD, MID, v * 2) : lerp(MID, HOT, (v - 0.5) * 2);
+      return [c[0], c[1], c[2]] as [number, number, number];
+    }
+    const nT = snap.sky.nTheta,
+      nP = snap.sky.nPhi;
+    const texData = new Uint8Array(nT * nP * 4);
+    for (let j = 0; j < nT; j++) {
+      for (let i = 0; i < nP; i++) {
+        const v = snap.sky.map[j][i] / 255;
+        const [r, g, b] = cmbColor(v);
+        // sphere UVs run v=0 at the south pole; map row 0 is the north pole
+        const o = ((nT - 1 - j) * nP + i) * 4;
+        texData[o] = Math.round(r);
+        texData[o + 1] = Math.round(g);
+        texData[o + 2] = Math.round(b);
+        texData[o + 3] = 255;
+      }
+    }
+    const skyTex = new THREE.DataTexture(texData, nP, nT, THREE.RGBAFormat);
+    skyTex.needsUpdate = true;
+    skyTex.colorSpace = THREE.SRGBColorSpace;
+
+    // ── the shell ──
+    const sphereGrp = new THREE.Group();
+    world.add(sphereGrp);
+    const SHELL_R = 1.7;
+    const shell = new THREE.Mesh(
+      new THREE.SphereGeometry(SHELL_R, 96, 64),
+      new THREE.MeshBasicMaterial({ map: skyTex })
+    );
+    sphereGrp.add(shell);
+
+    // ── we are here: the observer at the center of the cross-section ──
+    const centerGrp = new THREE.Group();
+    world.add(centerGrp);
+    const dot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.035, 12, 10),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    centerGrp.add(dot);
+    for (let i = 0; i < 14; i++) {
+      // sight lines: every direction ends on the shell
+      const a = (i / 14) * Math.PI * 2;
+      const d = new THREE.Vector3(Math.cos(a), Math.sin(a * 1.7) * 0.5, Math.sin(a)).normalize();
+      centerGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            d.clone().multiplyScalar(0.08),
+            d.clone().multiplyScalar(SHELL_R * 0.985),
+          ]),
+          new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.1 })
+        )
+      );
+    }
+
+    // ── the spectrum curtain: computed curve + round-trip points + peaks ──
+    const specGrp = new THREE.Group();
+    world.add(specGrp);
+    const PANEL_Z = -3.4;
+    const PANEL_X0 = -2.9,
+      PANEL_W = 5.8;
+    const LMAX_PANEL = 1500;
+    let dlMax = 0;
+    for (const [, d] of snap.spectrum.ellDl) dlMax = Math.max(dlMax, d);
+    const px = (l: number) => PANEL_X0 + (PANEL_W * l) / LMAX_PANEL;
+    const py = (d: number) => 0.1 + 2.0 * (d / dlMax);
+    specGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(
+          snap.spectrum.ellDl.map(([l, d]) => new THREE.Vector3(px(l), py(d), PANEL_Z))
+        ),
+        new THREE.LineBasicMaterial({ color: 0x55e9d0, transparent: true, opacity: 0.95 })
+      )
+    );
+    specGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(px(0), py(0), PANEL_Z),
+          new THREE.Vector3(px(LMAX_PANEL), py(0), PANEL_Z),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0x39415c, transparent: true, opacity: 0.8 })
+      )
+    );
+
+    const recGrp = new THREE.Group();
+    world.add(recGrp);
+    for (const [l, d] of snap.recoveredFromSky.ellDl) {
+      const p = new THREE.Mesh(
+        new THREE.SphereGeometry(0.018, 8, 6),
+        new THREE.MeshBasicMaterial({ color: 0xffc46b, transparent: true, opacity: 0.9 })
+      );
+      p.position.set(px(l), py(d), PANEL_Z);
+      recGrp.add(p);
+    }
+
+    const peaksGrp = new THREE.Group();
+    world.add(peaksGrp);
+    for (const l of snap.observed.peaks_ell) {
+      peaksGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(px(l), py(0), PANEL_Z),
+            new THREE.Vector3(px(l), py(dlMax) * 0.99, PANEL_Z),
+          ]),
+          new THREE.LineBasicMaterial({ color: 0xf5c542, transparent: true, opacity: 0.55 })
+        )
+      );
+    }
+    for (const l of snap.computed.peaks_ell) {
+      const mark = new THREE.Mesh(
+        new THREE.SphereGeometry(0.035, 10, 8),
+        new THREE.MeshBasicMaterial({ color: 0x55e9d0 })
+      );
+      // sit the marker on the curve: find nearest stored point
+      let best = snap.spectrum.ellDl[0];
+      for (const pt of snap.spectrum.ellDl) if (Math.abs(pt[0] - l) < Math.abs(best[0] - l)) best = pt;
+      mark.position.set(px(l), py(best[1]), PANEL_Z);
+      peaksGrp.add(mark);
+    }
+
+    // ── the acoustic patch: the first peak's angular scale, on the shell ──
+    // theta ~ pi / ell_1 — the grain of the speckle. A cap outline at that
+    // radius, wired to the first-peak marker (peak <-> patch, the same
+    // wiring as dip <-> gap on the orbital page).
+    const patchGrp = new THREE.Group();
+    world.add(patchGrp);
+    const ell1 = snap.computed.peaks_ell[0];
+    const capAngle = Math.PI / ell1;
+    const capDir = new THREE.Vector3(0.35, 0.5, 0.79).normalize();
+    const capCenter = capDir.clone().multiplyScalar(SHELL_R);
+    // draw the cap boundary (scaled 12x to be visible; stated in legend as the ~1 deg grain)
+    const CAP_VIS = 12;
+    const capPts: THREE.Vector3[] = [];
+    const u = new THREE.Vector3(1, 0, 0).cross(capDir).normalize();
+    const v = capDir.clone().cross(u).normalize();
+    for (let i = 0; i <= 64; i++) {
+      const a = (i / 64) * Math.PI * 2;
+      const dir = capDir
+        .clone()
+        .multiplyScalar(Math.cos(capAngle * CAP_VIS))
+        .add(u.clone().multiplyScalar(Math.sin(capAngle * CAP_VIS) * Math.cos(a)))
+        .add(v.clone().multiplyScalar(Math.sin(capAngle * CAP_VIS) * Math.sin(a)));
+      capPts.push(dir.normalize().multiplyScalar(SHELL_R * 1.002));
+    }
+    patchGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(capPts),
+        new THREE.LineBasicMaterial({ color: 0xb79cff, transparent: true, opacity: 0.9 })
+      )
+    );
+    // wire: first peak marker -> the patch
+    const from = new THREE.Vector3(px(ell1), py(dlMax), PANEL_Z);
+    const mid = new THREE.Vector3((from.x + capCenter.x) / 2, from.y + 0.8, (from.z + capCenter.z) / 2);
+    patchGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(new THREE.QuadraticBezierCurve3(from, mid, capCenter).getPoints(32)),
+        new THREE.LineBasicMaterial({ color: 0xb79cff, transparent: true, opacity: 0.4 })
+      )
+    );
+
+    // ── the selectable legend ──
+    const registry: Record<string, THREE.Object3D[]> = {
+      sphere: [sphereGrp],
+      center: [centerGrp],
+      spectrum: [specGrp],
+      recovered: [recGrp],
+      peaks: [peaksGrp],
+      patch: [patchGrp],
+    };
+    document.querySelectorAll<HTMLButtonElement>('#cmb-legend .lg-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const parts = registry[row.dataset.g || ''];
+        if (!parts) return;
+        const nowVisible = !parts[0].visible;
+        parts.forEach((p) => {
+          p.visible = nowVisible;
+        });
+        row.classList.toggle('off', !nowVisible);
+      });
+    });
+
+    // ── post / resize / freeze / animate ──
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.25, 0.6, 0.4));
+    composer.addPass(new OutputPass());
+
+    function resize() {
+      const w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let frozen = false;
+    const hudState = document.getElementById('hud-state');
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        frozen = !frozen;
+        controls.autoRotate = !frozen && !reduce;
+        if (hudState) hudState.textContent = frozen ? 'FROZEN' : 'the shell, turning';
+      }
+    });
+
+    const clock = new THREE.Clock();
+    function frame() {
+      const dt = clock.getDelta();
+      if (!frozen && !reduce) {
+        sphereGrp.rotation.y += dt * 0.05; // the shell, slowly turning
+        patchGrp.rotation.y = sphereGrp.rotation.y; // the patch rides the shell
+      }
+      controls.update();
+      composer.render();
+      requestAnimationFrame(frame);
+    }
+    frame();
+  </script>
+</Layout>
