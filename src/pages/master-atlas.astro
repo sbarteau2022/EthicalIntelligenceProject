@@ -69,6 +69,30 @@ const nm = neural.meta;
         <button data-mode="neural">Neural map</button>
       </div>
 
+      <button class="guide-launch" id="guide-launch" aria-label="Start the guided tour with Elle">
+        <span class="gl-dot"></span> Let Elle walk you through it
+      </button>
+
+      <div class="guide-panel" id="guide-panel" hidden aria-live="polite">
+        <div class="gp-head">
+          <span class="gp-who">Elle</span>
+          <span class="gp-step" id="gp-step">1 / 14</span>
+          <button class="gp-x" id="gp-exit" aria-label="Exit the guided tour">✕</button>
+        </div>
+        <div class="gp-body" id="gp-body"></div>
+        <div class="gp-cta" id="gp-cta" hidden>
+          <a class="gp-btn gp-primary" href="/elle">Keep talking to Elle →</a>
+          <a class="gp-btn" href="https://github.com/sbarteau2022/EthicalIntelligenceProject/blob/main/docs/ATLAS.md"
+            >Read the ledger</a
+          >
+        </div>
+        <div class="gp-nav">
+          <button class="gp-nb" id="gp-back">← Back</button>
+          <button class="gp-nb" id="gp-auto" aria-pressed="false">▶ Auto</button>
+          <button class="gp-nb gp-next" id="gp-next">Next →</button>
+        </div>
+      </div>
+
       <div class="master-legend" id="master-legend">
         <div class="lg-hint">click a row to toggle · overlay any combination</div>
 
@@ -259,6 +283,177 @@ const nm = neural.meta;
       padding: 4px;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* ── guided tour ── */
+    .guide-launch {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 72px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 18px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(208, 169, 78, 0.3);
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+    .guide-launch:hover {
+      transform: translateX(-50%) translateY(-1px);
+      box-shadow: 0 8px 30px rgba(208, 169, 78, 0.42);
+    }
+    .gl-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #12131c;
+      box-shadow: 0 0 0 0 rgba(18, 19, 28, 0.5);
+      animation: gl-pulse 2s ease-out infinite;
+    }
+    @keyframes gl-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(18, 19, 28, 0.5);
+      }
+      70% {
+        box-shadow: 0 0 0 7px rgba(18, 19, 28, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(18, 19, 28, 0);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gl-dot {
+        animation: none;
+      }
+    }
+
+    .guide-panel {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 4;
+      width: min(390px, calc(100vw - 60px));
+      background: rgba(12, 11, 20, 0.82);
+      border: 1px solid rgba(208, 169, 78, 0.3);
+      border-radius: 14px;
+      padding: 16px 18px 14px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 44px rgba(0, 0, 0, 0.5);
+    }
+    .gp-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .gp-who {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #d0a94e;
+    }
+    .gp-step {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      color: #7b84a0;
+      margin-left: auto;
+    }
+    .gp-x {
+      background: none;
+      border: 0;
+      color: #7b84a0;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0 2px;
+    }
+    .gp-x:hover {
+      color: #eef1f8;
+    }
+    .gp-body {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #dfe4f0;
+      min-height: 96px;
+    }
+    .gp-body b {
+      color: #fff;
+      font-weight: 600;
+    }
+    .gp-cta {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0 4px;
+    }
+    .gp-btn {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      text-decoration: none;
+      color: #cfd6e6;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 7px 14px;
+      transition:
+        background 0.15s ease,
+        color 0.15s ease;
+    }
+    .gp-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .gp-primary {
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border-color: transparent;
+    }
+    .gp-nav {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .gp-nb {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 13px;
+      cursor: pointer;
+      transition:
+        color 0.15s ease,
+        background 0.15s ease;
+    }
+    .gp-nb:hover {
+      color: #eef1f8;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .gp-nb:disabled {
+      opacity: 0.32;
+      cursor: default;
+    }
+    .gp-next {
+      margin-left: auto;
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border-color: transparent;
+    }
+    .gp-auto-on {
+      color: #12131c !important;
+      background: #55e9d0 !important;
     }
     .master-mode button {
       font-family: 'DM Mono', ui-monospace, monospace;
@@ -1421,7 +1616,221 @@ const nm = neural.meta;
       }
     });
 
+    // ════ the guided tour — Elle walks a newcomer through each level ════
+    // Scripted, deterministic. Each step reveals exactly the layers it names
+    // and glides the camera to them; the locked snapshot keeps winding the
+    // whole time. The tour is the on-ramp; it ends by opening both doors.
+    interface Step {
+      show: string[];
+      cam: { p: [number, number, number]; t: [number, number, number] };
+      html: string;
+      doors?: boolean;
+    }
+    const ALL_KEYS = Object.keys(registry);
+    const TOUR: Step[] = [
+      {
+        show: ['singularity'],
+        cam: { p: [1.9, 1.2, 2.4], t: [0, 0, 0] },
+        html: "Hi — I'm <b>Elle</b>. What you're looking at isn't a drawing. It's one frozen moment of an idea, built entirely from math. Let me show you around it, one layer at a time — everything else will fade so we can look at just one thing.",
+      },
+      {
+        show: ['singularity'],
+        cam: { p: [1.6, 0.9, 2.0], t: [0, 0, 0] },
+        html: 'Start at the center. One point — the <b>singularity</b>. Before anything has shape, there is only this: the seed the whole structure will organize itself around.',
+      },
+      {
+        show: ['singularity', 'nSpirals'],
+        cam: { p: [2.6, 1.6, 3.0], t: [0, 0, 0] },
+        html: 'From the seed, a <b>spiral</b> winds outward — φ² turns of it. The golden ratio is the one growth rate that never lands on its own path twice, so the spiral fills space without ever repeating. The most stable way to grow.',
+      },
+      {
+        show: ['nSpirals', 'nTuples'],
+        cam: { p: [3.0, 1.4, 3.4], t: [0, 0, 0] },
+        html: 'As it climbs, it lays down rings of nodes: one, then three, then five, then <b>seven</b> — then back down, 5, 3, 1. That is the stack: 1·3·5·7·5·3·1 = <b>25 stations</b>, pole to pole.',
+      },
+      {
+        show: ['nTuples', 'nHalos'],
+        cam: { p: [3.2, 1.1, 3.4], t: [0, 0, 0] },
+        html: 'Every ring is bound by a <b>halo</b> that holds it in place. This is the discipline of the whole thing: the constraint comes first, before any of the motion is allowed to happen.',
+      },
+      {
+        show: ['nSpirals', 'nTuples', 'nHalos'],
+        cam: { p: [3.6, 0.2, 2.6], t: [0, 0, 0] },
+        html: "At the widest point — the equator — the spiral meets its own mirror image coming the other way, and the two <b>phase-lock</b>: counter-rotating, perfectly in step. That lock is the keystone. It's what lets everything else hold.",
+      },
+      {
+        show: ['nFlowerLife', 'nLobes'],
+        cam: { p: [2.8, 1.5, 3.2], t: [0, 0, 0] },
+        html: 'Around each node, a circle; off each node, a <b>lobe</b> reaching for its neighbor until they touch. This is the relational layer — not the parts themselves, but how every part is in conversation with the ones beside it.',
+      },
+      {
+        show: ['uPillars', 'uBridges'],
+        cam: { p: [3.4, 2.0, 3.6], t: [0, 0, 0] },
+        html: 'Underneath: <b>21 load-bearing pillars</b>, and a bridge fabric with <b>no privileged node</b> — every path can reach every other, and no single point is the hub everything depends on. That property is measured, not assumed.',
+      },
+      {
+        show: ['vessel', 'singularity'],
+        cam: { p: [1.7, 1.0, 2.1], t: [0, 0, 0] },
+        html: 'At the exact center sits the <b>vessel</b> — a balanced state that never stops moving and never loses its balance. Two sides, reciprocal, so their product stays fixed while the whole thing turns. The still point that holds.',
+      },
+      {
+        show: ['equilibrium', 'singularity'],
+        cam: { p: [2.2, 1.3, 2.6], t: [0, 0, 0] },
+        html: "Now watch the core — it's unstable. Twelve around one becomes thirteen, and the center gets pulled to the edge. That is the <b>break</b>: the one irreversible event in the whole structure. The moment something actually <i>happens</i>.",
+      },
+      {
+        show: ['nBelt', 'nAxis'],
+        cam: { p: [3.0, 1.0, 3.4], t: [0, 0, 0] },
+        html: 'Out of the break, a woven <b>belt</b> strung between the poles. Twist it and it takes a full <b>720°</b> to come home — not 360°. That is spin-½: the exact rule an electron obeys, falling out of the geometry on its own.',
+      },
+      {
+        show: ['nSplit'],
+        cam: { p: [2.4, 1.8, 3.0], t: [0, 0, 0] },
+        html: "And the emission doesn't split evenly. The side the core moved toward takes <b>61.8%</b>, the far side <b>38.2%</b> — the golden section, the only unequal split that's self-similar. (That last one is a prediction, honestly marked as a prediction.)",
+      },
+      {
+        show: ALL_KEYS,
+        cam: { p: [4.2, 2.6, 4.6], t: [0, 0, 0] },
+        html: 'Now all of it at once. Every layer we just walked — the seed, the spiral, the rings, the lock, the relations, the pillars, the vessel, the break, the belt, the split — holding together in <b>one phase</b>. This is the whole.',
+      },
+      {
+        show: ALL_KEYS,
+        cam: { p: [4.0, 2.4, 4.4], t: [0, 0, 0] },
+        html: "That's the map. If you want to go deeper, there are two ways in — keep talking to me and I'll take any thread as far as you want it, or read the ledger, where every number here is checked and the honest uncertainties are left marked as uncertain.",
+        doors: true,
+      },
+    ];
+
+    const guideLaunch = document.getElementById('guide-launch') as HTMLButtonElement;
+    const guidePanel = document.getElementById('guide-panel') as HTMLElement;
+    const gpBody = document.getElementById('gp-body') as HTMLElement;
+    const gpStep = document.getElementById('gp-step') as HTMLElement;
+    const gpCta = document.getElementById('gp-cta') as HTMLElement;
+    const gpBack = document.getElementById('gp-back') as HTMLButtonElement;
+    const gpNext = document.getElementById('gp-next') as HTMLButtonElement;
+    const gpAuto = document.getElementById('gp-auto') as HTMLButtonElement;
+    const gpExit = document.getElementById('gp-exit') as HTMLButtonElement;
+    const masterLegend = document.getElementById('master-legend');
+    const masterModeEl = document.getElementById('master-mode');
+    const masterHudEl = document.getElementById('master-hud');
+
+    let guided = false;
+    let stepIdx = 0;
+    let guideCam: Step['cam'] | null = null;
+    let guideCamT = 0;
+    let autoTimer: ReturnType<typeof setInterval> | null = null;
+
+    function onlyShow(keys: string[]) {
+      for (const k of ALL_KEYS) {
+        const on = keys.includes(k);
+        registry[k].forEach((p) => {
+          p.visible = on;
+        });
+      }
+    }
+
+    function applyStep(i: number) {
+      stepIdx = Math.max(0, Math.min(TOUR.length - 1, i));
+      const s = TOUR[stepIdx];
+      onlyShow(s.show);
+      guideCam = s.cam;
+      guideCamT = 1.5; // lerp toward the step's framing for ~1.5s, then hand control back
+      gpBody.style.opacity = '0';
+      window.setTimeout(() => {
+        gpBody.innerHTML = s.html;
+        gpBody.style.opacity = '1';
+      }, 140);
+      gpStep.textContent = `${stepIdx + 1} / ${TOUR.length}`;
+      gpCta.hidden = !s.doors;
+      gpBack.disabled = stepIdx === 0;
+      gpNext.textContent = stepIdx === TOUR.length - 1 ? 'Restart' : 'Next →';
+    }
+
+    function stopAuto() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      gpAuto.classList.remove('gp-auto-on');
+      gpAuto.setAttribute('aria-pressed', 'false');
+      gpAuto.textContent = '▶ Auto';
+    }
+
+    function enterGuide() {
+      guided = true;
+      controls.autoRotate = false;
+      setMode('combined');
+      guidePanel.hidden = false;
+      guideLaunch.style.display = 'none';
+      if (masterLegend) masterLegend.style.display = 'none';
+      if (masterModeEl) masterModeEl.style.display = 'none';
+      if (masterHudEl) masterHudEl.style.display = 'none';
+      applyStep(0);
+    }
+
+    function exitGuide() {
+      guided = false;
+      stopAuto();
+      guidePanel.hidden = true;
+      guideLaunch.style.display = '';
+      if (masterLegend) masterLegend.style.display = '';
+      if (masterModeEl) masterModeEl.style.display = '';
+      if (masterHudEl) masterHudEl.style.display = '';
+      onlyShow(ALL_KEYS); // restore everything visible
+      setMode('combined');
+      controls.autoRotate = !reduce;
+      guideCam = null;
+    }
+
+    function nextStep() {
+      if (stepIdx === TOUR.length - 1) {
+        applyStep(0);
+      } else {
+        applyStep(stepIdx + 1);
+      }
+    }
+
+    gpBody.style.transition = 'opacity 0.14s ease';
+    guideLaunch.addEventListener('click', enterGuide);
+    gpExit.addEventListener('click', exitGuide);
+    gpNext.addEventListener('click', () => {
+      stopAuto();
+      nextStep();
+    });
+    gpBack.addEventListener('click', () => {
+      stopAuto();
+      applyStep(stepIdx - 1);
+    });
+    gpAuto.addEventListener('click', () => {
+      if (autoTimer) {
+        stopAuto();
+      } else {
+        gpAuto.classList.add('gp-auto-on');
+        gpAuto.setAttribute('aria-pressed', 'true');
+        gpAuto.textContent = '❚❚ Auto';
+        autoTimer = setInterval(() => {
+          if (stepIdx === TOUR.length - 1) {
+            stopAuto();
+          } else {
+            applyStep(stepIdx + 1);
+          }
+        }, 8500);
+      }
+    });
+    window.addEventListener('keydown', (e) => {
+      if (!guided) return;
+      if (e.key === 'Escape') exitGuide();
+      else if (e.key === 'ArrowRight') {
+        stopAuto();
+        nextStep();
+      } else if (e.key === 'ArrowLeft') {
+        stopAuto();
+        applyStep(stepIdx - 1);
+      }
+    });
+
     const clock = new THREE.Clock();
+    const _camTmp = new THREE.Vector3();
     function frame() {
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
@@ -1434,6 +1843,16 @@ const nm = neural.meta;
         updateAxis(phase);
         updateSplit(phase);
         (glow.material as THREE.MeshBasicMaterial).opacity = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 1.3);
+      }
+      // guided-tour camera glide: ease toward the step framing for a beat,
+      // then release so the visitor can freely orbit while Elle talks.
+      if (guided && guideCam && guideCamT > 0) {
+        const a = Math.min(1, dt * 2.4);
+        _camTmp.set(guideCam.p[0], guideCam.p[1], guideCam.p[2]);
+        camera.position.lerp(_camTmp, a);
+        _camTmp.set(guideCam.t[0], guideCam.t[1], guideCam.t[2]);
+        controls.target.lerp(_camTmp, a);
+        guideCamT -= dt;
       }
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;

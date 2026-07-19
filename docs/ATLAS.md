@@ -53,6 +53,15 @@ lists) are labeled as presentation _inside the generators and snapshots
 themselves_. Foils — control experiments built to fail — back every survival
 claim.
 
+**The on-ramp.** `/master-atlas` carries a **Guided tour** ("Let Elle walk you
+through it"): a scripted, deterministic walkthrough in Elle's voice that reveals
+one level at a time — singularity → spiral → tuples → halos → the equator lock →
+flower → pillars/bridges → vessel → break → belt → golden split → the whole —
+gliding the camera to each while the locked snapshot keeps winding. It ends by
+opening the two real doors: talk to Elle (`/elle`) and read this record. The
+tour is the hallway between the widget (overwhelming cold) and the papers (deep
+for the already-convinced); live-Elle-driven guidance is the intended sequel.
+
 ## 2. Regenerating everything
 
 ```bash
