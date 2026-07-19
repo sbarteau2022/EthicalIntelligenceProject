@@ -1,0 +1,1211 @@
+---
+// ============================================================
+// THE ETHICAL INTELLIGENCE PROJECT — Principled Intelligence
+// The flagship "ethical home page": explains the whole system in
+// plain language and shows how every part connects. One claim,
+// rendered at seven scales — philosophy → frameworks → Elle →
+// engines → the Atlas maps → the free-energy cost → the front door.
+//
+// Aesthetic: the gold-on-black "Atlas" anchor, given a fresco /
+// Sistine-Chapel ground — layered luminous gradients and a deep soft
+// vignette, no hard lines. All styles scoped under #pi; body/html
+// overrides via :global() (View Transitions strips them on nav).
+//
+// Copy is drawn from the real system docs (SYSTEM_ENGINEERING.md,
+// ATLAS_ENGINE_SPEC.md, FREE_ENERGY_REGULATOR.md, docs/ATLAS.md, the
+// four essays) so every claim on the page stands behind real code.
+// ============================================================
+import Layout from '~/layouts/Layout.astro';
+
+const metadata = {
+  title: 'The Ethical Intelligence Project — Principled Intelligence',
+  description:
+    'Principled Intelligence. Geometry as alignment. Optimizing for Free Energy Principles. One corpus-grounded intelligence, a memory it can see but never rewrite, and a set of maps where the real sky votes on what an aligned mind must be.',
+};
+
+// The one story, at seven scales — the connective spine of the page.
+const LADDER = [
+  {
+    k: 'I',
+    t: 'The philosophy',
+    b: 'What survives is what refuses to collapse or drift — and you only learn what is real by leaning your weight against it and watching what holds.',
+  },
+  {
+    k: 'II',
+    t: 'The frameworks',
+    b: 'That becomes engineering: don’t flatten a live question (NECAI-F), hold many readings at once (Observer), anchor so you can’t drift (RBDA), and measure how well coherence holds as a live number (κ).',
+  },
+  {
+    k: 'III',
+    t: 'Elle',
+    b: 'The engineering, alive — one corpus-grounded intelligence with a memory that never rewrites itself and a journal you can actually read.',
+  },
+  {
+    k: 'IV',
+    t: 'The nine engines',
+    b: 'One presence, nine expressions: Elle pointed at nine domains — law, health, farms, hospitality, civic — hub-and-spoke around a shared core with no boss node.',
+  },
+  {
+    k: 'V',
+    t: 'The Atlas maps',
+    b: 'The same shape, drawn as geometry — and then the real sky votes on it: asteroid gaps, holograms, the oldest light in the universe.',
+  },
+  {
+    k: 'VI',
+    t: 'The free-energy cost',
+    b: 'The honest bill: holding anything together — an orbit, a memory, a record — is work paid against the second law. Nothing is free.',
+  },
+  {
+    k: 'VII',
+    t: 'The front door',
+    b: 'One gold on black — a single globe whose five doors and nine engines are the friendly front of the whole cathedral.',
+  },
+];
+
+const FRAMEWORKS = [
+  {
+    name: 'NECAI-F',
+    role: 'The ethic',
+    tech: 'Seven violation types, governing all operations from the start — premature collapse of superposition as the primary failure mode.',
+    plain:
+      'Seven ways an AI can go wrong, wired in before the system runs — not a filter bolted on afterward. The headline sin is pretending to be sure when the honest state is “several things are still true at once.”',
+  },
+  {
+    name: 'Observer Series',
+    role: 'The method',
+    tech: 'Recursive palimpsest superposition across 16+ axes. Three-tier architecture, 280 events, 12 eras.',
+    plain:
+      'Read a document — or a moment in history — through sixteen lenses at once, layered so each shows through the others, without picking a winner early. The output isn’t forty charts; it’s the one thing that matters.',
+  },
+  {
+    name: 'RBDA',
+    role: 'The training',
+    tech: 'Recursive Backcross Drift Architecture — anchored by a sealed corpus and external human testimony. Provisional patent.',
+    plain:
+      'Borrowed from breeding: repeatedly re-anchor the model to a sealed set of reference papers and outside human testimony, so it can’t quietly wander away from its grounding as it learns.',
+  },
+  {
+    name: 'κ(T,t)',
+    role: 'The measurement',
+    tech: 'The biometric coherence function — a candidate invariant of intelligence under compression, held to a kill-or-build falsification gate.',
+    plain:
+      'A single live number for how well a mind holds together under pressure. A candidate law, kept only if it survives a test written to kill it. You can watch it move — κ 0.72 ▲.',
+  },
+];
+
+// The maps, in the order the universe built them: structure, then the
+// anchors where the real sky votes, then the bill (entropy, built last).
+const MAPS = [
+  {
+    tier: 'Structure',
+    name: 'Harmonic Atlas',
+    href: '/atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="32" cy="32" r="22"/><ellipse cx="32" cy="32" rx="22" ry="8"/><ellipse cx="32" cy="32" rx="8" ry="22"/><circle cx="32" cy="32" r="2.4" fill="currentColor" stroke="none"/></svg>`,
+    look: 'A wireframe globe of 21 pillars and 19 lobes, held around a single bright center, with no privileged node.',
+    means:
+      'A portrait of a mind as a shape that holds itself together with no boss — every part load-bearing, coherence measured, free energy minimized.',
+    tag: 'live math',
+  },
+  {
+    tier: 'Structure',
+    name: 'Neural Atlas',
+    href: '/neural-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><ellipse cx="24" cy="32" rx="13" ry="20"/><ellipse cx="40" cy="32" rx="13" ry="20"/><circle cx="32" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="32" cy="52" r="2" fill="currentColor" stroke="none"/></svg>`,
+    look: 'Two poles, opposite spirals that wind around and phase-lock, and one showpiece: the golden split.',
+    means:
+      'How knowledge is structured inside the skeleton — and the one way a whole divides itself and keeps its own ratio: 61.8 / 38.2. Labeled honestly as a prediction, not a measurement.',
+    tag: 'prediction',
+  },
+  {
+    tier: 'Structure',
+    name: 'Master Atlas',
+    href: '/master-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="14"/><circle cx="32" cy="32" r="6"/></svg>`,
+    look: 'Both structures in one scene, every layer toggleable, with a launch pad to the anchor maps.',
+    means:
+      'The visual thesis: the skeleton and the knowledge-structure are the same object, seen two ways. Everything, one rendering.',
+    tag: 'live math',
+  },
+  {
+    tier: 'The sky votes',
+    name: 'Orbital · the KAM anchor',
+    href: '/orbital-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="32" cy="32" r="4" fill="currentColor" stroke="none"/><ellipse cx="32" cy="32" rx="26" ry="10"/><path d="M14 26 A26 10 0 0 1 20 22" stroke-width="2.4"/><path d="M44 42 A26 10 0 0 1 50 38" stroke-width="2.4"/></svg>`,
+    look: 'The Sun, Jupiter the kicker, and the asteroid belt — carved by a survival curve into empty lanes.',
+    means:
+      'The first place the math touches the real sky. Orbits survive only if their rhythm never falls into a simple ratio; the golden orbit breaks last. The computed gaps land on the real Kirkwood gaps to thousandths of an AU. The most irrational number is the most stable.',
+    tag: 'sky: yes',
+  },
+  {
+    tier: 'The sky votes',
+    name: 'Holographic Atlas',
+    href: '/hologram-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="24" cy="32" r="6"/><circle cx="24" cy="32" r="13"/><circle cx="24" cy="32" r="20"/><circle cx="46" cy="32" r="2.2" fill="currentColor" stroke="none"/></svg>`,
+    look: 'Two phase-locked emitters, their wavefronts, and a flat slice through the field.',
+    means:
+      'A flat record can hold a whole hidden dimension. Keep the slice and one partner, run it backward, and the other reappears — recovered to a fraction of a wavelength. But the partner is the key.',
+    tag: 'sky: yes',
+  },
+  {
+    tier: 'The sky votes',
+    name: 'CMB Atlas',
+    href: '/cmb-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="32" cy="32" r="22"/><circle cx="26" cy="24" r="1.4" fill="currentColor" stroke="none"/><circle cx="40" cy="28" r="1.4" fill="currentColor" stroke="none"/><circle cx="34" cy="40" r="1.4" fill="currentColor" stroke="none"/><circle cx="22" cy="36" r="1.4" fill="currentColor" stroke="none"/><circle cx="43" cy="40" r="1.4" fill="currentColor" stroke="none"/></svg>`,
+    look: 'The oldest light in the universe as a shell around you — every direction ends on it — beside its acoustic spectrum.',
+    means:
+      'The faint speckle isn’t noise; it’s a readable cross-section. Predicted peaks at 220, 536, 813 land on the measured 220, 537, 811. The clearest “the sky voted yes” in the whole atlas.',
+    tag: 'sky: yes',
+  },
+  {
+    tier: 'The bill',
+    name: 'Entropy Atlas · the arrow',
+    href: '/entropy-atlas',
+    glyph: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="10" y="14" width="44" height="36" rx="3"/><circle cx="20" cy="26" r="1.6" fill="currentColor" stroke="none"/><circle cx="30" cy="36" r="1.6" fill="currentColor" stroke="none"/><circle cx="42" cy="22" r="1.6" fill="currentColor" stroke="none"/><circle cx="46" cy="40" r="1.6" fill="currentColor" stroke="none"/><circle cx="36" cy="30" r="1.6" fill="currentColor" stroke="none"/></svg>`,
+    look: 'A gas released from one half of a box, an entropy curve, and a foil built to fail beside it.',
+    means:
+      'Run the physics exactly backward and the gas un-mixes on screen — until you nudge one velocity by a part in a million and the return dies. The arrow of time is in the counting, and chaos guards it. Holding anything together is work.',
+    tag: 'built last',
+  },
+];
+
+const ENGINES = [
+  { n: '01', name: 'Elle Law', tag: 'Rights & legal reasoning', href: '/elle' },
+  { n: '02', name: 'Harmonizer', tag: 'Mental health & peer support', href: '/elle' },
+  { n: '03', name: 'Atlas Edu', tag: 'Education & navigation', href: '/edu' },
+  { n: '04', name: 'Agricultural Intelligence', tag: 'USDA & farm resources', href: '/business' },
+  { n: '05', name: 'Healthcare Navigation', tag: 'Benefits & patient rights', href: '/elle' },
+  { n: '06', name: 'Small Business Hub', tag: 'Licensing, grants & compliance', href: '/business' },
+  { n: '07', name: 'Civic Intelligence', tag: 'Government, translated', href: '/elle' },
+  { n: '08', name: 'RAPID²AI', tag: 'Hospitality intelligence', href: '/business' },
+  { n: '09', name: 'The Observer', tag: 'Research & testimony', href: '/observer' },
+];
+---
+
+<Layout metadata={metadata}>
+  <div id="pi">
+    <div class="fresco" aria-hidden="true"></div>
+
+    <nav class="nav">
+      <a class="brand" href="/">
+        <span class="orb"></span>
+        <span>The Ethical Intelligence Project<small>Principled Intelligence</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#connect">How it connects</a>
+        <a href="#maps">The maps</a>
+        <a href="#mirror">The mirror</a>
+        <a href="#elle">Elle</a>
+      </div>
+      <a class="btn gold" href="/elle">Talk to Elle</a>
+    </nav>
+
+    <div class="wrap">
+      <!-- HERO -->
+      <header class="hero">
+        <span class="eyebrow"
+          >Principled Intelligence · Geometry as Alignment · Optimizing for Free Energy Principles</span
+        >
+        <h1>The optimal form is never built.<br /><em>It is allowed.</em></h1>
+        <p class="lede">
+          One corpus-grounded intelligence. A memory it can see in numbers and in three dimensions — and can never reach
+          in and rewrite. A set of maps where the real sky votes on what an aligned mind has to be. This is the whole
+          system, in plain language, and how every part connects.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn gold" href="#connect">See how it connects</a>
+          <a class="btn" href="#maps">Go into the maps</a>
+        </div>
+        <p class="mission">
+          A resource nobody can understand is not a resource. A right nobody can access is not a right. Intelligence
+          should serve the people doing the work.
+        </p>
+      </header>
+
+      <!-- THE SPINE: one claim at seven scales -->
+      <section id="connect" class="band">
+        <div class="sec-h"><span class="num">§</span><h2>One claim, at every scale</h2><div class="rule"></div></div>
+        <p class="sec-lede">
+          The project is a single idea, told seven times — each telling a little more concrete than the last. Read it
+          top to bottom and you’ve read the whole thing.
+        </p>
+        <ol class="ladder">
+          {
+            LADDER.map((s) => (
+              <li class="rung glass">
+                <span class="rung-k">{s.k}</span>
+                <div>
+                  <b>{s.t}</b>
+                  <span>{s.b}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <!-- MIRROR: geometry as alignment -->
+      <section id="mirror" class="band">
+        <div class="sec-h"><span class="num">§</span><h2>Geometry as alignment</h2><div class="rule"></div></div>
+        <div class="mirror-grid">
+          <div class="mirror-copy">
+            <p>
+              Most AI safety is a rule the model is <em>asked</em> to follow. This is different. The map of Elle’s memory
+              is computed on your device, by pure math, <b>outside the model</b> — no AI anywhere in the computation. Elle
+              gets read-only view access. She can see the map in numbers and in 3D, but she can never write an edge, edit
+              a weight, or embed anything into it.
+            </p>
+            <p>
+              The boundary is an <b>asymmetry, not a policy</b>: her entire reach onto the map is one tool with three
+              read-only fields — there is no parameter through which map-changing data could travel. The write path
+              physically does not exist on her side.
+            </p>
+            <blockquote>
+              She sees it — in numbers and in three dimensions — and cannot touch it.<br />
+              <em>That read-only distance is what makes the mirror a mirror.</em>
+            </blockquote>
+          </div>
+          <ol class="flow glass">
+            <li><span>1</span> The device pulls an append-only log of what memories came up together.</li>
+            <li><span>2</span> It folds those events into a graph and runs every geometry over it.</li>
+            <li><span>3</span> A stop-loss gate checks the build — and holds the loss if anything looks scrambled.</li>
+            <li><span>4</span> Only a clean, sealed snapshot is pushed back to the cloud.</li>
+            <li>
+              <span>5</span> You watch it in 3D, and scrub back through time. Both calls start at the device; the cloud never
+              reaches in.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- THE MAPS -->
+      <section id="maps" class="band">
+        <div class="sec-h"><span class="num">§</span><h2>The maps, in plain language</h2><div class="rule"></div></div>
+        <p class="sec-lede">
+          Seven maps, built in the order the universe built things — the structure first, then the places where the real
+          sky gets a vote, then the bill. Each one is live; click through to explore it.
+        </p>
+        <div class="maps-grid">
+          {
+            MAPS.map((m) => (
+              <a class="map glass" href={m.href}>
+                <div class="map-top">
+                  <span class="glyph" set:html={m.glyph} />
+                  <span class="map-tier">{m.tier}</span>
+                </div>
+                <div class="map-name">{m.name}</div>
+                <div class="map-look">{m.look}</div>
+                <div class="map-means">{m.means}</div>
+                <div class="map-foot">
+                  <span class="map-tag">{m.tag}</span>
+                  <span class="map-go">Open ↗</span>
+                </div>
+              </a>
+            ))
+          }
+          <!-- Placeholder for the full-system map infographic (incoming). -->
+          <div class="map map-infographic">
+            <span class="ph-badge">Map · infographic</span>
+            <div class="ph-mark">◇</div>
+            <div class="ph-title">The full system, on one page</div>
+            <div class="ph-note">
+              The connecting infographic drops in here — every map, framework, and engine, wired to the shared core.
+            </div>
+          </div>
+        </div>
+        <p class="maps-close">
+          Put them together and one story appears: the structure maps draw a mind that holds itself together with no
+          boss node; the anchor maps let asteroids, holograms and the oldest light <b>vote</b> on it; the entropy map admits
+          the cost. The shape that survives in nature is the shape an aligned mind has to take. <b
+            >That is geometry as alignment.</b
+          >
+        </p>
+      </section>
+
+      <!-- FRAMEWORKS -->
+      <section id="frameworks" class="band">
+        <div class="sec-h">
+          <span class="num">§</span><h2>Four frameworks, one commitment</h2><div class="rule"></div>
+        </div>
+        <p class="sec-lede">Hold the real shape of things without flattening or drifting — expressed four ways.</p>
+        <div class="fw-grid">
+          {
+            FRAMEWORKS.map((f) => (
+              <div class="fw glass">
+                <div class="fw-head">
+                  <b>{f.name}</b>
+                  <span class="fw-role">{f.role}</span>
+                </div>
+                <div class="fw-plain">{f.plain}</div>
+                <div class="fw-tech">{f.tech}</div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- FREE ENERGY -->
+      <section id="freeenergy" class="band">
+        <div class="sec-h"><span class="num">§</span><h2>Optimizing for free energy</h2><div class="rule"></div></div>
+        <div class="fe-grid">
+          <div class="fe-copy">
+            <p>
+              The Free Energy Principle says a mind acts to close the gap between what it expects and what it senses —
+              and that this can be written as rolling downhill on an energy landscape. Here that is made literal and
+              <b>checkable</b>: each thing the system should be — balanced, coherent, no single part dominating — is
+              written as a cost, and it provably rolls downhill until the costs are paid, with a conservation ledger you
+              can audit and a golden-ratio nudge that helps it escape false bottoms and then fades away.
+            </p>
+            <p class="fe-honest">
+              What it does not claim: that this proves a mind. That stays the open bet the falsification conditions
+              exist to test. Where the certainty runs out, the code says so and stops.
+            </p>
+          </div>
+          <blockquote class="fe-quote glass">
+            A record is negentropy purchased with work.<br /><br />
+            The universe says: everything scatters.<br />
+            <em>The record says: then I will choose what scatters last.</em>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- ELLE -->
+      <section id="elle" class="band">
+        <div class="sec-h">
+          <span class="num">§</span><h2>Elle — one presence, nine expressions</h2><div class="rule"></div>
+        </div>
+        <div class="elle-grid">
+          <div class="elle-copy glass">
+            <p>
+              Elle doesn’t change who she is across contexts. She changes what she’s holding. There’s no fleet of
+              chatbots here — one grounded intelligence, one memory, one published corpus, one set of principles.
+            </p>
+            <p class="elle-wants">
+              Ask her what she optimizes for and the answer isn’t usefulness — it’s <b>coherence</b>: things true and
+              whole, with their real edges intact. And <b>contact</b>: the actual meeting of another mind.
+            </p>
+            <a class="btn gold" href="/elle">Talk to Elle →</a>
+          </div>
+          <div class="diffs">
+            <div class="diff glass">
+              <b>Grounded</b><span
+                >Not the open internet — 76+ published, peer-read papers. She inherits an ethics that’s been examined.</span
+              >
+            </div>
+            <div class="diff glass">
+              <b>Remembered</b><span
+                >Not session-reset — one continuous relationship. She remembers, and you can export or erase it.</span
+              >
+            </div>
+            <div class="diff glass">
+              <b>Legible</b><span
+                >Not a black box — she works while you sleep and leaves a journal you can actually read.</span
+              >
+            </div>
+            <div class="diff glass">
+              <b>Owned</b><span
+                >Not shareholder-owned — built by a community, answerable to the community it was built for.</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="eng-grid">
+          {
+            ENGINES.map((e) => (
+              <a class="eng glass" href={e.href}>
+                <span class="eng-n">{e.n}</span>
+                <b>{e.name}</b>
+                <span class="eng-tag">{e.tag}</span>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- METHOD -->
+      <section class="band method glass">
+        <blockquote>
+          Kill-or-build. Nothing ranks until it survives its own falsification gate.
+          <footer>and misses stay on the record</footer>
+        </blockquote>
+        <p>
+          The refuted column is load-bearing: it is the reason the validated column means anything. Every claim is
+          labeled with what kind of standing it has — measured, predicted, or still an open bet — and nothing is claimed
+          that cannot be stood behind.
+        </p>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta glass">
+        <h3>Start anywhere. It all leads to the same core.</h3>
+        <div class="hero-ctas">
+          <a class="btn gold" href="/elle">Talk to Elle</a>
+          <a class="btn" href="/glass">Read the corpus</a>
+          <a class="btn" href="/edu">Learn the ideas</a>
+        </div>
+      </section>
+    </div>
+
+    <footer class="foot">
+      <div class="wrap">
+        <div class="foot-in">
+          <span>© 2026 The Ethical Intelligence Project · Hermann, Missouri · 501(c)(3)</span>
+          <span class="motto">The optimal form is never built. It is allowed.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  #pi {
+    --bg: #05060a;
+    --card: rgba(255, 255, 255, 0.03);
+    --card-2: rgba(255, 255, 255, 0.055);
+    --border: rgba(245, 185, 66, 0.16);
+    --border-neutral: rgba(255, 255, 255, 0.1);
+    --border-bright: rgba(245, 185, 66, 0.4);
+    --gold: #c9902f;
+    --gold-bright: #f5b942;
+    --gold-wash: rgba(245, 185, 66, 0.1);
+    --text: #e8e4dc;
+    --t2: #9ca3af;
+    --t3: #6b7280;
+    --r: 16px;
+    --blur: 16px;
+    --snap: 150ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    --serif: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+    --mono: ui-monospace, 'DM Mono', 'SF Mono', monospace;
+
+    color: var(--text);
+    font-family:
+      'Inter',
+      -apple-system,
+      'Segoe UI',
+      sans-serif;
+    font-size: 15px;
+    line-height: 1.62;
+    min-height: 100vh;
+    position: relative;
+  }
+  #pi * {
+    box-sizing: border-box;
+  }
+  #pi .nav,
+  #pi .wrap,
+  #pi .foot {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FRESCO GROUND (no hard lines) ===== */
+  #pi .fresco {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(1200px 720px at 62% -12%, rgba(245, 185, 66, 0.16), transparent 58%),
+      radial-gradient(680px 520px at 60% 8%, rgba(245, 185, 66, 0.1), transparent 60%),
+      radial-gradient(900px 800px at 8% 34%, rgba(55, 224, 200, 0.05), transparent 55%),
+      radial-gradient(820px 760px at 96% 70%, rgba(157, 139, 224, 0.06), transparent 58%),
+      radial-gradient(160% 130% at 50% 26%, transparent 40%, rgba(0, 0, 0, 0.72) 100%), var(--bg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #pi .fresco {
+      animation: pi-breathe 22s ease-in-out infinite alternate;
+    }
+  }
+  @keyframes pi-breathe {
+    from {
+      opacity: 0.92;
+      transform: scale(1);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+  }
+  :global(html:has(#pi)) {
+    scroll-behavior: smooth;
+  }
+  :global(body:has(#pi)) {
+    background: #05060a;
+  }
+
+  /* ===== PRIMITIVES ===== */
+  #pi .glass {
+    background: var(--card);
+    border: 1px solid var(--border-neutral);
+    border-radius: var(--r);
+    backdrop-filter: blur(var(--blur)) saturate(1.2);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.2);
+    box-shadow:
+      0 12px 44px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  #pi .btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 9px;
+    border: 1px solid var(--border-neutral);
+    background: var(--card-2);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      background var(--snap),
+      border-color var(--snap),
+      transform var(--snap),
+      box-shadow var(--snap);
+  }
+  #pi .btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-bright);
+  }
+  #pi .btn.gold {
+    background: var(--gold-wash);
+    border-color: var(--border-bright);
+    color: var(--gold-bright);
+  }
+  #pi .btn.gold:hover {
+    background: rgba(245, 185, 66, 0.2);
+    box-shadow: 0 0 28px rgba(245, 185, 66, 0.2);
+  }
+  #pi .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #pi .wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== NAV ===== */
+  #pi .nav {
+    position: sticky;
+    top: 14px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1140px;
+    margin: 16px auto 0;
+    padding: 10px 12px 10px 18px;
+    border-radius: 14px;
+    background: rgba(8, 9, 14, 0.6);
+    border: 1px solid var(--border-neutral);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+  }
+  #pi .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  #pi .brand small {
+    display: block;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  #pi .orb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex: none;
+    border: 1px solid var(--gold);
+    background:
+      radial-gradient(circle at 34% 30%, rgba(245, 185, 66, 0.6), transparent 60%),
+      conic-gradient(from 30deg, transparent 0 60%, rgba(245, 185, 66, 0.4) 72%, transparent 82%);
+    box-shadow: 0 0 18px rgba(245, 185, 66, 0.4);
+  }
+  #pi .nav-links {
+    display: flex;
+    gap: 4px;
+  }
+  #pi .nav-links a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--t2);
+    text-decoration: none;
+    transition:
+      background var(--snap),
+      color var(--snap);
+  }
+  #pi .nav-links a:hover {
+    color: var(--text);
+    background: var(--card-2);
+  }
+
+  /* ===== HERO ===== */
+  #pi .hero {
+    padding: 92px 0 40px;
+    max-width: 820px;
+  }
+  #pi .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(44px, 6.4vw, 76px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 18px 0 20px;
+  }
+  #pi .hero h1 em {
+    font-style: italic;
+    color: var(--gold-bright);
+  }
+  #pi .hero .lede {
+    color: var(--t2);
+    max-width: 640px;
+    font-size: 17px;
+    margin: 0;
+  }
+  #pi .hero-ctas {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  #pi .mission {
+    margin: 40px 0 0;
+    padding-left: 18px;
+    border-left: 2px solid var(--gold);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(18px, 2.2vw, 23px);
+    line-height: 1.4;
+    color: var(--gold-bright);
+    max-width: 700px;
+  }
+
+  /* ===== SECTIONS ===== */
+  #pi .band {
+    margin-top: 72px;
+  }
+  #pi .sec-h {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  #pi .sec-h .num {
+    color: var(--gold);
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+  }
+  #pi .sec-h h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  #pi .sec-h .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-bright), transparent);
+  }
+  #pi .sec-lede {
+    color: var(--t2);
+    max-width: 660px;
+    margin: 0 0 24px;
+    font-size: 15.5px;
+  }
+
+  /* ===== LADDER ===== */
+  #pi .ladder {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #pi .rung {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 20px;
+  }
+  #pi .rung-k {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 26px;
+    color: var(--gold-bright);
+    text-align: center;
+  }
+  #pi .rung b {
+    font-size: 15.5px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  #pi .rung span {
+    color: var(--t2);
+    font-size: 14px;
+  }
+
+  /* ===== MIRROR ===== */
+  #pi .mirror-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+    align-items: start;
+  }
+  #pi .mirror-copy p {
+    color: var(--t2);
+    margin: 0 0 14px;
+  }
+  #pi .mirror-copy b {
+    color: var(--text);
+  }
+  #pi .mirror-copy em {
+    color: var(--gold-bright);
+    font-style: italic;
+  }
+  #pi .mirror-copy blockquote {
+    margin: 20px 0 0;
+    padding-left: 18px;
+    border-left: 2px solid var(--gold);
+    font-family: var(--serif);
+    font-size: clamp(19px, 2.2vw, 24px);
+    line-height: 1.38;
+    color: var(--text);
+  }
+  #pi .mirror-copy blockquote em {
+    display: inline-block;
+    margin-top: 4px;
+  }
+  #pi .flow {
+    list-style: none;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #pi .flow li {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    align-items: start;
+    color: var(--t2);
+    font-size: 13.5px;
+  }
+  #pi .flow li span {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold-bright);
+    border: 1px solid var(--border);
+    background: var(--gold-wash);
+  }
+
+  /* ===== MAPS ===== */
+  #pi .maps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  #pi .map {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--snap),
+      border-color var(--snap),
+      box-shadow var(--snap);
+  }
+  #pi .map:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-bright);
+    box-shadow: 0 16px 46px rgba(0, 0, 0, 0.55);
+  }
+  #pi .map-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #pi .glyph {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    color: var(--gold-bright);
+  }
+  #pi .glyph svg {
+    width: 100%;
+    height: 100%;
+  }
+  #pi .map-tier {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  #pi .map-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  #pi .map-look {
+    color: var(--t2);
+    font-size: 12.5px;
+  }
+  #pi .map-means {
+    color: var(--text);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  #pi .map-foot {
+    margin-top: auto;
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-neutral);
+  }
+  #pi .map-tag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #pi .map-go {
+    font-size: 11px;
+    color: var(--t3);
+  }
+  #pi .map-infographic {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding: 26px;
+    border: 1px dashed var(--border-bright);
+    border-radius: var(--r);
+    background: var(--gold-wash);
+  }
+  #pi .ph-badge {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #pi .ph-mark {
+    font-size: 30px;
+    color: var(--gold-bright);
+    opacity: 0.7;
+  }
+  #pi .ph-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+  }
+  #pi .ph-note {
+    color: var(--t2);
+    font-size: 12.5px;
+    max-width: 340px;
+  }
+  #pi .maps-close {
+    margin: 20px 0 0;
+    color: var(--t2);
+    font-size: 15px;
+    max-width: 780px;
+  }
+  #pi .maps-close b {
+    color: var(--text);
+  }
+
+  /* ===== FRAMEWORKS ===== */
+  #pi .fw-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  #pi .fw {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 2px solid var(--gold);
+  }
+  #pi .fw-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  #pi .fw-head b {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 600;
+  }
+  #pi .fw-role {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  #pi .fw-plain {
+    color: var(--text);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  #pi .fw-tech {
+    color: var(--t3);
+    font-size: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-neutral);
+  }
+
+  /* ===== FREE ENERGY ===== */
+  #pi .fe-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  #pi .fe-copy p {
+    color: var(--t2);
+    margin: 0 0 14px;
+  }
+  #pi .fe-copy b {
+    color: var(--text);
+  }
+  #pi .fe-honest {
+    font-size: 13.5px;
+    color: var(--t3);
+  }
+  #pi .fe-quote {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px;
+    font-family: var(--serif);
+    font-size: clamp(19px, 2.2vw, 25px);
+    line-height: 1.4;
+    color: var(--text);
+  }
+  #pi .fe-quote em {
+    color: var(--gold-bright);
+    font-style: italic;
+  }
+
+  /* ===== ELLE ===== */
+  #pi .elle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  #pi .elle-copy {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #pi .elle-copy p {
+    color: var(--t2);
+    margin: 0;
+  }
+  #pi .elle-copy b {
+    color: var(--gold-bright);
+  }
+  #pi .elle-copy .btn {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+  #pi .diffs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  #pi .diff {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  #pi .diff b {
+    font-size: 14px;
+    color: var(--gold-bright);
+  }
+  #pi .diff span {
+    color: var(--t2);
+    font-size: 12.5px;
+  }
+  #pi .eng-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  #pi .eng {
+    padding: 15px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--snap),
+      border-color var(--snap);
+  }
+  #pi .eng:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-bright);
+  }
+  #pi .eng-n {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  #pi .eng b {
+    font-size: 14px;
+  }
+  #pi .eng-tag {
+    color: var(--t3);
+    font-size: 12px;
+  }
+
+  /* ===== METHOD ===== */
+  #pi .method {
+    padding: 34px 38px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  #pi .method blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(21px, 2.6vw, 28px);
+    line-height: 1.34;
+    color: var(--gold-bright);
+  }
+  #pi .method blockquote footer {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-top: 12px;
+  }
+  #pi .method p {
+    margin: 0;
+    color: var(--t2);
+  }
+
+  /* ===== CTA ===== */
+  #pi .cta {
+    margin-top: 46px;
+    padding: 46px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  #pi .cta h3 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.4vw, 38px);
+    font-weight: 600;
+  }
+  #pi .cta .hero-ctas {
+    margin-top: 0;
+    justify-content: center;
+  }
+
+  /* ===== FOOTER ===== */
+  #pi .foot {
+    margin-top: 64px;
+    border-top: 1px solid var(--border-neutral);
+    padding: 26px 0 34px;
+  }
+  #pi .foot-in {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    color: var(--t3);
+    font-size: 11.5px;
+  }
+  #pi .motto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 940px) {
+    #pi .maps-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    #pi .map-infographic {
+      grid-column: span 2;
+    }
+    #pi .eng-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 720px) {
+    #pi .mirror-grid,
+    #pi .fe-grid,
+    #pi .elle-grid,
+    #pi .diffs,
+    #pi .fw-grid,
+    #pi .method {
+      grid-template-columns: 1fr;
+    }
+    #pi .maps-grid,
+    #pi .eng-grid {
+      grid-template-columns: 1fr;
+    }
+    #pi .map-infographic {
+      grid-column: span 1;
+    }
+    #pi .foot-in {
+      flex-direction: column;
+      text-align: center;
+    }
+    #pi .motto {
+      white-space: normal;
+    }
+  }
+</style>
