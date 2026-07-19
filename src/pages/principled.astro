@@ -497,33 +497,16 @@ const ENGINES = [
     z-index: 1;
   }
 
-  /* ===== FRESCO GROUND (no hard lines) ===== */
+  /* ===== FRESCO GROUND (restrained: one gold on black, no hard lines) ===== */
   #pi .fresco {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(1200px 720px at 62% -12%, rgba(245, 185, 66, 0.16), transparent 58%),
-      radial-gradient(680px 520px at 60% 8%, rgba(245, 185, 66, 0.1), transparent 60%),
-      radial-gradient(900px 800px at 8% 34%, rgba(55, 224, 200, 0.05), transparent 55%),
-      radial-gradient(820px 760px at 96% 70%, rgba(157, 139, 224, 0.06), transparent 58%),
-      radial-gradient(160% 130% at 50% 26%, transparent 40%, rgba(0, 0, 0, 0.72) 100%), var(--bg);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    #pi .fresco {
-      animation: pi-breathe 22s ease-in-out infinite alternate;
-    }
-  }
-  @keyframes pi-breathe {
-    from {
-      opacity: 0.92;
-      transform: scale(1);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1.04);
-    }
+      radial-gradient(1200px 700px at 60% -14%, rgba(245, 185, 66, 0.08), transparent 56%),
+      radial-gradient(640px 480px at 60% 6%, rgba(245, 185, 66, 0.045), transparent 60%),
+      radial-gradient(150% 130% at 50% 22%, transparent 34%, rgba(0, 0, 0, 0.82) 100%), var(--bg);
   }
   :global(html:has(#pi)) {
     scroll-behavior: smooth;
