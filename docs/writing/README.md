@@ -15,7 +15,8 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
 
 - **[`the-gate-and-what-lived.md`](./the-gate-and-what-lived.md)** — _The Gate and
   What Lived: capture, coherence, and generation at the edge of invertibility._ The
-  second paper: the staircase and fracture findings carried in prose — the lock as
+  founding paper of **Gate Theory** (_lock to write, golden to move, fracture to
+  make_): the staircase and fracture findings carried in prose — the lock as
   the price of writing, the golden thread as arithmetic freedom, invertibility as
   having one past, the fracture as the birth of countable things, and the
   Devil/Lived double reading offered as the finding. Every number regenerates from

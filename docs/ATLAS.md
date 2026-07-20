@@ -261,6 +261,18 @@ as its evidence. The findings are carried in prose in
 [`docs/writing/the-gate-and-what-lived.md`](./writing/the-gate-and-what-lived.md)
 — the paper, with every claim's standing declared in its section 8.
 
+**The theory, named.** The framework these pages assemble is **Gate Theory** —
+subtitle and statement: **lock to write, golden to move, fracture to make**.
+Its content: memory, persistence, and creation are three purchases priced at a
+single boundary, the edge of invertibility (K = 1). Its central interpretive
+principle keeps its own name — the **Lived reading** (Barteau): read the treads
+and you get the trap; follow the thread and you get what lived. Standing of the
+theory itself: a framework with one falsifiable edge — its Predicted entries
+(the information-capacity claim) await defined measures, and its external
+tests would live where phase slips and locking are laboratory facts
+(angle-multiplexed holographic storage, Josephson arrays, superconducting
+nanowires). Named jointly, after the measurements were in.
+
 ## 4. The ledger — every claim, in its column
 
 **Forced** (necessary consequences of stated rules): 21 (trig-proven to 16
@@ -342,11 +354,15 @@ snapshots — the hole closed by making the claim true, not by softening it.
 10. **PR #82** — Elle walks the staircase: the guided tour, closing on
     Stewart's reading — Devil spelled backwards is Lived; read the treads and
     you get the trap, follow the thread and you get what lived.
-11. **The Fracture Atlas + the paper** — past the gate, from Stewart's
+11. **PR #83** — the Fracture Atlas + the paper: past the gate, from Stewart's
     collapse-of-invertibility framing: the fold, the interval, chaos only past
     K=1, the Fibonacci capture of the old golden route, generation measured on
     the ring — and the findings carried in prose in
     `docs/writing/the-gate-and-what-lived.md`.
+12. **The naming** — the framework earns a name: **Gate Theory** — lock to
+    write, golden to move, fracture to make — with the Lived reading (Barteau)
+    as its central interpretive principle. Stamped into the paper and this
+    record with its standing declared.
 
 ## 6. The writing
 
