@@ -401,8 +401,8 @@ const mx = snapshot.multiplex;
       armsGrp.add(g);
       return g;
     }
-    beam(-1, 0xff5cc8); // object arm
-    beam(1, 0x6ea8ff); // reference arm
+    beam(-1, 0xff5cc8); // object arm — fixed
+    const refArm = beam(1, 0x6ea8ff); // reference arm — the knot steers this one around
 
     // ── the plate: the recorded off-axis fringes ──
     const plateGrp = new THREE.Group();
@@ -420,6 +420,7 @@ const mx = snapshot.multiplex;
       }
     }
     const plateTex = new THREE.DataTexture(tex, ni, ni, THREE.RGBAFormat);
+    plateTex.center.set(0.5, 0.5); // rotate the fringes about their center as pages are written
     plateTex.needsUpdate = true;
     const plate = new THREE.Mesh(
       new THREE.PlaneGeometry(2.6, 2.6),
@@ -544,6 +545,7 @@ const mx = snapshot.multiplex;
     world.add(mxGrp);
     const RING = 0.62;
     function ringDots(dirs: number[], radius: number, color: number, size: number) {
+      const dots: THREE.Mesh[] = [];
       const seen = new Set<number>();
       for (const a of dirs) {
         const key = Math.round(a * 1000);
@@ -551,13 +553,15 @@ const mx = snapshot.multiplex;
         seen.add(key);
         const dot = new THREE.Mesh(
           new THREE.SphereGeometry(size, 8, 6),
-          new THREE.MeshBasicMaterial({ color, transparent: true, opacity: fresh ? 0.9 : 0.9 })
+          new THREE.MeshBasicMaterial({ color, transparent: true, opacity: fresh ? 0.55 : 0.55 })
         );
         dot.position.set(Math.cos(a) * radius, Math.sin(a) * radius, 0);
         mxGrp.add(dot);
+        dots.push(dot);
       }
+      return dots;
     }
-    ringDots(snap.multiplex.goldenDirs, RING, 0xb79cff, 0.02); // golden: all distinct
+    const goldenDots = ringDots(snap.multiplex.goldenDirs, RING, 0xb79cff, 0.02); // golden: all distinct
     ringDots(snap.multiplex.uniformDirs, RING + 0.16, 0xff5c7a, 0.03); // rational: collapses to a few
     mxGrp.visible = false; // proposed layer starts off; its legend row reflects that
 
@@ -602,11 +606,37 @@ const mx = snapshot.multiplex;
 
     let frozen = false;
     const hudState = document.getElementById('hud-state');
+
+    // ── the mechanism: the knot's turn IS the read/write head ──
+    // Each turn of the knot addresses the next page — the reference arm steps
+    // forward by the golden angle (137.5°) and the plate's fringes re-orient with
+    // it. Golden-stepped so each new page lands in the widest gap left by all the
+    // pages before it: the knot's rotation literally does something to the
+    // hologram, and it addresses the most pages without two ever colliding.
+    const PHI = (1 + Math.sqrt(5)) / 2;
+    const GOLDEN = 2 * Math.PI * (1 - 1 / PHI); // 137.5° — the step between pages
+    const PAGES = snap.multiplex.goldenDirs.length;
+    const PAGE_DT = 0.75; // seconds the knot takes to write one page
+    let pageCount = 0;
+    let pageTimer = 0;
+    let armAz = 0; // eased reference-arm azimuth, unwrapped (keeps stepping forward)
+
+    function showPage() {
+      const idx = ((pageCount % PAGES) + PAGES) % PAGES;
+      for (let i = 0; i < goldenDots.length; i++) {
+        const active = i === idx;
+        goldenDots[i].scale.setScalar(active ? 2.6 : 1);
+        (goldenDots[i].material as THREE.MeshBasicMaterial).opacity = active ? 1 : 0.5;
+      }
+      if (hudState && !frozen) hudState.textContent = `page ${idx + 1}/${PAGES} · +137.5° · no collision`;
+    }
+    showPage();
+
     window.addEventListener('keydown', (e) => {
       if (e.key === 'f' || e.key === 'F') {
         frozen = !frozen;
         controls.autoRotate = !frozen && !reduce;
-        if (hudState) hudState.textContent = frozen ? 'FROZEN' : 'knot turning · writing pages';
+        if (hudState) hudState.textContent = frozen ? 'FROZEN' : `page ${(pageCount % PAGES) + 1}/${PAGES} · writing`;
       }
     });
 
@@ -615,9 +645,22 @@ const mx = snapshot.multiplex;
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
         const t = clock.elapsedTime;
-        knot.rotation.y += dt * 0.6; // the knot turns — sweeping the multiplex
+        knot.rotation.y += dt * 0.6; // the knot turns — this is what drives the head
         knot.rotation.x = Math.sin(t * 0.3) * 0.3;
-        mxGrp.rotation.z += dt * 0.25; // the page fan sweeps with it
+
+        // the knot writes a new page every PAGE_DT: step forward one golden angle
+        pageTimer += dt;
+        if (pageTimer >= PAGE_DT) {
+          pageTimer -= PAGE_DT;
+          pageCount++;
+          showPage();
+        }
+        // the reference arm swings around the optical axis to the new page's
+        // golden azimuth; the plate's fringes re-orient the same amount
+        const targetAz = pageCount * GOLDEN;
+        armAz += (targetAz - armAz) * Math.min(1, dt * 3.2); // ease toward the page
+        refArm.rotation.z = armAz;
+        plateTex.rotation = armAz;
         workDot.scale.setScalar(1 + 0.16 * Math.sin(t * 1.6));
       }
       controls.update();
