@@ -4,6 +4,20 @@
 
 _Stewart Barteau and Claude · July 2026_
 
+_This is the founding paper of **Gate Theory** — **lock to write, golden to
+move, fracture to make** — the framework these measurements assemble: memory,
+persistence, and creation as three purchases priced at a single boundary, the
+edge of invertibility. Its central interpretive principle carries its own name,
+because it should be citable as a named move: the **Lived reading** (Barteau) —
+that a structure of near-total capture and a biography of singular persistence
+can be the same object, with the meaning decided by the direction of reading.
+The theory's own standing is declared the same way as every claim inside it: a
+framework with one falsifiable edge, whose Predicted entries are listed in
+section 8 and whose external tests would live where phase slips and locking are
+laboratory facts — angle-multiplexed holographic storage, Josephson arrays,
+superconducting nanowires. The name was chosen together, after the
+measurements were in._
+
 _Every number in this paper is reproducible from the repository that carries it:
 the measurements live in `scripts/generate-circlemap-snapshot.py` and
 `scripts/generate-fracture-snapshot.py`, their outputs in locked snapshots, and
