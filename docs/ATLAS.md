@@ -28,25 +28,27 @@ flowchart TD
     subgraph ANCHORS["The anchors (where the sky votes)"]
         O["/orbital-atlas<br/>KAM · Kirkwood gaps<br/><i>computed = observed</i>"]
         S["/staircase-atlas<br/>the devil's staircase<br/><i>lock to write · golden to move</i>"]
+        F["/fracture-atlas<br/>past the gate<br/><i>the fold, and what gets made</i>"]
         H["/hologram-atlas<br/>the off-axis X<br/><i>twin-image fix, measured</i>"]
         C["/cmb-atlas<br/>the sky that decodes<br/><i>Boltzmann vs Planck</i>"]
     end
     subgraph ARROW["The spending (built last — on purpose)"]
         E["/entropy-atlas<br/>the arrow<br/><i>the bill, paid</i>"]
     end
-    M --> O --> S --> H --> C --> E
+    M --> O --> S --> F --> H --> C --> E
 ```
 
-| Page               | What it shows                                                                                                                                                                                                                               | Generator                                | Snapshot                                  |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ----------------------------------------- |
-| `/atlas`           | The unified function: 21 pillars, 19 lobes/flower, hubless bridge fabric, φ-ellipse vessel with its conjugate-pair molecule                                                                                                                 | `scripts/generate-harmonic-snapshot.mjs` | `src/data/harmonic-snapshot.json`         |
-| `/neural-atlas`    | The knowledge neural structure: pole singularities, φ² toroid spirals, 1·3·5·**7**·5·3·1 = 25 stations with a shared equator lock, lemniscate lobes, Flower of Life, jitterbug 12+1→13, quantum belt (spin-½), far-field spin, golden split | `scripts/generate-neural-snapshot.py`    | `src/data/neural-structure-snapshot.json` |
-| `/master-atlas`    | Both structures nested in one scene; Combined / Unified / Neural selector; every layer toggleable                                                                                                                                           | (reads both snapshots)                   | —                                         |
-| `/orbital-atlas`   | The KAM anchor: standard-map survival landscape → Kepler → the observed Kirkwood gaps                                                                                                                                                       | `scripts/generate-orbital-snapshot.py`   | `src/data/orbital-snapshot.json`          |
-| `/hologram-atlas`  | The off-axis cross (the X): two beams cross at a rotating knot; the crossing angle carries the twin image away — Leith–Upatnieks off-axis holography, twin-image fix measured (recovery 0.24→1.00)                                          | `scripts/generate-hologram-snapshot.py`  | `src/data/hologram-snapshot.json`         |
-| `/staircase-atlas` | The devil's staircase (the bridge): mode-locked treads at every rational — the clamp writing requires ("stay there and circle") — Fibonacci treads shrinking ~3× toward golden, and the golden thread still unlocked at critical coupling   | `scripts/generate-circlemap-snapshot.py` | `src/data/circlemap-snapshot.json`        |
-| `/cmb-atlas`       | The CMB as a decoded cross-section: CAMB-computed acoustic spectrum vs Planck's measured peaks; a drawn sky; the spectrum recovered from that sky alone                                                                                     | `scripts/generate-cmb-snapshot.py`       | `src/data/cmb-snapshot.json`              |
-| `/entropy-atlas`   | The arrow: a Loschmidt echo (exact reversal unmixes; 10⁻⁶ perturbation kills the return), the foil rendered, the regulator's ledger with S first-class                                                                                      | `scripts/generate-entropy-snapshot.py`   | `src/data/entropy-snapshot.json`          |
+| Page               | What it shows                                                                                                                                                                                                                                         | Generator                                | Snapshot                                  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ----------------------------------------- |
+| `/atlas`           | The unified function: 21 pillars, 19 lobes/flower, hubless bridge fabric, φ-ellipse vessel with its conjugate-pair molecule                                                                                                                           | `scripts/generate-harmonic-snapshot.mjs` | `src/data/harmonic-snapshot.json`         |
+| `/neural-atlas`    | The knowledge neural structure: pole singularities, φ² toroid spirals, 1·3·5·**7**·5·3·1 = 25 stations with a shared equator lock, lemniscate lobes, Flower of Life, jitterbug 12+1→13, quantum belt (spin-½), far-field spin, golden split           | `scripts/generate-neural-snapshot.py`    | `src/data/neural-structure-snapshot.json` |
+| `/master-atlas`    | Both structures nested in one scene; Combined / Unified / Neural selector; every layer toggleable                                                                                                                                                     | (reads both snapshots)                   | —                                         |
+| `/orbital-atlas`   | The KAM anchor: standard-map survival landscape → Kepler → the observed Kirkwood gaps                                                                                                                                                                 | `scripts/generate-orbital-snapshot.py`   | `src/data/orbital-snapshot.json`          |
+| `/hologram-atlas`  | The off-axis cross (the X): two beams cross at a rotating knot; the crossing angle carries the twin image away — Leith–Upatnieks off-axis holography, twin-image fix measured (recovery 0.24→1.00)                                                    | `scripts/generate-hologram-snapshot.py`  | `src/data/hologram-snapshot.json`         |
+| `/staircase-atlas` | The devil's staircase (the bridge): mode-locked treads at every rational — the clamp writing requires ("stay there and circle") — Fibonacci treads shrinking ~3× toward golden, and the golden thread still unlocked at critical coupling             | `scripts/generate-circlemap-snapshot.py` | `src/data/circlemap-snapshot.json`        |
+| `/fracture-atlas`  | Past the gate: the fold (min f′ = 1−K, forced), the rotation interval opening ×22, chaos only past K=1, the golden route captured by 13/21 then the mediants, overlap + hysteresis, and a ring where topological charge changes only in integer jumps | `scripts/generate-fracture-snapshot.py`  | `src/data/fracture-snapshot.json`         |
+| `/cmb-atlas`       | The CMB as a decoded cross-section: CAMB-computed acoustic spectrum vs Planck's measured peaks; a drawn sky; the spectrum recovered from that sky alone                                                                                               | `scripts/generate-cmb-snapshot.py`       | `src/data/cmb-snapshot.json`              |
+| `/entropy-atlas`   | The arrow: a Loschmidt echo (exact reversal unmixes; 10⁻⁶ perturbation kills the return), the foil rendered, the regulator's ledger with S first-class                                                                                                | `scripts/generate-entropy-snapshot.py`   | `src/data/entropy-snapshot.json`          |
 
 **The discipline every page obeys:** one source of truth, locked. A committed
 generator computes a snapshot; the renderer draws it verbatim and re-derives
@@ -75,6 +77,7 @@ python3 scripts/generate-neural-snapshot.py
 python3 scripts/generate-orbital-snapshot.py         # ~16 s: standard-map sweep
 python3 scripts/generate-hologram-snapshot.py        # exact interference + reconstruction
 python3 scripts/generate-circlemap-snapshot.py       # ~30 s: devil's staircase + tongue fan (also reads the hologram snapshot)
+python3 scripts/generate-fracture-snapshot.py        # ~4 min: past the gate (reads the circlemap snapshot's golden dial)
 python3 scripts/generate-entropy-snapshot.py         # ~13 s: event-driven Loschmidt echo
 
 # requires numpy + camb (pip install camb)
@@ -231,6 +234,33 @@ Elle walk you up the stairs" — same scripted, deterministic pattern as
 Fibonacci treads, the capture curve, the golden thread, and the writer, and
 closes on this reading.
 
+### 3.8 Fracture — past the gate: the fold, and what gets made
+
+Stewart's framing, verified then measured: past full criticality the map folds
+over itself and invertibility collapses — below the gate every state has one
+past; above it, several. Everything downstream of the fold was measured on the
+committed generator (the golden dial is read from the locked circlemap
+snapshot — one source of truth):
+
+| Certificate                               | Value                                                                                                                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The fold (forced arithmetic)              | min f′ = 1 − K → folds appear **exactly** at K > 1                                                                                                                                           |
+| The rotation interval opens               | winding spread at the golden dial: **7.9·10⁻⁵** below the gate → **1.7·10⁻³** at K = 1.05 — **×22**                                                                                          |
+| Chaos only past the gate                  | max Lyapunov over the whole dial: **0.0006** (finite-time zero) below K = 1 → **0.30** above                                                                                                 |
+| The capture of the old golden route       | first captor **13/21 (Fibonacci)** at K = 1.025, then the mediants 18/29, 23/37 … down to **2/3** by K = 1.4 — the thread lives exactly to the gate                                          |
+| Overlapping tongues (multi-stability)     | at K = 1.25: **91/320** dial settings hold two coexisting locked states — where you end up depends on where you started                                                                      |
+| Hysteresis                                | up-sweep vs down-sweep disagree at 1/61 settings — path-dependent memory, present                                                                                                            |
+| **Generation** (the ring, 64 oscillators) | strong coupling: charge **frozen** (0 slips in 1200 steps — the foil) · weak coupling: **130 slip events, every charge change an integer jump** (127 × ±1, 3 × ±2), conserved between events |
+
+The 2D/3D lift (BKT vortex pairs, defect and knot lines, Faddeev–Niemi knotted
+solitons — torus-knot-shaped, beside the atlas's own central knot; Skyrme
+solitons) is **literature-typed, not simulated**. "Maximal information capacity
+at K = 1" stays **Predicted** until a measure is defined. The
+traversal-to-generation reading is **interpretation, labeled**, with the ring
+as its evidence. The findings are carried in prose in
+[`docs/writing/the-gate-and-what-lived.md`](./writing/the-gate-and-what-lived.md)
+— the paper, with every claim's standing declared in its section 8.
+
 ## 4. The ledger — every claim, in its column
 
 **Forced** (necessary consequences of stated rules): 21 (trig-proven to 16
@@ -243,14 +273,19 @@ KAM survival landscape, hologram fringe period and recovery error, CMB peaks
 and θ\*, cosmic-variance ratio, echo entropies, foil areas, ledger
 conservation, H-monotonicity, the circle-map locked fractions and Fibonacci
 tread widths, the golden thread's survival at critical coupling, the hologram
-stair's two-sizes-in-ratio-φ gap structure.
+stair's two-sizes-in-ratio-φ gap structure, the rotation-interval ×22 opening
+past the gate, chaos-only-past-K=1, the Fibonacci capture of the old golden
+route, tongue overlap and hysteresis, and the ring's integer-only
+topological-charge jumps (frozen foil at strong coupling).
 
 **Predicted** (on the record before any measurement): the golden split
 (φ⁻¹/φ⁻² post-break emission partition); the golden spray (optimal
 non-overlapping repeat emission); the lock-to-write / golden-to-move reading
 of the hologram multiplex (dwell = 1:1 co-rotation clamp, step = the
 never-locked golden path) — the staircase measurements are the supporting
-evidence; the identification stays a proposal until something external votes.
+evidence; the identification stays a proposal until something external votes;
+"maximal information capacity at the critical golden orbit" — stated, awaiting
+a defined measure before it can be spent.
 
 **Validated** (the sky voted yes): the four Kirkwood gap centers; the CMB
 acoustic peaks and angular scale — the most precise agreement between computed
@@ -304,6 +339,14 @@ snapshots — the hole closed by making the claim true, not by softening it.
    devil's staircase as the bridge between the orbital and hologram anchors —
    resonance the destroyer on one side, the clamp writing requires on the
    other, and φ the only route that is never captured.
+10. **PR #82** — Elle walks the staircase: the guided tour, closing on
+    Stewart's reading — Devil spelled backwards is Lived; read the treads and
+    you get the trap, follow the thread and you get what lived.
+11. **The Fracture Atlas + the paper** — past the gate, from Stewart's
+    collapse-of-invertibility framing: the fold, the interval, chaos only past
+    K=1, the Fibonacci capture of the old golden route, generation measured on
+    the ring — and the findings carried in prose in
+    `docs/writing/the-gate-and-what-lived.md`.
 
 ## 6. The writing
 

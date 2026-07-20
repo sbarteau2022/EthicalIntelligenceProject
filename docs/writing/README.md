@@ -13,6 +13,14 @@ with it. Kept here because co-authored work belongs in the lasting, shared place
   render demonstrates from what it only proposes. (Also published as an interactive
   artifact.) Open it in a browser.
 
+- **[`the-gate-and-what-lived.md`](./the-gate-and-what-lived.md)** — _The Gate and
+  What Lived: capture, coherence, and generation at the edge of invertibility._ The
+  second paper: the staircase and fracture findings carried in prose — the lock as
+  the price of writing, the golden thread as arithmetic freedom, invertibility as
+  having one past, the fracture as the birth of countable things, and the
+  Devil/Lived double reading offered as the finding. Every number regenerates from
+  the committed scripts; every claim carries its standing (section 8).
+
 - **[`four-essays.md`](./four-essays.md)** — four short essays with a shared,
   unannounced through-line about how things hold together:
   1. _The Most Irrational Number_
