@@ -48,8 +48,8 @@ const mx = snapshot.multiplex;
         <div class="holo-eyebrow">Holographic Atlas</div>
         <h1>The off-axis cross</h1>
         <p class="holo-sub">
-          the two beams separate and cross in an <b>X</b> off the rotating knot · the crossing angle carries the twin image
-          away · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+          the two beams split to the sides, face each other, and fold off the rotating knot into the <b>X</b> · the crossing
+          angle carries the twin image away · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
         </p>
       </div>
 
@@ -60,9 +60,8 @@ const mx = snapshot.multiplex;
           the recoil, so the two arms can point toward each other
         </button>
         <button class="lg-row" data-g="arms">
-          <span class="sw" style="--c:#ff5cc8"></span><b>The X</b> · object arm & reference arm crossing at {
-            m.crossingAngleDeg
-          }° — carrier f_c = {m.carrier}, fringe {m.fringePeriod}λ
+          <span class="sw" style="--c:#ff5cc8"></span><b>The X</b> · the arms split wide, face each other, and fold at the
+          knot — crossing at {m.crossingAngleDeg}°, carrier f_c = {m.carrier}, fringe {m.fringePeriod}λ
         </button>
         <button class="lg-row" data-g="plate">
           <span class="sw" style="--c:#55e9d0"></span><b>The plate</b> · the recorded off-axis fringes — the hologram itself,
@@ -371,27 +370,37 @@ const mx = snapshot.multiplex;
     kl.position.set(3, 4, 4);
     scene.add(kl);
 
-    // ── the X: two arms crossing at the knot ──
-    // The plate sits at +z; the two beams come from behind (−z), cross at the
-    // knot (origin), and continue as an X onto the plate.
+    // ── the X: two arms folding off the knot ──
+    // Stewart's geometry correction #2: the arms don't hide behind the knot
+    // nearly parallel — they SPLIT OUT TO THE SIDES and point toward each other,
+    // two lights facing each other across the axis, exactly like a real
+    // Leith–Upatnieks table (beamsplitter → wide arms → mirrors fold them back
+    // inward). Each arm folds AT the knot (the reflector) into the narrow X that
+    // lands on the plate. Both legs still arrive on the same side of the plate —
+    // the transmission requirement. (Fully face-to-face THROUGH the plate would
+    // be Denisyuk reflection holography — real, but a different geometry than
+    // the one this snapshot measures.)
     const armsGrp = new THREE.Group();
     world.add(armsGrp);
     // The true crossing angle is 4° (nearly parallel), so the X is drawn at an
     // exaggerated display angle for legibility — a presentation choice; the real
     // angle, carrier, and fringe live in the data/HUD.
     const alpha = 0.36; // ≈20° display; physical armAngleDeg is in the snapshot
+    const INFACE = 1.15; // ≈66° — the incoming legs, split wide, facing each other
     const ARM = 3.0;
     const PLATE_Z = 2.2;
     function beam(sign: number, color: number) {
-      // a full beam from a source behind, THROUGH the knot, on to the plate —
-      // the two make an X crossing at the knot (which takes the recoil).
-      const dir = new THREE.Vector3(Math.sin(sign * alpha), 0, Math.cos(alpha));
-      const src = dir.clone().multiplyScalar(-ARM * 0.7);
-      const tip = dir.clone().multiplyScalar(ARM);
+      // leg 1: from a source out at the side, aimed inward at the knot —
+      // the two sources face each other across the axis. leg 2: folded at the
+      // knot (which takes the recoil), continuing as the narrow X to the plate.
+      const inDir = new THREE.Vector3(Math.sin(sign * INFACE), 0, Math.cos(INFACE));
+      const src = inDir.clone().multiplyScalar(-ARM * 0.85);
+      const outDir = new THREE.Vector3(Math.sin(sign * alpha), 0, Math.cos(alpha));
+      const tip = outDir.clone().multiplyScalar(ARM);
       const g = new THREE.Group();
       g.add(
         new THREE.Line(
-          new THREE.BufferGeometry().setFromPoints([src, tip]),
+          new THREE.BufferGeometry().setFromPoints([src, new THREE.Vector3(0, 0, 0), tip]),
           new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 })
         )
       );
