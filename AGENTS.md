@@ -104,3 +104,13 @@ After changes, always verify:
 1. `npm run build` succeeds
 2. `npm run check` passes (astro check + ESLint + Prettier)
 3. Visual check in browser: homepage, blog, dark mode, mobile menu
+
+## House format for papers and submissions (standing instruction)
+
+All papers, preprints, and submission packages use the **Corpus Forge
+house format** — jacket page, colophon with SHA-256 source fingerprint,
+Pagella/Poppins/Liberation Mono typography. The spec and the generator
+live in `docs/preprints/HOUSE_FORMAT.md` and `docs/preprints/corpus_forge.py`;
+add a config dict per paper and run the generator rather than hand-building
+PDFs. Reference artifact: the Noema submission of "Formed Before It Became"
+(July 2026).
