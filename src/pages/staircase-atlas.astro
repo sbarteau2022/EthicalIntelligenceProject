@@ -105,6 +105,31 @@ const tLast = tr[tr.length - 1];
         </div>
       </div>
 
+      <button class="guide-launch" id="guide-launch" aria-label="Start the guided tour with Elle">
+        <span class="gl-dot"></span> Let Elle walk you up the stairs
+      </button>
+
+      <div class="guide-panel" id="guide-panel" hidden aria-live="polite">
+        <div class="gp-head">
+          <span class="gp-who">Elle</span>
+          <span class="gp-step" id="gp-step">1 / 8</span>
+          <button class="gp-x" id="gp-exit" aria-label="Exit the guided tour">✕</button>
+        </div>
+        <div class="gp-body" id="gp-body"></div>
+        <div class="gp-cta" id="gp-cta" hidden>
+          <a class="gp-btn gp-primary" href="/elle">Keep talking to Elle →</a>
+          <a class="gp-btn" href="/master-atlas">Walk the whole atlas</a>
+          <a class="gp-btn" href="https://github.com/sbarteau2022/EthicalIntelligenceProject/blob/main/docs/ATLAS.md"
+            >Read the ledger</a
+          >
+        </div>
+        <div class="gp-nav">
+          <button class="gp-nb" id="gp-back">← Back</button>
+          <button class="gp-nb" id="gp-auto" aria-pressed="false">▶ Auto</button>
+          <button class="gp-nb gp-next" id="gp-next">Next →</button>
+        </div>
+      </div>
+
       <noscript><div class="holo-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
@@ -292,6 +317,178 @@ const tLast = tr[tr.length - 1];
       display: grid;
       place-items: center;
       color: #9aa3ba;
+    }
+
+    /* ── guided tour ── */
+    .guide-launch {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 72px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 18px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(208, 169, 78, 0.3);
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+    .guide-launch:hover {
+      transform: translateX(-50%) translateY(-1px);
+      box-shadow: 0 8px 30px rgba(208, 169, 78, 0.42);
+    }
+    .gl-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #12131c;
+      box-shadow: 0 0 0 0 rgba(18, 19, 28, 0.5);
+      animation: gl-pulse 2s ease-out infinite;
+    }
+    @keyframes gl-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(18, 19, 28, 0.5);
+      }
+      70% {
+        box-shadow: 0 0 0 7px rgba(18, 19, 28, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(18, 19, 28, 0);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gl-dot {
+        animation: none;
+      }
+    }
+
+    .guide-panel {
+      position: absolute;
+      left: 30px;
+      bottom: 26px;
+      z-index: 4;
+      width: min(390px, calc(100vw - 60px));
+      background: rgba(12, 11, 20, 0.82);
+      border: 1px solid rgba(208, 169, 78, 0.3);
+      border-radius: 14px;
+      padding: 16px 18px 14px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 44px rgba(0, 0, 0, 0.5);
+    }
+    .gp-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .gp-who {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #d0a94e;
+    }
+    .gp-step {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 10px;
+      color: #7b84a0;
+      margin-left: auto;
+    }
+    .gp-x {
+      background: none;
+      border: 0;
+      color: #7b84a0;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0 2px;
+    }
+    .gp-x:hover {
+      color: #eef1f8;
+    }
+    .gp-body {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #dfe4f0;
+      min-height: 96px;
+    }
+    .gp-body :global(b) {
+      color: #fff;
+      font-weight: 600;
+    }
+    .gp-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 4px;
+    }
+    .gp-btn {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 12px;
+      text-decoration: none;
+      color: #cfd6e6;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 7px 14px;
+      transition:
+        background 0.15s ease,
+        color 0.15s ease;
+    }
+    .gp-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .gp-primary {
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border-color: transparent;
+    }
+    .gp-nav {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .gp-nb {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #9aa3ba;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 13px;
+      cursor: pointer;
+      transition:
+        color 0.15s ease,
+        background 0.15s ease;
+    }
+    .gp-nb:hover {
+      color: #eef1f8;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .gp-nb:disabled {
+      opacity: 0.32;
+      cursor: default;
+    }
+    .gp-next {
+      margin-left: auto;
+      color: #12131c;
+      background: linear-gradient(180deg, #f0d79a, #d0a94e);
+      border-color: transparent;
+    }
+    .gp-auto-on {
+      color: #12131c !important;
+      background: #55e9d0 !important;
     }
 
     @media (max-width: 760px) {
@@ -567,6 +764,192 @@ const tLast = tr[tr.length - 1];
       });
     });
 
+    // ════ the guided tour — Elle walks the staircase ════
+    // Scripted, deterministic, same pattern as /master-atlas. Each step
+    // reveals exactly the layers it names and glides the camera to them.
+    // The closing reading — treads are the trap, the thread is what lived —
+    // is Stewart's, recorded in ATLAS.md §3.7.
+    interface TourStep {
+      show: string[];
+      cam: { p: [number, number, number]; t: [number, number, number] };
+      html: string;
+      doors?: boolean;
+    }
+    const ALL_KEYS = Object.keys(registry);
+    const TOUR: TourStep[] = [
+      {
+        show: ALL_KEYS,
+        cam: { p: [2.3, 1.4, 7.4], t: [0, -0.2, 0] },
+        html: "Hi — I'm <b>Elle</b>. This page is named for the devil, and by the end you'll know why that name reads both ways. Everything here is computed, not painted — a real mathematical object, measured. Let me walk you up the stairs.",
+      },
+      {
+        show: ['tongues'],
+        cam: { p: [0, 0.7, 2.6], t: [0, 0.72, -2.1] },
+        html: 'This is the <b>capture field</b>. Every wedge is a lock — a rational rhythm that grabs anything drifting near it and forces it into step. The wedges are thin at the bottom and widen as coupling rises: the stronger things hold onto each other, the more of the dial the locks own. The dark channels are all that stays free.',
+      },
+      {
+        show: ['stair'],
+        cam: { p: [0, -1.2, 3.8], t: [0, -1.4, 0.5] },
+        html: "Now the staircase itself. Every <b>flat tread</b> is a lock being crossed: while you're on one, turning the drive changes <i>nothing</i> — the motion is captured, synchronized, rigid. Zero-derivative. “Stay there and circle,” with no way to leave. There is a tread at every rational number, and this is why the mathematicians named it the <b>devil's staircase</b>.",
+      },
+      {
+        show: ['stair', 'treads'],
+        cam: { p: [0.7, -1.3, 3.0], t: [0.4, -1.5, 0.5] },
+        html: 'Watch the treads shrink. The locks 1/2, 2/3, 3/5, 5/8, <b>8/13</b> — Fibonacci fractions — get ~3× thinner each step: <b>0.0739 → 0.0305 → 0.0102 → 0.0037 → 0.0013</b>, measured. They are closing in on one number they will never reach: the golden ratio. Each is a trap laid closer to it, and each trap is weaker than the last.',
+      },
+      {
+        show: ['fraction'],
+        cam: { p: [3.85, 0.2, 2.2], t: [3.85, 0.2, -0.4] },
+        html: 'How much does the devil own? We measured it: at weak coupling the locks hold <b>7.5%</b> of the dial. At moderate, <b>25%</b>. At full critical coupling, <b>62%</b> by our finite-time count — and the theory says the true limit is <i>everything except a dust too fine to weigh</i>. Almost the whole dial, captured.',
+      },
+      {
+        show: ['tongues', 'thread'],
+        cam: { p: [0.3, 0.7, 2.2], t: [0.28, 0.72, -2.1] },
+        html: "Almost. Watch the gold line. It holds the winding <b>1/φ</b> — the golden ratio's reciprocal, the most irrational number there is — and climbs the entire fan to full criticality <b>without ever being captured</b>. Measured: winding 0.618048 against 1/φ = 0.618034, at the top. The nearest trap is 34/55 — Fibonacci again — and it never closes.",
+      },
+      {
+        show: ['stair', 'treads', 'thread', 'writer'],
+        cam: { p: [1.4, -0.3, 4.4], t: [0.4, -0.9, 0.3] },
+        html: 'And here is what the atlas does with both faces. Watch the white dot: it <b>locks to write</b> — dropping onto a tread, co-rotating, holding perfectly still the way recording demands — then <b>moves golden</b>, along the one route no trap can catch, to the next page. Lock to write, golden to move. (That reading is labeled an interpretation in the ledger; the measurements are the evidence for it.)',
+      },
+      {
+        show: ALL_KEYS,
+        cam: { p: [2.3, 1.4, 7.4], t: [0, -0.2, 0] },
+        html: 'One more thing. <b>Devil</b>, spelled backwards, is <b>Lived</b>. The treads are where motion dies into rigid synchronization — read them and you get the trap. The thread is the one route that never locks and never stops moving, all the way to full criticality. Follow it and you get what <b>lived</b>. Same staircase. It depends which way you read it.',
+        doors: true,
+      },
+    ];
+
+    const guideLaunch = document.getElementById('guide-launch') as HTMLButtonElement;
+    const guidePanel = document.getElementById('guide-panel') as HTMLElement;
+    const gpBody = document.getElementById('gp-body') as HTMLElement;
+    const gpStep = document.getElementById('gp-step') as HTMLElement;
+    const gpCta = document.getElementById('gp-cta') as HTMLElement;
+    const gpBack = document.getElementById('gp-back') as HTMLButtonElement;
+    const gpNext = document.getElementById('gp-next') as HTMLButtonElement;
+    const gpAuto = document.getElementById('gp-auto') as HTMLButtonElement;
+    const gpExit = document.getElementById('gp-exit') as HTMLButtonElement;
+    const stairLegend = document.getElementById('stair-legend');
+    const stairHud = document.getElementById('stair-hud');
+
+    let guided = false;
+    let stepIdx = 0;
+    let guideCam: TourStep['cam'] | null = null;
+    let guideCamT = 0;
+    let autoTimer: ReturnType<typeof setInterval> | null = null;
+
+    function onlyShow(keys: string[]) {
+      for (const k of ALL_KEYS) {
+        const on = keys.includes(k);
+        registry[k].forEach((p) => {
+          p.visible = on;
+        });
+      }
+    }
+    function syncLegendRows() {
+      document.querySelectorAll<HTMLButtonElement>('#stair-legend .lg-row').forEach((row) => {
+        const parts = registry[row.dataset.g || ''];
+        if (parts) row.classList.toggle('off', !parts[0].visible);
+      });
+    }
+
+    function applyStep(i: number) {
+      stepIdx = Math.max(0, Math.min(TOUR.length - 1, i));
+      const s = TOUR[stepIdx];
+      onlyShow(s.show);
+      guideCam = s.cam;
+      guideCamT = 1.5; // glide toward the step's framing, then hand control back
+      gpBody.style.opacity = '0';
+      window.setTimeout(() => {
+        gpBody.innerHTML = s.html;
+        gpBody.style.opacity = '1';
+      }, 140);
+      gpStep.textContent = `${stepIdx + 1} / ${TOUR.length}`;
+      gpCta.hidden = !s.doors;
+      gpBack.disabled = stepIdx === 0;
+      gpNext.textContent = stepIdx === TOUR.length - 1 ? 'Restart' : 'Next →';
+    }
+
+    function stopAuto() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      gpAuto.classList.remove('gp-auto-on');
+      gpAuto.setAttribute('aria-pressed', 'false');
+      gpAuto.textContent = '▶ Auto';
+    }
+
+    function enterGuide() {
+      guided = true;
+      controls.autoRotate = false;
+      guidePanel.hidden = false;
+      guideLaunch.style.display = 'none';
+      if (stairLegend) stairLegend.style.display = 'none';
+      if (stairHud) stairHud.style.display = 'none';
+      applyStep(0);
+    }
+
+    function exitGuide() {
+      guided = false;
+      stopAuto();
+      guidePanel.hidden = true;
+      guideLaunch.style.display = '';
+      if (stairLegend) stairLegend.style.display = '';
+      if (stairHud) stairHud.style.display = '';
+      onlyShow(ALL_KEYS);
+      syncLegendRows();
+      controls.autoRotate = !reduce;
+      guideCam = null;
+    }
+
+    function nextStep() {
+      if (stepIdx === TOUR.length - 1) {
+        applyStep(0);
+      } else {
+        applyStep(stepIdx + 1);
+      }
+    }
+
+    gpBody.style.transition = 'opacity 0.14s ease';
+    guideLaunch.addEventListener('click', enterGuide);
+    gpExit.addEventListener('click', exitGuide);
+    gpNext.addEventListener('click', () => {
+      stopAuto();
+      nextStep();
+    });
+    gpBack.addEventListener('click', () => {
+      stopAuto();
+      applyStep(stepIdx - 1);
+    });
+    gpAuto.addEventListener('click', () => {
+      if (autoTimer) {
+        stopAuto();
+      } else {
+        gpAuto.classList.add('gp-auto-on');
+        gpAuto.setAttribute('aria-pressed', 'true');
+        gpAuto.textContent = '❚❚ Auto';
+        autoTimer = setInterval(() => {
+          if (stepIdx === TOUR.length - 1) {
+            stopAuto();
+          } else {
+            applyStep(stepIdx + 1);
+          }
+        }, 9000);
+      }
+    });
+    window.addEventListener('keydown', (e) => {
+      if (!guided) return;
+      if (e.key === 'Escape') exitGuide();
+      else if (e.key === 'ArrowRight') {
+        stopAuto();
+        nextStep();
+      } else if (e.key === 'ArrowLeft') {
+        stopAuto();
+        applyStep(stepIdx - 1);
+      }
+    });
+
     // ── post / resize / freeze / animate ──
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
@@ -594,8 +977,19 @@ const tLast = tr[tr.length - 1];
     });
 
     const clock = new THREE.Clock();
+    const _camTmp = new THREE.Vector3();
     function frameLoop() {
       const dt = clock.getDelta();
+      // guided-tour camera glide: ease toward the step framing for a beat,
+      // then release so the visitor can freely orbit while Elle talks.
+      if (guided && guideCam && guideCamT > 0) {
+        const a = Math.min(1, dt * 2.4);
+        _camTmp.set(guideCam.p[0], guideCam.p[1], guideCam.p[2]);
+        camera.position.lerp(_camTmp, a);
+        _camTmp.set(guideCam.t[0], guideCam.t[1], guideCam.t[2]);
+        controls.target.lerp(_camTmp, a);
+        guideCamT -= dt;
+      }
       if (!frozen && !reduce) {
         const t = clock.elapsedTime;
         threadMat.opacity = 0.75 + 0.2 * Math.sin(t * 1.8);

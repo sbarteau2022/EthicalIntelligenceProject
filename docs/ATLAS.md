@@ -189,7 +189,7 @@ the law.
 | The ledger                                        | F falls, work rises, **F + W ≡ F₀ exactly**; S rises monotonically — measured: **0 violations in 115 steps** |
 | Typed constants                                   | spontaneous return odds 2⁻¹²⁰ ≈ 7.5·10⁻³⁷; Landauer kT ln 2 = 2.87·10⁻²¹ J/bit                               |
 
-### 3.7 Staircase — the devil's staircase, the two faces of the lock
+### 3.7 Staircase — the devil's staircase, the two faces of the lock (PR #81, tour PR follows)
 
 Stewart's line, verbatim: _"the parts have to be in orbit at the point of
 where they would do this to shine on each other and stay there and circle."_
@@ -216,6 +216,20 @@ dot doing the dwell-and-step (clamp on a tread, slip along the thread),
 carried as **interpretation, labeled**: the staircase measurements are the
 evidence; the identification with the hologram multiplex is the claim they
 support, no more.
+
+**The reading (Stewart's, verbatim in substance):** _Devil spelled backwards
+is Lived._ The flat treads are static, locked, zero-derivative traps — a
+graveyard of rational resonance where dynamic freedom dies into rigid
+synchronization; that is why the mathematics named it the Devil's staircase,
+a structure that looks like a descent into complete capture. But the
+singular un-trapped route weaving through what remains never gets captured,
+never locks, and never stops moving — it carries dynamic coherence all the
+way to full criticality. **When you read the treads, you get the trap. When
+you follow the thread, you get what lived.** The page's guided tour ("Let
+Elle walk you up the stairs" — same scripted, deterministic pattern as
+`/master-atlas`) walks the capture field, the staircase, the shrinking
+Fibonacci treads, the capture curve, the golden thread, and the writer, and
+closes on this reading.
 
 ## 4. The ledger — every claim, in its column
 
@@ -286,7 +300,7 @@ snapshots — the hole closed by making the claim true, not by softening it.
    0.243 → 0.999), the knot's rotation wired as the mechanism (golden-stepped
    pages, not decoration), and the arms drawn lab-style — split wide, facing
    each other, folding at the knot.
-9. **The Staircase Atlas** — from Stewart's "stay there and circle": the
+9. **PR #81** — the Staircase Atlas, from Stewart's "stay there and circle": the
    devil's staircase as the bridge between the orbital and hologram anchors —
    resonance the destroyer on one side, the clamp writing requires on the
    other, and φ the only route that is never captured.
