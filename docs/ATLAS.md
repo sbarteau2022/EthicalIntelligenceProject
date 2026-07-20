@@ -27,7 +27,7 @@ flowchart TD
     end
     subgraph ANCHORS["The anchors (where the sky votes)"]
         O["/orbital-atlas<br/>KAM · Kirkwood gaps<br/><i>computed = observed</i>"]
-        H["/hologram-atlas<br/>the cross-section<br/><i>proven by reconstruction</i>"]
+        H["/hologram-atlas<br/>the off-axis X<br/><i>twin-image fix, measured</i>"]
         C["/cmb-atlas<br/>the sky that decodes<br/><i>Boltzmann vs Planck</i>"]
     end
     subgraph ARROW["The spending (built last — on purpose)"]
@@ -42,7 +42,7 @@ flowchart TD
 | `/neural-atlas`   | The knowledge neural structure: pole singularities, φ² toroid spirals, 1·3·5·**7**·5·3·1 = 25 stations with a shared equator lock, lemniscate lobes, Flower of Life, jitterbug 12+1→13, quantum belt (spin-½), far-field spin, golden split | `scripts/generate-neural-snapshot.py`    | `src/data/neural-structure-snapshot.json` |
 | `/master-atlas`   | Both structures nested in one scene; Combined / Unified / Neural selector; every layer toggleable                                                                                                                                           | (reads both snapshots)                   | —                                         |
 | `/orbital-atlas`  | The KAM anchor: standard-map survival landscape → Kepler → the observed Kirkwood gaps                                                                                                                                                       | `scripts/generate-orbital-snapshot.py`   | `src/data/orbital-snapshot.json`          |
-| `/hologram-atlas` | Two phase-locked emitters; the cross-section of their field is a hologram — proven by reconstructing one partner from the slice plus the other                                                                                              | `scripts/generate-hologram-snapshot.py`  | `src/data/hologram-snapshot.json`         |
+| `/hologram-atlas` | The off-axis cross (the X): two beams cross at a rotating knot; the crossing angle carries the twin image away — Leith–Upatnieks off-axis holography, twin-image fix measured (recovery 0.24→1.00)                                          | `scripts/generate-hologram-snapshot.py`  | `src/data/hologram-snapshot.json`         |
 | `/cmb-atlas`      | The CMB as a decoded cross-section: CAMB-computed acoustic spectrum vs Planck's measured peaks; a drawn sky; the spectrum recovered from that sky alone                                                                                     | `scripts/generate-cmb-snapshot.py`       | `src/data/cmb-snapshot.json`              |
 | `/entropy-atlas`  | The arrow: a Loschmidt echo (exact reversal unmixes; 10⁻⁶ perturbation kills the return), the foil rendered, the regulator's ledger with S first-class                                                                                      | `scripts/generate-entropy-snapshot.py`   | `src/data/entropy-snapshot.json`          |
 
@@ -131,18 +131,31 @@ proxy's band and are stated as wider than the real belt's. The golden winding
 lies **outside** the belt's winding window (0.249–0.5515) — no claim that any
 rock sits at a golden ratio.
 
-### 3.4 Holographic — the cross-section, proven (PR #64)
+### 3.4 Holographic — the off-axis cross, the X (PR #64, rebuilt)
 
-| Check                                            | Value                                                                                                                            |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Fringe period, paraxial λZ/d / measured          | 5.0000 / 5.1663 λ (exact-vs-paraxial gap, stated)                                                                                |
-| Recovered partner (slice + other partner as key) | (−6.027, 0.078) λ vs truth (−6, 0) λ — **error 0.083 λ** (grid resolution)                                                       |
-| Twin-image halo                                  | visible, stated, not hidden                                                                                                      |
-| Golden spray (proposed, default-off)             | max gap 4.74° after 89 shots vs 45° forever for the rational 3/8 control; real pair emission is momentum-locked to 180° — stated |
+Stewart's correction: the two halves don't project straight out and record
+inline — they **separate, angle toward each other, and cross in an X**,
+reflecting off the central rotating knot, and that is what writes the hologram.
+This is a real physics upgrade: **Gabor inline (1948) → Leith–Upatnieks off-axis
+(1962)**, and the X is the fix for the exact twin-image flaw the first (inline)
+version carried and logged.
 
-Found honestly: equal-depth sources give Young fringes (no curvature), so the
-slice _alone_ cannot refocus — the naive first proof failed and was replaced by
-the stronger true one: **the partner is the key**.
+| Check                                     | Value                                                                                                                                    |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Crossing angle (the X) / carrier / fringe | 4° / f_c = 0.0698 / 14.33 λ                                                                                                              |
+| Leith separation threshold                | f_c > 3B/2 → crossing angle > **1.719°** (object half-bandwidth B = 0.02)                                                                |
+| **Twin-image fix, measured**              | recovery correlation **0.243 (inline, twin-contaminated) → 0.999 (off-axis, twin gone)** — a step at the Leith angle                     |
+| Twin separation                           | 2·f_c = 0.140 off-axis, 0 inline (overlap)                                                                                               |
+| Golden multiplex (proposed, default-off)  | the knot's rotation writes pages; golden step keeps **34/34 distinct**, the low-denominator rational control revisits only **8** forever |
+
+The demonstration is the **recovery-vs-angle step**: below the Leith angle the
+real, twin, and zero-order bands pile together and the reconstruction is
+contaminated; above it the twin is carried out to −f_c and the image returns
+clean. φ does **not** set the single X's angle (that is the separation
+condition, and forcing φ there would be a fit); φ enters only as the multiplex
+step, spacing the fan of X's — the same most-irrational logic as the KAM curve,
+labeled proposed. The X's display angle is exaggerated for legibility (the true
+4° is nearly parallel); the physical angle, carrier, and fringe are in the data.
 
 ### 3.5 CMB — the sky that decodes (PR #66)
 

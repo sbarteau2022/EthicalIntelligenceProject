@@ -1,15 +1,16 @@
 ---
 // ============================================================
-// HOLOGRAPHIC ATLAS — the cross-section, proven.
+// HOLOGRAPHIC ATLAS — the off-axis cross (the X).
 //
-// Two phase-locked emitters, trapped circling one another, projecting
-// outward — and the cross-section of their joint field is a hologram.
-// Not an illustration: the fringes shown are the exact computed
-// interference intensity, and the reconstruction plane shows the proof —
-// illuminate the recorded slice with EITHER partner's wave, run the wave
-// backward, and the OTHER partner reappears at its true position (error
-// stored in wavelengths). The phase lock is the coherence condition:
-// without it, no fringes, nothing to reconstruct.
+// Stewart's correction: the two halves don't project straight out and record
+// inline — they separate, angle toward each other, and cross in an X, reflecting
+// off the central rotating knot, and THAT is what writes the hologram. He was
+// right, and it is a known upgrade: Gabor INLINE (1948) → Leith–Upatnieks
+// OFF-AXIS (1962). The X is the fix for the twin-image flaw the inline version
+// carried. Demonstrated, not asserted: recovery correlation jumps from ~0.24
+// (inline, twin-contaminated) to ~1.00 (off-axis) exactly at the Leith angle.
+// The knot's rotation angle-multiplexes pages; the golden step packs the most
+// (proposed, labeled). φ spaces the fan of X's — it does not tilt any single X.
 //
 // ONE SOURCE OF TRUTH, LOCKED: everything is read from
 // `src/data/hologram-snapshot.json` (scripts/generate-hologram-snapshot.py).
@@ -22,14 +23,15 @@ import HubFooter from '~/components/hub/HubFooter.astro';
 import snapshot from '~/data/hologram-snapshot.json';
 
 const metadata = {
-  title: 'Holographic Atlas — the cross-section, proven',
+  title: 'Holographic Atlas — the off-axis cross',
   description:
-    'Two phase-locked emitters, trapped circling one another; the cross-section of their joint field is a hologram — demonstrated by reconstruction: the recorded slice plus either partner recovers the other at its true position, to a tenth of a wavelength.',
+    'The two beams cross in an X, reflecting off the rotating knot; the crossing angle carries the twin image away from the real one — Leith–Upatnieks off-axis holography, with the twin-image separation measured as recovery correlation jumps from 0.24 to 1.00 at the Leith angle.',
 };
 
 const m = snapshot.meta;
-const c = snapshot.checks;
-const gs = snapshot.goldenSpray;
+const r = snapshot.recovery;
+const t = snapshot.twin;
+const mx = snapshot.multiplex;
 ---
 
 <Layout metadata={metadata}>
@@ -39,69 +41,58 @@ const gs = snapshot.goldenSpray;
     <section class="holo-stage">
       <canvas
         id="holo-canvas"
-        aria-label="Rotatable 3D rendering of two phase-locked emitters, their interference cross-section, and its holographic reconstruction"
+        aria-label="Rotatable 3D rendering of two beams crossing in an X at a rotating knot, the off-axis hologram they write, and the twin-image separation"
       ></canvas>
 
       <div class="holo-title">
         <div class="holo-eyebrow">Holographic Atlas</div>
-        <h1>The cross-section is a hologram</h1>
+        <h1>The off-axis cross</h1>
         <p class="holo-sub">
-          two bound emitters, phase-locked · the slice records their joint field · keep the slice and either partner —
-          the other reappears · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
+          the two beams separate and cross in an <b>X</b> off the rotating knot · the crossing angle carries the twin image
+          away · drag to orbit · scroll to zoom · press <kbd>F</kbd> to freeze
         </p>
       </div>
 
       <div class="holo-legend" id="holo-legend">
         <div class="lg-hint">click a row to toggle · overlay any combination</div>
-        <button class="lg-row" data-g="pair">
-          <span class="sw" style="--c:#ff5cc8"></span><b>The bound pair</b> · separation {m.separation}λ · phase-locked
-          — the coherence holography requires
+        <button class="lg-row" data-g="knot">
+          <span class="sw" style="--c:#ffd28f"></span><b>The knot</b> · the rotating reflector the beams cross off — it takes
+          the recoil, so the two arms can point toward each other
         </button>
-        <button class="lg-row" data-g="waves">
-          <span class="sw" style="--c:#9fd0ff"></span><b>Wavefronts</b> · both inners projected out, in step
+        <button class="lg-row" data-g="arms">
+          <span class="sw" style="--c:#ff5cc8"></span><b>The X</b> · object arm & reference arm crossing at {
+            m.crossingAngleDeg
+          }° — carrier f_c = {m.carrier}, fringe {m.fringePeriod}λ
         </button>
-        <button class="lg-row" data-g="holo">
-          <span class="sw" style="--c:#55e9d0"></span><b>The cross-section</b> · exact interference intensity at {
-            m.planeZ
-          }λ — the hologram itself, fringes computed not painted
+        <button class="lg-row" data-g="plate">
+          <span class="sw" style="--c:#55e9d0"></span><b>The plate</b> · the recorded off-axis fringes — the hologram itself,
+          tilted by the crossing angle, computed not painted
         </button>
-        <button class="lg-row" data-g="recon">
-          <span class="sw" style="--c:#ffc46b"></span><b>Reconstruction</b> · the slice illuminated with one partner's wave,
-          run backward — the other partner reappears
+        <button class="lg-row" data-g="spectrum">
+          <span class="sw" style="--c:#9fd0ff"></span><b>The three bands</b> · inline: real, twin & zero-order piled together
+          · off-axis: the twin carried out to −f_c, separated
         </button>
-        <button class="lg-row" data-g="proof">
-          <span class="sw" style="--c:#f5c542"></span><b>Proof marks</b> · recovered peak ringed at ({
-            c.recoveredPartner[0]
-          },
-          {c.recoveredPartner[1]})λ vs truth ({c.recoveredTruth[0]}, {c.recoveredTruth[1]})λ — error {
-            c.recoveredErrorLambda
-          }λ
+        <button class="lg-row" data-g="recovery">
+          <span class="sw" style="--c:#f5c542"></span><b>The proof</b> · recovery correlation vs crossing angle — jumps
+          {r.inlineCorr} → {r.offaxisCorr} at the Leith angle {r.leithAngleDeg}°
         </button>
-        <button class="lg-row" data-g="spray">
-          <span class="sw" style="--c:#b79cff"></span><b>Golden spray (proposed)</b> · repeated emission at the golden angle
-          never self-overlaps — max gap {gs.maxGapGoldenDeg}° after {gs.emissions} shots vs {gs.maxGapRationalDeg}°
-          forever for the rational control
+        <button class="lg-row" data-g="multiplex">
+          <span class="sw" style="--c:#b79cff"></span><b>Golden multiplex (proposed)</b> · the knot's rotation writes pages
+          — golden step keeps {mx.distinctGolden}/{mx.pages} distinct, the rational control only {mx.distinctUniform}
         </button>
       </div>
 
       <div class="holo-hud" id="holo-hud">
-        <div class="hud-h">Holographic Atlas · locked</div>
-        <div class="hud-m"><span>pair separation · plane</span><b>{m.separation}λ · z = {m.planeZ}λ</b></div>
-        <div class="hud-m"><span>coherence</span><b class="ok">phase-locked</b></div>
-        <div class="hud-m">
-          <span>fringe period · paraxial / measured</span><b>{c.fringePeriodPredicted} / {c.fringePeriodMeasured} λ</b>
-        </div>
-        <div class="hud-m">
-          <span>recovered partner</span><b>({c.recoveredPartner[0]}, {c.recoveredPartner[1]}) λ</b>
-        </div>
-        <div class="hud-m"><span>truth</span><b>({c.recoveredTruth[0]}, {c.recoveredTruth[1]}) λ</b></div>
-        <div class="hud-m"><span>recovery error</span><b>{c.recoveredErrorLambda} λ</b></div>
-        <div class="hud-m">
-          <span>golden spray gap · rational control</span><b>{gs.maxGapGoldenDeg}° · {gs.maxGapRationalDeg}°</b>
-        </div>
-        <div class="hud-m"><span>state</span><b id="hud-state">projecting · locked</b></div>
+        <div class="hud-h">Off-axis hologram · locked</div>
+        <div class="hud-m"><span>crossing angle (the X)</span><b>{m.crossingAngleDeg}°</b></div>
+        <div class="hud-m"><span>carrier f_c · fringe</span><b>{m.carrier} · {m.fringePeriod}λ</b></div>
+        <div class="hud-m"><span>Leith threshold angle</span><b>{r.leithAngleDeg}°</b></div>
+        <div class="hud-m"><span>recovery · inline (twin ghost)</span><b>{r.inlineCorr}</b></div>
+        <div class="hud-m"><span>recovery · off-axis (twin gone)</span><b class="ok">{r.offaxisCorr}</b></div>
+        <div class="hud-m"><span>twin separation · 2·f_c</span><b>{t.separationCarrier} (0 inline)</b></div>
+        <div class="hud-m"><span>state</span><b id="hud-state">knot turning · writing pages</b></div>
         <div class="hud-src">
-          source: hologram-snapshot.json · twin-image halo visible, stated · spray layer proposed
+          source: hologram-snapshot.json · Leith–Upatnieks off-axis · multiplex proposed, labeled
         </div>
       </div>
 
@@ -158,6 +149,11 @@ const gs = snapshot.goldenSpray;
       margin: 0;
       text-wrap: balance;
     }
+    .holo-title h1 :global(b),
+    .holo-sub :global(b) {
+      color: #fff;
+      font-weight: 600;
+    }
     .holo-sub {
       font-size: 13px;
       color: #9aa3ba;
@@ -188,7 +184,7 @@ const gs = snapshot.goldenSpray;
       display: flex;
       flex-direction: column;
       gap: 9px;
-      max-width: 340px;
+      max-width: 345px;
     }
     .lg-hint {
       font-family: 'DM Mono', ui-monospace, monospace;
@@ -253,7 +249,7 @@ const gs = snapshot.goldenSpray;
       display: flex;
       flex-direction: column;
       gap: 5px;
-      min-width: 300px;
+      min-width: 320px;
     }
     .hud-h {
       color: #ffc46b;
@@ -322,217 +318,257 @@ const gs = snapshot.goldenSpray;
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
     interface Snap {
-      meta: { separation: number; planeZ: number; planeSize: number };
-      checks: {
-        recoveredPartner: number[];
-        recoveredTruth: number[];
-        keyRefocus: number[];
-        keyTruth: number[];
+      meta: { crossingAngleDeg: number; carrier: number; fringePeriod: number };
+      geometry: { armAngleDeg: number; crossingAngleDeg: number };
+      recording: { n: number; extent: number; image: number[][] };
+      spectrum: { f: number[]; inline: number[]; offaxis: number[]; carrier: number };
+      recovery: {
+        angleDeg: number[];
+        corr: number[];
+        leithAngleDeg: number;
+        workingAngleDeg: number;
+        offaxisCorr: number;
       };
-      sources: { positions: number[][]; phaseLocked: boolean };
-      hologram: { n: number; extent: number; z: number; intensity: number[][] };
-      reconstruction: { n: number; extent: number; z: number; intensity: number[][] };
-      goldenSpray: { emissions: number; goldenDirs: number[]; rationalDirs: number[] };
+      multiplex: { goldenDirs: number[]; uniformDirs: number[] };
     }
 
     const snap: Snap = JSON.parse((document.getElementById('holo-snap') as HTMLElement).textContent || '{}');
     const canvas = document.getElementById('holo-canvas') as HTMLCanvasElement;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // scene scale: 0.05 units per wavelength (a drawing decision)
-    const S = 0.05;
-
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.06;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-    camera.position.set(4.6, 2.8, 7.6);
+    camera.position.set(3.6, 2.0, 6.2);
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
-    controls.minDistance = 1.2;
+    controls.minDistance = 1.6;
     controls.maxDistance = 22;
-    controls.target.set(0, 0, 1.4);
+    controls.target.set(0, 0, 0.6);
     controls.autoRotate = !reduce;
-    controls.autoRotateSpeed = 0.3;
+    controls.autoRotateSpeed = 0.28;
 
     const world = new THREE.Group();
     scene.add(world);
 
-    // ── intensity grid → additive-blended texture (colormapped in JS) ──
-    function planeTexture(grid: number[][], tint: [number, number, number]) {
-      const n = grid.length;
-      const data = new Uint8Array(n * n * 4);
-      for (let j = 0; j < n; j++) {
-        for (let i = 0; i < n; i++) {
-          const v = grid[j][i];
-          const o = (j * n + i) * 4;
-          data[o] = Math.round(v * tint[0]);
-          data[o + 1] = Math.round(v * tint[1]);
-          data[o + 2] = Math.round(v * tint[2]);
-          data[o + 3] = 255;
+    // ── the knot: the rotating reflector at the crossing ──
+    const knotGrp = new THREE.Group();
+    world.add(knotGrp);
+    const knot = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(0.19, 0.058, 128, 16, 2, 3),
+      new THREE.MeshStandardMaterial({ color: 0xffd28f, emissive: 0x6a4a12, roughness: 0.35, metalness: 0.6 })
+    );
+    knotGrp.add(knot);
+    scene.add(new THREE.AmbientLight(0x3a3550, 1.0));
+    const kl = new THREE.PointLight(0xffe0a0, 22, 30);
+    kl.position.set(3, 4, 4);
+    scene.add(kl);
+
+    // ── the X: two arms crossing at the knot ──
+    // The plate sits at +z; the two beams come from behind (−z), cross at the
+    // knot (origin), and continue as an X onto the plate.
+    const armsGrp = new THREE.Group();
+    world.add(armsGrp);
+    // The true crossing angle is 4° (nearly parallel), so the X is drawn at an
+    // exaggerated display angle for legibility — a presentation choice; the real
+    // angle, carrier, and fringe live in the data/HUD.
+    const alpha = 0.36; // ≈20° display; physical armAngleDeg is in the snapshot
+    const ARM = 3.0;
+    const PLATE_Z = 2.2;
+    function beam(sign: number, color: number) {
+      // a full beam from a source behind, THROUGH the knot, on to the plate —
+      // the two make an X crossing at the knot (which takes the recoil).
+      const dir = new THREE.Vector3(Math.sin(sign * alpha), 0, Math.cos(alpha));
+      const src = dir.clone().multiplyScalar(-ARM * 0.7);
+      const tip = dir.clone().multiplyScalar(ARM);
+      const g = new THREE.Group();
+      g.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([src, tip]),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 })
+        )
+      );
+      const em = new THREE.Mesh(new THREE.SphereGeometry(0.08, 18, 12), new THREE.MeshBasicMaterial({ color }));
+      em.position.copy(src);
+      g.add(em);
+      armsGrp.add(g);
+      return g;
+    }
+    beam(-1, 0xff5cc8); // object arm
+    beam(1, 0x6ea8ff); // reference arm
+
+    // ── the plate: the recorded off-axis fringes ──
+    const plateGrp = new THREE.Group();
+    world.add(plateGrp);
+    const ni = snap.recording.n;
+    const tex = new Uint8Array(ni * ni * 4);
+    for (let j = 0; j < ni; j++) {
+      for (let i = 0; i < ni; i++) {
+        const v = snap.recording.image[j][i];
+        const o = (j * ni + i) * 4;
+        tex[o] = Math.round(v * 0.32);
+        tex[o + 1] = Math.round(v * 0.92);
+        tex[o + 2] = Math.round(v * 0.82);
+        tex[o + 3] = 255;
+      }
+    }
+    const plateTex = new THREE.DataTexture(tex, ni, ni, THREE.RGBAFormat);
+    plateTex.needsUpdate = true;
+    const plate = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.6, 2.6),
+      new THREE.MeshBasicMaterial({
+        map: plateTex,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    );
+    plate.position.set(0, 0, PLATE_Z);
+    plateGrp.add(plate);
+    plateGrp.add(
+      new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.PlaneGeometry(2.6, 2.6)),
+        new THREE.LineBasicMaterial({ color: 0x55e9d0, transparent: true, opacity: 0.35 })
+      ).translateZ(PLATE_Z)
+    );
+
+    // ── the three bands: the spectrum panel (inline overlap vs off-axis split) ──
+    const specGrp = new THREE.Group();
+    world.add(specGrp);
+    const SP_Z = -2.3,
+      SP_W = 3.6,
+      SP_H = 1.5,
+      SP_Y = 0.7,
+      SP_CX = -0.4;
+    const fArr = snap.spectrum.f;
+    const fMin = fArr[0],
+      fMax = fArr[fArr.length - 1];
+    const spx = (fv: number) => SP_CX + (-SP_W / 2 + (SP_W * (fv - fMin)) / (fMax - fMin));
+    const spy = (a: number) => SP_Y + a * SP_H;
+    function smooth(arr: number[], w: number) {
+      // display-only envelope so the three bands read cleanly (data is exact)
+      const out = arr.slice();
+      for (let i = 0; i < arr.length; i++) {
+        let s = 0,
+          n = 0;
+        for (let j = -w; j <= w; j++) {
+          const k = i + j;
+          if (k >= 0 && k < arr.length) {
+            s += arr[k];
+            n++;
+          }
         }
+        out[i] = s / n;
       }
-      const tex = new THREE.DataTexture(data, n, n, THREE.RGBAFormat);
-      tex.needsUpdate = true;
-      return tex;
+      return out;
     }
-    const planeGeo = new THREE.PlaneGeometry(snap.hologram.extent * S, snap.hologram.extent * S);
-
-    // ── the bound pair ──
-    const pairGrp = new THREE.Group();
-    world.add(pairGrp);
-    const srcMeshes = snap.sources.positions.map((p) => {
-      const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(0.06, 20, 14),
-        new THREE.MeshBasicMaterial({ color: 0xff5cc8 })
+    function specLine(arr: number[], color: number, opacity: number) {
+      const sm = smooth(arr, 2);
+      specGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(sm.map((a, i) => new THREE.Vector3(spx(fArr[i]), spy(a), SP_Z))),
+          new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+        )
       );
-      mesh.position.set(p[0] * S, p[1] * S, p[2] * S);
-      pairGrp.add(mesh);
-      return mesh;
-    });
-    // the mutual orbit they are trapped on, and the bond through the center
-    const orbitPts: THREE.Vector3[] = [];
-    const orbR = (snap.meta.separation / 2) * S;
-    for (let i = 0; i <= 96; i++) {
-      const a = (i / 96) * Math.PI * 2;
-      orbitPts.push(new THREE.Vector3(Math.cos(a) * orbR, Math.sin(a) * orbR, 0));
     }
-    pairGrp.add(
-      new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(orbitPts),
-        new THREE.LineBasicMaterial({ color: 0xff5cc8, transparent: true, opacity: 0.3 })
-      )
-    );
-    pairGrp.add(
-      new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-orbR, 0, 0), new THREE.Vector3(orbR, 0, 0)]),
-        new THREE.LineBasicMaterial({ color: 0xffc46b, transparent: true, opacity: 0.5 })
-      )
-    );
+    specLine(snap.spectrum.inline, 0x7b6cff, 0.55); // inline: piled at center
+    specLine(snap.spectrum.offaxis, 0x9fd0ff, 0.95); // off-axis: three separated bands
+    // carrier markers ±f_c
+    for (const s of [-1, 1]) {
+      specGrp.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(spx(s * snap.spectrum.carrier), spy(0), SP_Z),
+            new THREE.Vector3(spx(s * snap.spectrum.carrier), spy(1.05), SP_Z),
+          ]),
+          new THREE.LineBasicMaterial({ color: 0xff5c7a, transparent: true, opacity: 0.4 })
+        )
+      );
+    }
 
-    // ── wavefronts: both inners projected out, in step (phase-locked) ──
-    const wavesGrp = new THREE.Group();
-    world.add(wavesGrp);
-    const WAVE_SHELLS = 4;
-    const waveMeshes: { mesh: THREE.Mesh; k: number; src: number }[] = [];
-    for (let s = 0; s < 2; s++) {
-      for (let k = 0; k < WAVE_SHELLS; k++) {
-        const mesh = new THREE.Mesh(
-          new THREE.SphereGeometry(1, 24, 16),
-          new THREE.MeshBasicMaterial({
-            color: 0x9fd0ff,
-            transparent: true,
-            opacity: 0.05,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-          })
+    // ── the proof: recovery correlation vs crossing angle ──
+    const recGrp = new THREE.Group();
+    world.add(recGrp);
+    const RC_X = 2.7,
+      RC_W = 2.1,
+      RC_H = 1.8,
+      RC_Y = -2.1;
+    const aMax = snap.recovery.angleDeg[snap.recovery.angleDeg.length - 1];
+    const rx = (a: number) => RC_X + (RC_W * a) / aMax;
+    const ry = (cc: number) => RC_Y + cc * RC_H;
+    recGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(
+          snap.recovery.angleDeg.map((a, i) => new THREE.Vector3(rx(a), ry(snap.recovery.corr[i]), 0))
+        ),
+        new THREE.LineBasicMaterial({ color: 0xf5c542, transparent: true, opacity: 0.95 })
+      )
+    );
+    // baseline + Leith threshold marker
+    recGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(rx(0), ry(0), 0),
+          new THREE.Vector3(rx(aMax), ry(0), 0),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0x39415c, transparent: true, opacity: 0.7 })
+      )
+    );
+    recGrp.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(rx(snap.recovery.leithAngleDeg), ry(0), 0),
+          new THREE.Vector3(rx(snap.recovery.leithAngleDeg), ry(1.05), 0),
+        ]),
+        new THREE.LineBasicMaterial({ color: 0xff5c7a, transparent: true, opacity: 0.5 })
+      )
+    );
+    const workDot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 12, 10),
+      new THREE.MeshBasicMaterial({ color: 0x55e9d0 })
+    );
+    workDot.position.set(rx(snap.recovery.workingAngleDeg), ry(snap.recovery.offaxisCorr), 0);
+    recGrp.add(workDot);
+
+    // ── the golden multiplex: the knot's page angles (proposed) ──
+    const mxGrp = new THREE.Group();
+    world.add(mxGrp);
+    const RING = 0.62;
+    function ringDots(dirs: number[], radius: number, color: number, size: number) {
+      const seen = new Set<number>();
+      for (const a of dirs) {
+        const key = Math.round(a * 1000);
+        const fresh = !seen.has(key);
+        seen.add(key);
+        const dot = new THREE.Mesh(
+          new THREE.SphereGeometry(size, 8, 6),
+          new THREE.MeshBasicMaterial({ color, transparent: true, opacity: fresh ? 0.9 : 0.9 })
         );
-        mesh.position.copy(srcMeshes[s].position);
-        wavesGrp.add(mesh);
-        waveMeshes.push({ mesh, k, src: s });
+        dot.position.set(Math.cos(a) * radius, Math.sin(a) * radius, 0);
+        mxGrp.add(dot);
       }
     }
-
-    // ── the cross-section: the hologram plane, exact computed fringes ──
-    const holoGrp = new THREE.Group();
-    world.add(holoGrp);
-    const holoPlane = new THREE.Mesh(
-      planeGeo,
-      new THREE.MeshBasicMaterial({
-        map: planeTexture(snap.hologram.intensity, [0.16, 0.5, 0.45]),
-        transparent: true,
-        opacity: 0.75,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      })
-    );
-    holoPlane.position.set(0, 0, snap.hologram.z * S);
-    holoGrp.add(holoPlane);
-    // frame
-    const frame = new THREE.LineSegments(
-      new THREE.EdgesGeometry(planeGeo),
-      new THREE.LineBasicMaterial({ color: 0x55e9d0, transparent: true, opacity: 0.35 })
-    );
-    frame.position.copy(holoPlane.position);
-    holoGrp.add(frame);
-
-    // ── the reconstruction: slice + one partner, run backward ──
-    const reconGrp = new THREE.Group();
-    world.add(reconGrp);
-    const reconPlane = new THREE.Mesh(
-      planeGeo,
-      new THREE.MeshBasicMaterial({
-        map: planeTexture(snap.reconstruction.intensity, [1.0, 0.72, 0.35]),
-        transparent: true,
-        opacity: 0.95,
-        side: THREE.DoubleSide,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      })
-    );
-    reconPlane.position.set(0, 0, -0.02);
-    reconGrp.add(reconPlane);
-    const rFrame = new THREE.LineSegments(
-      new THREE.EdgesGeometry(planeGeo),
-      new THREE.LineBasicMaterial({ color: 0xffc46b, transparent: true, opacity: 0.3 })
-    );
-    rFrame.position.copy(reconPlane.position);
-    reconGrp.add(rFrame);
-
-    // ── proof marks: rings where the reconstruction peaked, at the sources ──
-    // (texture v runs bottom-to-top, so the plane's y is the grid's -y; the
-    // recovered peaks are ringed at their measured positions)
-    const proofGrp = new THREE.Group();
-    world.add(proofGrp);
-    function proofRing(px: number, py: number, color: number) {
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(0.12, 0.008, 8, 48),
-        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9 })
-      );
-      ring.position.set(px * S, -py * S, 0);
-      proofGrp.add(ring);
-      return ring;
-    }
-    const recRing = proofRing(snap.checks.recoveredPartner[0], snap.checks.recoveredPartner[1], 0xf5c542);
-    proofRing(snap.checks.keyRefocus[0], snap.checks.keyRefocus[1], 0x8a93ad);
-
-    // ── golden spray (proposed): repeated emission directions on a ring ──
-    const sprayGrp = new THREE.Group();
-    world.add(sprayGrp);
-    const SPRAY_R = 1.55;
-    for (const a of snap.goldenSpray.goldenDirs) {
-      const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.014, 8, 6),
-        new THREE.MeshBasicMaterial({ color: 0xb79cff, transparent: true, opacity: 0.85 })
-      );
-      dot.position.set(Math.cos(a) * SPRAY_R, Math.sin(a) * SPRAY_R, 0);
-      sprayGrp.add(dot);
-    }
-    for (const a of snap.goldenSpray.rationalDirs) {
-      const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.02, 8, 6),
-        new THREE.MeshBasicMaterial({ color: 0xff5c7a, transparent: true, opacity: 0.6 })
-      );
-      dot.position.set(Math.cos(a) * (SPRAY_R + 0.14), Math.sin(a) * (SPRAY_R + 0.14), 0);
-      sprayGrp.add(dot);
-    }
-    sprayGrp.visible = false; // proposed layer starts off; its legend row reflects that
+    ringDots(snap.multiplex.goldenDirs, RING, 0xb79cff, 0.02); // golden: all distinct
+    ringDots(snap.multiplex.uniformDirs, RING + 0.16, 0xff5c7a, 0.03); // rational: collapses to a few
+    mxGrp.visible = false; // proposed layer starts off; its legend row reflects that
 
     // ── the selectable legend ──
     const registry: Record<string, THREE.Object3D[]> = {
-      pair: [pairGrp],
-      waves: [wavesGrp],
-      holo: [holoGrp],
-      recon: [reconGrp],
-      proof: [proofGrp],
-      spray: [sprayGrp],
+      knot: [knotGrp],
+      arms: [armsGrp],
+      plate: [plateGrp],
+      spectrum: [specGrp],
+      recovery: [recGrp],
+      multiplex: [mxGrp],
     };
     document.querySelectorAll<HTMLButtonElement>('#holo-legend .lg-row').forEach((row) => {
       const parts = registry[row.dataset.g || ''];
@@ -550,7 +586,7 @@ const gs = snapshot.goldenSpray;
     // ── post / resize / freeze / animate ──
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.32, 0.6, 0.35));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.42, 0.6, 0.32));
     composer.addPass(new OutputPass());
 
     function resize() {
@@ -570,32 +606,24 @@ const gs = snapshot.goldenSpray;
       if (e.key === 'f' || e.key === 'F') {
         frozen = !frozen;
         controls.autoRotate = !frozen && !reduce;
-        if (hudState) hudState.textContent = frozen ? 'FROZEN' : 'projecting · locked';
+        if (hudState) hudState.textContent = frozen ? 'FROZEN' : 'knot turning · writing pages';
       }
     });
 
     const clock = new THREE.Clock();
-    const WAVE_MAX = 2.6;
-    function frame_() {
+    function frameLoop() {
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
         const t = clock.elapsedTime;
-        // phase-locked projection: every shell leaves both sources at the
-        // same moment and grows at the same rate — the lock made visible
-        for (const w of waveMeshes) {
-          const ph = (((t * 0.35 + w.k / WAVE_SHELLS) % 1) + 1) % 1;
-          const r = 0.05 + ph * WAVE_MAX;
-          w.mesh.scale.setScalar(r);
-          (w.mesh.material as THREE.MeshBasicMaterial).opacity = 0.06 * (1 - ph) * (1 - ph);
-        }
-        const pulse = 1 + 0.15 * Math.sin(t * 1.6);
-        recRing.scale.setScalar(pulse);
-        void dt;
+        knot.rotation.y += dt * 0.6; // the knot turns — sweeping the multiplex
+        knot.rotation.x = Math.sin(t * 0.3) * 0.3;
+        mxGrp.rotation.z += dt * 0.25; // the page fan sweeps with it
+        workDot.scale.setScalar(1 + 0.16 * Math.sin(t * 1.6));
       }
       controls.update();
       composer.render();
-      requestAnimationFrame(frame_);
+      requestAnimationFrame(frameLoop);
     }
-    frame_();
+    frameLoop();
   </script>
 </Layout>
