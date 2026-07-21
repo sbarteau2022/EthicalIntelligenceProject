@@ -1,228 +1,134 @@
 ---
-import Features2 from '~/components/widgets/Features2.astro';
-import Features3 from '~/components/widgets/Features3.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import Steps2 from '~/components/widgets/Steps2.astro';
-import Layout from '~/layouts/PageLayout.astro';
+// ============================================================
+// ABOUT — who's behind the project and how it's actually structured
+// right now: Stewart Barteau, direct, pre-LLC, plus the one part
+// (The Observer) that already runs under a real incorporated nonprofit.
+// Built on the shared hub design system, matching /business, /principled.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
 
 const metadata = {
-  title: 'About us',
+  title: 'About — The Ethical Intelligence Project',
+  description:
+    'The Ethical Intelligence Project is built and operated by Stewart Barteau, based in Hermann, Missouri — community-based intelligence infrastructure powered by Elle AI, organized around nine engines built for the people doing the work.',
 };
+
+const ENGINES = [
+  { n: '01', name: 'Elle Law', tag: 'Rights & legal reasoning', href: '/elle' },
+  { n: '02', name: 'Harmonizer', tag: 'Mental health & peer support', href: '/elle' },
+  { n: '03', name: 'Atlas Edu', tag: 'Education & navigation', href: '/edu' },
+  { n: '04', name: 'Agricultural Intelligence', tag: 'USDA & farm resources', href: '/business' },
+  { n: '05', name: 'Healthcare Navigation', tag: 'Benefits & patient rights', href: '/elle' },
+  { n: '06', name: 'Small Business Hub', tag: 'Licensing, grants & compliance', href: '/business' },
+  { n: '07', name: 'Civic Intelligence', tag: 'Government, translated', href: '/elle' },
+  { n: '08', name: 'RAPID²AI', tag: 'Hospitality intelligence', href: '/business' },
+  { n: '09', name: 'The Observer', tag: 'Research & testimony', href: '/observer' },
+];
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero Widget ******************* -->
+  <div class="eih">
+    <HubNav current="/about" />
 
-  <Hero
-    tagline="About us"
-    image={{
-      src: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Caos Image',
-    }}
-  >
-    <Fragment slot="title">
-      Elevate your online presence with our <br />
-      <span class="text-accent dark:text-white"> Beautiful Website Templates</span>
-    </Fragment>
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow rv">About</div>
+      <h1>Intelligence built to serve the people doing the work.</h1>
+      <p class="lede">
+        The Ethical Intelligence Project is community-based intelligence infrastructure, powered by Elle — one
+        corpus-grounded intelligence with a memory she can see but never rewrite. It's organized around nine engines,
+        each built for people who don't have a staff of lawyers or analysts standing by: rights and legal reasoning,
+        mental health and peer support, education, agriculture, healthcare navigation, small business, civic life,
+        hospitality, and research and testimony.
+      </p>
+      <div class="cta-row">
+        <a href="/principled" class="btn">Read the full philosophy</a>
+        <a href="/pricing" class="btn ghost">Join the beta</a>
+      </div>
+    </section>
 
-    <Fragment slot="subtitle">
-      Donec efficitur, ipsum quis congue luctus, mauris magna convallis mauris, eu auctor nisi lectus non augue. Donec
-      quis lorem non massa vulputate efficitur ac at turpis. Sed tincidunt ex a nunc convallis, et lobortis nisi tempus.
-      Suspendisse vitae nisi eget tortor luctus maximus sed non lectus.
-    </Fragment>
-  </Hero>
+    <!-- WHO'S BEHIND IT -->
+    <section class="wrap">
+      <div class="split rv">
+        <div>
+          <div class="eyebrow rv">Who's behind it</div>
+          <h2 class="rv">One person, building it directly — plus the part that's already a real nonprofit.</h2>
+          <p>
+            The Ethical Intelligence Project is built and operated directly by <strong>Stewart Barteau</strong>, based
+            in Hermann, Missouri. The commercial side — Elle, Optimus, the Analysis Engine, Atlas Edu, the Small
+            Business Hub — is currently run this way deliberately, ahead of forming a company around it, so the beta can
+            prove itself before the paperwork does.
+          </p>
+          <p>
+            <strong>The Observer</strong> is different: it already operates under the Observer Foundation, a 501(c)(3) nonprofit
+            incorporated in Missouri, with its own public transparency and funding-ethics disclosures. It's the one piece
+            of this project that isn't waiting on anything.
+          </p>
+        </div>
+        <div>
+          <div class="eyebrow rv">The facts</div>
+          <div class="limit-list rv">
+            <div class="limit-row"><span class="k">Operated by</span><span class="v">Stewart Barteau</span></div>
+            <div class="limit-row"><span class="k">Based in</span><span class="v">Hermann, Missouri</span></div>
+            <div class="limit-row">
+              <span class="k">Commercial products</span><span class="v">pre-LLC, direct</span>
+            </div>
+            <div class="limit-row">
+              <span class="k">The Observer</span><span class="v">Observer Foundation, 501(c)(3)</span>
+            </div>
+            <div class="limit-row"><span class="k">Status</span><span class="v">beta</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Stats Widget ****************** -->
+    <!-- PHILOSOPHY -->
+    <section class="wrap" style="text-align:center">
+      <div class="eyebrow rv">The idea underneath it</div>
+      <h2 class="rv">What survives is what refuses to collapse or drift.</h2>
+      <p style="max-width:640px;margin:0 auto 26px">
+        Elle is built on a set of frameworks — NECAI-F, the Observer Series, RBDA, and κ(T,t) — that treat coherence as
+        something you can actually measure, not just claim. The short version: don't flatten a live question, hold many
+        readings at once, anchor so you can't quietly drift, and keep a live number for how well it's all holding
+        together.
+      </p>
+      <div class="cta-row">
+        <a href="/principled" class="btn ghost">See how it all connects →</a>
+      </div>
+    </section>
 
-  <Stats
-    title="Statistics about us"
-    stats={[
-      { title: 'Offices', amount: '4' },
-      { title: 'Employees', amount: '248' },
-      { title: 'Templates', amount: '12' },
-      { title: 'Awards', amount: '24' },
-    ]}
-  />
+    <!-- ENGINES -->
+    <section class="wrap">
+      <div class="eyebrow rv">The nine engines</div>
+      <h2 class="rv">One presence, nine expressions.</h2>
+      <div class="cards rv stagger">
+        {
+          ENGINES.map((e) => (
+            <a class="card" href={e.href}>
+              <div class="n">{e.n}</div>
+              <h3>{e.name}</h3>
+              <p>{e.tag}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
 
-  <!-- Features3 Widget ************** -->
+    <!-- CTA -->
+    <section class="wrap" style="text-align:center">
+      <h2 class="rv">Questions? Just ask.</h2>
+      <p style="max-width:520px;margin:0 auto 26px">
+        No sales team, no phone tree — reach out directly, or ask Elle yourself.
+      </p>
+      <div class="cta-row">
+        <a href="/contact" class="btn">Get in touch</a>
+        <a href="/elle" class="btn ghost">Ask Elle</a>
+      </div>
+    </section>
 
-  <Features3
-    title="Our templates"
-    subtitle="Etiam scelerisque, enim eget vestibulum luctus, nibh mauris blandit nulla, nec vestibulum risus justo ut enim. Praesent lacinia diam et ante imperdiet euismod."
-    columns={3}
-    isBeforeContent={true}
-    items={[
-      {
-        title: 'Educational',
-        description:
-          'Morbi faucibus luctus quam, sit amet aliquet felis tempor id. Cras augue massa, ornare quis dignissim a, molestie vel nulla.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Interior Design',
-        description:
-          'Vivamus porttitor, tortor convallis aliquam pretium, turpis enim consectetur elit, vitae egestas purus erat ac nunc nulla.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Photography',
-        description:
-          'Duis sed lectus in nisl vehicula porttitor eget quis odio. Aliquam erat volutpat. Nulla eleifend nulla id sem fermentum.',
-        icon: 'tabler:template',
-      },
-    ]}
-  />
-
-  <!-- Features3 Widget ************** -->
-
-  <Features3
-    columns={3}
-    isAfterContent={true}
-    items={[
-      {
-        title: 'E-commerce',
-        description:
-          'Rutrum non odio at vehicula. Proin ipsum justo, dignissim in vehicula sit amet, dignissim id quam. Sed ac tincidunt sapien.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Blog',
-        description:
-          'Nullam efficitur volutpat sem sed fringilla. Suspendisse et enim eu orci volutpat laoreet ac vitae libero.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Business',
-        description:
-          'Morbi et elit finibus, facilisis justo ut, pharetra ipsum. Donec efficitur, ipsum quis congue luctus, mauris magna.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Branding',
-        description:
-          'Suspendisse vitae nisi eget tortor luctus maximus sed non lectus. Cras malesuada pretium placerat. Nullam venenatis dolor a ante rhoncus.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Medical',
-        description:
-          'Vestibulum malesuada lacus id nibh posuere feugiat. Nam volutpat nulla a felis ultrices, id suscipit mauris congue. In hac habitasse platea dictumst.',
-        icon: 'tabler:template',
-      },
-      {
-        title: 'Fashion Design',
-        description:
-          'Maecenas eu tellus eget est scelerisque lacinia et a diam. Aliquam velit lorem, vehicula id fermentum et, rhoncus et purus.',
-        icon: 'tabler:template',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
-      alt: 'Colorful Image',
-    }}
-  />
-
-  <!-- Steps2 Widget ****************** -->
-
-  <Steps2
-    title="Our values"
-    subtitle="Maecenas eu tellus eget est scelerisque lacinia et a diam. Aliquam velit lorem, vehicula id fermentum et, rhoncus et purus. Nulla facilisi. Vestibulum malesuada lacus."
-    items={[
-      {
-        title: 'Customer-centric approach',
-        description:
-          'Donec id nibh neque. Quisque et fermentum tortor. Fusce vitae dolor a mauris dignissim commodo. Ut eleifend luctus condimentum.',
-      },
-      {
-        title: 'Constant Improvement',
-        description:
-          'Phasellus laoreet fermentum venenatis. Vivamus dapibus pulvinar arcu eget mattis. Fusce eget mauris leo.',
-      },
-      {
-        title: 'Ethical Practices',
-        description:
-          'Vestibulum imperdiet libero et lectus molestie, et maximus augue porta. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
-      },
-    ]}
-  />
-
-  <!-- Steps2 Widget ****************** -->
-
-  <Steps2
-    title="Achievements"
-    subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis, quam nec venenatis lobortis, mi risus tempus nulla, sed porttitor est nibh at nulla."
-    isReversed={true}
-    callToAction={{
-      text: 'See more',
-      href: '/',
-    }}
-    items={[
-      {
-        title: 'Global reach',
-        description: 'Nam malesuada urna in enim imperdiet tincidunt. Phasellus non tincidunt nisi, at elementum mi.',
-        icon: 'tabler:globe',
-      },
-      {
-        title: 'Positive customer feedback and reviews',
-        description:
-          'Cras semper nulla leo, eget laoreet erat cursus sed. Praesent faucibus massa in purus iaculis dictum.',
-        icon: 'tabler:message-star',
-      },
-      {
-        title: 'Awards and recognition as industry experts',
-        description:
-          'Phasellus lacinia cursus velit, eu malesuada magna pretium eu. Etiam aliquet tellus purus, blandit lobortis ex rhoncus vitae.',
-        icon: 'tabler:award',
-      },
-    ]}
-  />
-
-  <!-- Features2 Widget ************** -->
-
-  <Features2
-    title="Our locations"
-    tagline="Find us"
-    columns={4}
-    items={[
-      {
-        title: 'EE.UU',
-        description: '1234 Lorem Ipsum St, 12345, Miami',
-      },
-      {
-        title: 'Spain',
-        description: '5678 Lorem Ipsum St, 56789, Madrid',
-      },
-      {
-        title: 'Australia',
-        description: '9012 Lorem Ipsum St, 90123, Sydney',
-      },
-      {
-        title: 'Brazil',
-        description: '3456 Lorem Ipsum St, 34567, São Paulo',
-      },
-    ]}
-  />
-
-  <!-- Features2 Widget ************** -->
-
-  <Features2
-    title="Technical Support"
-    tagline="Contact us"
-    columns={2}
-    items={[
-      {
-        title: 'Chat with us',
-        description:
-          'Integer luctus laoreet libero, auctor varius purus rutrum sit amet. Ut nec molestie nisi, quis eleifend mi.',
-        icon: 'tabler:messages',
-      },
-      {
-        title: 'Call us',
-        description:
-          'Mauris faucibus finibus orci, in posuere elit viverra non. In hac habitasse platea dictumst. Cras lobortis metus a hendrerit congue.',
-        icon: 'tabler:headset',
-      },
-    ]}
-  />
+    <HubFooter />
+  </div>
 </Layout>
