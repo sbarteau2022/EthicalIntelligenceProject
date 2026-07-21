@@ -1,244 +1,164 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-import HeroText from '~/components/widgets/HeroText.astro';
-import Prices from '~/components/widgets/Pricing.astro';
-import FAQs from '~/components/widgets/FAQs.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Features3 from '~/components/widgets/Features3.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+// ============================================================
+// PRICING — currently a beta sign-up page. No billing is wired up
+// yet: every "Join the beta" button opens the real free sign-up
+// flow (window.EIH, shared with /elle, /optimus, /engine, etc.) and
+// grants the same free account every other hub page promises.
+// The $10/$20 figures are the beta rates that take effect once
+// billing turns on — beta members keep the rate they joined at,
+// same promise already made on /business.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
+import HubAuth from '~/components/hub/HubAuth.astro';
 
 const metadata = {
-  title: 'Pricing',
+  title: 'Pricing — The Ethical Intelligence Project',
+  description:
+    'The Ethical Intelligence Project is in beta. Join free right now — no card required — and lock in beta pricing ($10/mo or $20/mo) for when billing turns on.',
 };
 ---
 
 <Layout metadata={metadata}>
-  <!-- HeroText Widget ******************* -->
+  <div class="eih">
+    <HubNav current="/pricing" showAccount={true} />
 
-  <HeroText
-    tagline="Pricing"
-    title="Stellar Pricing for Every Journey"
-    subtitle="Choose the perfect plan that aligns with your cosmic goals."
-  />
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow rv">Beta · Free to join</div>
+      <h1>Join free during beta. Lock in the rate.</h1>
+      <p class="lede">
+        We're in beta, so signing up costs nothing — no card required. The plans below are the rates that take effect
+        once billing turns on, and <strong>beta members keep the rate they joined at, indefinitely</strong>. The earlier
+        you join, the less you'll ever pay.
+      </p>
+      <div class="cta-row">
+        <button class="btn" id="pricing-cta">Join the beta — free</button>
+        <a href="#plans" class="btn ghost">See the beta rates</a>
+      </div>
+    </section>
 
-  <!-- Pricing Widget ******************* -->
+    <!-- PLANS -->
+    <section id="plans" class="wrap">
+      <div class="eyebrow rv">After beta</div>
+      <h2 class="rv">Two plans. Both free right now.</h2>
+      <div class="cards two rv stagger">
+        <div class="card">
+          <div class="n">STANDARD</div>
+          <h3>$10<span class="per">/mo after beta</span></h3>
+          <p>Full access to the whole hub: your Optimus journal, the Analysis Engine, Atlas Edu courses, and Elle.</p>
+          <ul class="plan-list">
+            <li>✓ Optimus Journal</li>
+            <li>✓ Analysis Engine</li>
+            <li>✓ Atlas Edu courses</li>
+            <li>✓ Talk to Elle</li>
+          </ul>
+          <button class="btn plan-cta" data-plan="standard">Join the beta — free</button>
+        </div>
+        <div class="card">
+          <div class="n">PLUS</div>
+          <h3>$20<span class="per">/mo after beta</span></h3>
+          <p>Everything in Standard, plus priority support and direct input on what we build next.</p>
+          <ul class="plan-list">
+            <li>✓ Everything in Standard</li>
+            <li>✓ Priority support</li>
+            <li>✓ Direct input on the roadmap</li>
+          </ul>
+          <button class="btn plan-cta" data-plan="plus">Join the beta — free</button>
+        </div>
+      </div>
+      <p class="plan-note">
+        No payment is collected during beta. Pick whichever rate you want to lock in — you can change your mind later.
+      </p>
+    </section>
 
-  <Prices
-    title="Our prices"
-    subtitle="Only pay for what you need"
-    prices={[
-      {
-        title: 'basic',
-        subtitle: 'Optimal choice for personal use',
-        price: 29,
-        period: 'per month',
-        items: [
-          {
-            description: 'Etiam in libero, et volutpat',
-          },
-          {
-            description: 'Aenean ac nunc dolor tristique',
-          },
-          {
-            description: 'Cras scelerisque accumsan lib',
-          },
-          {
-            description: 'In hac habitasse',
-          },
-        ],
-        callToAction: {
-          target: '_blank',
-          text: 'Get started',
-          href: '#',
-        },
-      },
-      {
-        title: 'standard',
-        subtitle: 'Optimal choice for small teams',
-        price: 69,
-        period: 'Per Month',
-        items: [
-          {
-            description: 'Proin vel laoreet',
-          },
-          {
-            description: 'Ut efficitur habitasse egestas',
-          },
-          {
-            description: 'Volutpat hac curabitur',
-          },
-          {
-            description: 'Pellentesque blandit ut nibh',
-          },
-          {
-            description: 'Donec fringilla sem',
-          },
-        ],
-        callToAction: {
-          target: '_blank',
-          text: 'Get started',
-          href: '#',
-        },
-        hasRibbon: true,
-        ribbonTitle: 'popular',
-      },
-      {
-        title: 'premium',
-        subtitle: 'Optimal choice for companies',
-        price: 199,
-        period: 'Per Month',
-        items: [
-          {
-            description: 'Curabitur suscipit risus',
-          },
-          {
-            description: 'Aliquam habitasse malesuada',
-          },
-          {
-            description: 'Suspendisse sit amet blandit',
-          },
-          {
-            description: 'Suspendisse auctor blandit dui',
-          },
-        ],
-        callToAction: {
-          target: '_blank',
-          text: 'Get started',
-          href: '#',
-        },
-      },
-    ]}
-  />
+    <!-- FAQ -->
+    <section id="faq" class="wrap">
+      <div class="eyebrow rv">Questions</div>
+      <h2 class="rv">Beta pricing FAQ</h2>
+      <div class="cards rv stagger">
+        <div class="card">
+          <h3>Is the beta really free?</h3>
+          <p>Yes. Sign up with an email and password, no card required, and you're in.</p>
+        </div>
+        <div class="card">
+          <h3>What happens when beta ends?</h3>
+          <p>
+            Billing starts at whichever rate you joined at — $10/mo or $20/mo. You'll be notified before anything is
+            charged.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Can I switch plans later?</h3>
+          <p>Yes, any time — reach out and we'll move you.</p>
+        </div>
+        <div class="card">
+          <h3>What do I actually get?</h3>
+          <p>
+            One account for the whole hub: the Optimus journal, the Analysis Engine, Atlas Edu courses, and Elle
+            herself.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  <!-- Features3 Widget ************** -->
+    <!-- CTA -->
+    <section class="wrap" style="text-align:center">
+      <h2 class="rv">Ready to join?</h2>
+      <p style="max-width:520px;margin:0 auto 26px">It's free during beta — takes about thirty seconds.</p>
+      <div class="cta-row">
+        <button class="btn" id="pricing-cta-2">Join the beta — free</button>
+      </div>
+    </section>
 
-  <Features3
-    title="Price-related features"
-    subtitle="Discover the advantages of choosing our plans"
-    columns={2}
-    items={[
-      {
-        title: 'Tiered Pricing Plans',
-        description: 'Choose from a range of pricing plans designed to accommodate different budgets and requirements.',
-        icon: 'tabler:stairs',
-      },
-      {
-        title: 'Transparent Pricing',
-        description: 'Clearly displayed pricing details for each plan, with no hidden costs or unexpected charges.',
-        icon: 'tabler:flip-vertical',
-      },
-      {
-        title: 'Secure Payment Methods',
-        description: 'Secure payment gateways to protect your financial information during transactions.',
-        icon: 'tabler:shield-lock',
-      },
-      {
-        title: 'Instant Access',
-        description: `Immediate access to your chosen plan's features and templates upon subscription.`,
-        icon: 'tabler:accessible',
-      },
-      {
-        title: 'Upgrade Value',
-        description: 'Upgrade to higher-tier plans to unlock more features and benefits for an enhanced experience.',
-        icon: 'tabler:chevrons-up',
-      },
-      {
-        title: '24H support',
-        description: 'Questions answered via live chat, email or phone, every calendar day.',
-        icon: 'tabler:headset',
-      },
-    ]}
-    classes={{ container: 'max-w-5xl' }}
-  />
+    <HubFooter />
+  </div>
 
-  <!-- Steps Widget ****************** -->
+  <HubAuth />
 
-  <Steps
-    title="A guided journey from plans to creativity"
-    tagline="simplified process"
-    isReversed={true}
-    items={[
-      {
-        title: 'Explore plans',
-        icon: 'tabler:number-1',
-      },
-      {
-        title: 'Select a plan',
-        icon: 'tabler:number-2',
-      },
-      {
-        title: 'Sign Up / Log In',
-        icon: 'tabler:number-3',
-      },
-      {
-        title: 'Review order',
-        icon: 'tabler:number-4',
-      },
-      {
-        title: 'Enter payment details',
-        icon: 'tabler:number-5',
-      },
-      {
-        title: 'Confirmation',
-        icon: 'tabler:number-6',
-      },
-      {
-        title: 'Download and start using the template(s)',
-        icon: 'tabler:number-7',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1536816579748-4ecb3f03d72a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
-      alt: 'Steps image',
-    }}
-  />
+  <style>
+    .eih .plan-list {
+      list-style: none;
+      margin: 16px 0 20px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.92rem;
+      color: var(--t2);
+    }
+    .eih .card h3 .per {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--t3);
+    }
+    .eih .plan-cta {
+      width: 100%;
+      justify-content: center;
+    }
+    .eih .plan-note {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: var(--t3);
+    }
+  </style>
 
-  <!-- FAQs Widget ******************* -->
-
-  <FAQs
-    title="Pricing FAQs"
-    subtitle="Choosing the right plan is important, and we're here to answer your questions. If you have queries about our pricing options, you're in the right place."
-    columns={1}
-    items={[
-      {
-        title: 'Do the plans come with customer support?',
-        description:
-          'Absolutely, all plans include access to our dedicated customer support to assist you with any queries or concerns.',
-      },
-      {
-        title: 'Is there a trial period for the different plans?',
-        description:
-          "Unfortunately, we don't offer trial periods for the plans. However, you can check out our demo section to preview the quality of our templates.",
-      },
-      {
-        title: 'Can I switch between plans?',
-        description:
-          'Certainly! You can easily upgrade or downgrade your plan, at any time, to find the one that best suits your evolving requirements.',
-      },
-      {
-        title: 'What payment methods do you accept?',
-        description:
-          'We accept major credit cards and online payment methods to ensure a convenient and secure transaction process.',
-      },
-      {
-        title: 'Are there any hidden fees beyond the displayed cost?',
-        description:
-          'No, the subscription cost covers all the features and templates listed under each plan. There are no hidden fees or extra charges.',
-      },
-    ]}
-  />
-
-  <!-- CallToAction Widget *********** -->
-
-  <CallToAction
-    title="Ready to boost your projects?"
-    subtitle="Join our community of satisfied customers who have transformed their work with our templates."
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Get started now',
-        href: '/',
-      },
-    ]}
-  />
+  <script is:inline>
+    (function () {
+      function joinBeta() {
+        if (window.EIH && window.EIH.getToken()) {
+          window.location.href = '/optimus';
+        } else if (window.EIH) {
+          window.EIH.openAuth('signup');
+        }
+      }
+      document.getElementById('pricing-cta').addEventListener('click', joinBeta);
+      document.getElementById('pricing-cta-2').addEventListener('click', joinBeta);
+      document.querySelectorAll('.plan-cta').forEach(function (btn) {
+        btn.addEventListener('click', joinBeta);
+      });
+    })();
+  </script>
 </Layout>

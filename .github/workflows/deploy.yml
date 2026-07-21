@@ -6,6 +6,15 @@ name: Deploy Site
 #   CLOUDFLARE_API_TOKEN  — API token with the "Cloudflare Pages — Edit" permission
 #   CLOUDFLARE_ACCOUNT_ID — the account ID shown on the Cloudflare dashboard
 #
+# Optional repository secret:
+#   PUBLIC_GOOGLE_CLIENT_ID — Google OAuth "Web application" client ID (public,
+#     not a secret in the security sense, but stored as one for convenience).
+#     Baked into the static build so HubAuth's Google-only sign-in and /elle's
+#     "Continue with Google" actually render a working button. The matching
+#     elle-worker secret (GOOGLE_CLIENT_ID, same value) must also be set —
+#     see src/components/hub/HubAuth.astro. Left unset → sign-in shows a
+#     "temporarily unavailable" message instead of a broken button.
+#
 # Push to main   → production deploy
 # Pull request   → preview deploy (unique preview URL per branch)
 # Manual         → workflow_dispatch re-deploys production from main
@@ -49,6 +58,8 @@ jobs:
       - run: npm run check
 
       - run: npm run build
+        env:
+          PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.PUBLIC_GOOGLE_CLIENT_ID }}
 
       # Production on main / manual runs; branch-named preview on PRs.
       # `--branch` controls which environment Pages targets: the production

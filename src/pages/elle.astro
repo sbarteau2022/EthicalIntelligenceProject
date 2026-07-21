@@ -5,6 +5,7 @@ const metadata = {
   title: 'Talk to Elle — The Ethical Intelligence Project',
   description: 'Speak with Elle, the intelligence behind The Ethical Intelligence Project.',
 };
+const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
 ---
 
 <Layout metadata={metadata}>
@@ -508,7 +509,7 @@ const metadata = {
     }
   </style>
 
-  <div id="elle-page">
+  <div id="elle-page" data-client-id={GOOGLE_CLIENT_ID}>
     <div class="top">
       <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
@@ -583,10 +584,11 @@ const metadata = {
 
       // ── config ──────────────────────────────────────────────
       const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
-      // Set this to the Google OAuth client ID to enable "Continue with Google".
-      // Google sign-in also requires the elle-worker /api/elle-oauth endpoint to be deployed.
-      // Left empty → the Google button is hidden and email/password + guest still work.
-      const GOOGLE_CLIENT_ID = '';
+      // Comes from PUBLIC_GOOGLE_CLIENT_ID at build time (shared with HubAuth's
+      // Google-only sign-in). Empty → the Google button is hidden and
+      // email/password + guest still work here (unlike HubAuth, this page's
+      // own modal keeps the password fallback).
+      const GOOGLE_CLIENT_ID = document.getElementById('elle-page').dataset.clientId || '';
       const TOKEN_KEY = 'eip_elle_jwt';
 
       // ── state ───────────────────────────────────────────────
