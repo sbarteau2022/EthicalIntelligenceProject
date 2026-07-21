@@ -199,6 +199,45 @@ const nm = neural.meta;
       <noscript><div class="master-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
+    <!-- The bottom chat dock: Elle walks you through the atlas (spoken, driving
+         the 3D) and answers anything you ask — replaces the tiny widget. -->
+    <div class="atlas-chat" id="atlas-chat" data-collapsed="false">
+      <div class="ac-head">
+        <span class="ac-title"><span class="ac-dot"></span> Elle</span>
+        <div class="ac-actions">
+          <button type="button" class="ac-btn ac-walk" id="ac-walk">▶ Walk me through it</button>
+          <button
+            type="button"
+            class="ac-btn"
+            id="ac-mute"
+            aria-pressed="false"
+            title="Elle's voice on/off"
+            aria-label="Toggle Elle's voice">🔊</button
+          >
+          <button type="button" class="ac-btn" id="ac-collapse" title="Collapse the chat" aria-label="Collapse the chat"
+            >▾</button
+          >
+        </div>
+      </div>
+      <div class="ac-tour" id="ac-tour" hidden>
+        <button type="button" class="ac-btn" id="ac-prev" aria-label="Previous">◀</button>
+        <button type="button" class="ac-btn" id="ac-pause" aria-label="Pause auto-advance">❚❚</button>
+        <button type="button" class="ac-btn" id="ac-next" aria-label="Next">▶</button>
+        <span class="ac-step" id="ac-step">1 / 14</span>
+        <button type="button" class="ac-btn ac-stop" id="ac-stop" aria-label="Stop the tour">Stop</button>
+      </div>
+      <div class="ac-log" id="ac-log" aria-live="polite"></div>
+      <form class="ac-form" id="ac-form">
+        <textarea
+          id="ac-text"
+          rows="1"
+          placeholder="Ask Elle about anything you see…"
+          autocomplete="off"
+          aria-label="Ask Elle a question"></textarea>
+        <button type="submit" class="ac-send" id="ac-send" aria-label="Send">↑</button>
+      </form>
+    </div>
+
     <HubFooter />
   </div>
 
@@ -638,6 +677,231 @@ const nm = neural.meta;
       }
       .master-mode {
         bottom: 16px;
+      }
+    }
+    /* ── bottom chat dock — Elle walks you through it, and answers ── */
+    .atlas-chat {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: min(760px, 96vw);
+      max-height: 46vh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(12, 14, 22, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(208, 169, 78, 0.28);
+      border-bottom: none;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      font-size: 14px;
+      overflow: hidden;
+    }
+    .atlas-chat[data-collapsed='true'] .ac-log,
+    .atlas-chat[data-collapsed='true'] .ac-form,
+    .atlas-chat[data-collapsed='true'] .ac-tour {
+      display: none;
+    }
+    .ac-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .ac-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #f3ead2;
+    }
+    .ac-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e7c66b;
+      box-shadow: 0 0 10px #e7c66b;
+    }
+    .ac-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .ac-btn {
+      background: rgba(255, 255, 255, 0.06);
+      color: #e9e4d6;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+    }
+    .ac-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .ac-btn.on {
+      background: rgba(231, 198, 107, 0.2);
+      border-color: rgba(231, 198, 107, 0.4);
+    }
+    .ac-walk {
+      color: #0c0e16;
+      background: linear-gradient(180deg, #f0d27a, #d0a94e);
+      border-color: transparent;
+      font-weight: 600;
+    }
+    .ac-walk:hover {
+      background: linear-gradient(180deg, #f6db8c, #dcb559);
+    }
+    .ac-stop {
+      color: #ffb4a8;
+      border-color: rgba(255, 120, 100, 0.3);
+    }
+    .ac-tour {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .ac-step {
+      margin-left: auto;
+      color: #9aa0ad;
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+    }
+    .ac-log {
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 84px;
+    }
+    .ac-msg {
+      display: flex;
+      gap: 8px;
+      max-width: 100%;
+    }
+    .ac-msg.user {
+      flex-direction: row-reverse;
+    }
+    .ac-av {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      background: rgba(231, 198, 107, 0.16);
+      color: #e7c66b;
+    }
+    .ac-msg.user .ac-av {
+      background: rgba(255, 255, 255, 0.1);
+      color: #cfd3da;
+    }
+    .ac-bubble {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 8px 12px;
+      line-height: 1.5;
+      color: #e9e4d6;
+    }
+    .ac-msg.user .ac-bubble {
+      background: rgba(231, 198, 107, 0.12);
+      border-color: rgba(231, 198, 107, 0.22);
+    }
+    .ac-bubble.err {
+      color: #ffb4a8;
+    }
+    .ac-bubble b {
+      color: #f3ead2;
+    }
+    .ac-bubble p {
+      margin: 0 0 6px;
+    }
+    .ac-bubble p:last-child {
+      margin-bottom: 0;
+    }
+    .ac-typing span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin: 0 1px;
+      border-radius: 50%;
+      background: #9aa0ad;
+      animation: ac-blink 1.2s infinite both;
+    }
+    .ac-typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .ac-typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes ac-blink {
+      0%,
+      80%,
+      100% {
+        opacity: 0.25;
+      }
+      40% {
+        opacity: 1;
+      }
+    }
+    .ac-form {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .ac-form textarea {
+      flex: 1;
+      resize: none;
+      max-height: 120px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      color: #f0ece0;
+      padding: 9px 12px;
+      font: inherit;
+      line-height: 1.4;
+    }
+    .ac-form textarea:focus {
+      outline: none;
+      border-color: rgba(231, 198, 107, 0.5);
+    }
+    .ac-send {
+      flex: 0 0 auto;
+      width: 38px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(180deg, #f0d27a, #d0a94e);
+      color: #0c0e16;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .ac-send:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    @media (max-width: 700px) {
+      .atlas-chat {
+        width: 100vw;
+        border-radius: 0;
+        max-height: 52vh;
+      }
+      .ac-walk {
+        font-size: 12px;
+        padding: 5px 8px;
       }
     }
   </style>
@@ -1852,7 +2116,7 @@ const nm = neural.meta;
       }
       // guided-tour camera glide: ease toward the step framing for a beat,
       // then release so the visitor can freely orbit while Elle talks.
-      if (guided && guideCam && guideCamT > 0) {
+      if (guideCam && guideCamT > 0) {
         const a = Math.min(1, dt * 2.4);
         _camTmp.set(guideCam.p[0], guideCam.p[1], guideCam.p[2]);
         camera.position.lerp(_camTmp, a);
@@ -1868,5 +2132,331 @@ const nm = neural.meta;
       requestAnimationFrame(frame);
     }
     frame();
+
+    // ════════════════════════════════════════════════════════════════════
+    // THE BOTTOM CHAT DOCK — Elle walks you through the atlas (spoken, driving
+    // the 3D via the same applyStep the tour already uses) and answers anything
+    // you ask (worker /api/widget-chat). Replaces the tiny widget + the old
+    // panel. Everything it needs — TOUR, applyStep, onlyShow, guideCam,
+    // controls, setMode, reduce — is already in this module scope.
+    // ════════════════════════════════════════════════════════════════════
+    const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
+
+    const chatEl = document.getElementById('atlas-chat') as HTMLElement;
+    const acWalk = document.getElementById('ac-walk') as HTMLButtonElement;
+    const acMute = document.getElementById('ac-mute') as HTMLButtonElement;
+    const acCollapse = document.getElementById('ac-collapse') as HTMLButtonElement;
+    const acTourEl = document.getElementById('ac-tour') as HTMLElement;
+    const acPrev = document.getElementById('ac-prev') as HTMLButtonElement;
+    const acPause = document.getElementById('ac-pause') as HTMLButtonElement;
+    const acNextBtn = document.getElementById('ac-next') as HTMLButtonElement;
+    const acStop = document.getElementById('ac-stop') as HTMLButtonElement;
+    const acStepEl = document.getElementById('ac-step') as HTMLElement;
+    const acLog = document.getElementById('ac-log') as HTMLElement;
+    const acForm = document.getElementById('ac-form') as HTMLFormElement;
+    const acText = document.getElementById('ac-text') as HTMLTextAreaElement;
+    const acSend = document.getElementById('ac-send') as HTMLButtonElement;
+
+    // The chat is the tour now — retire the old launch button/panel.
+    const oldGuide = document.getElementById('guide-launch');
+    if (oldGuide) oldGuide.style.display = 'none';
+
+    // ── DOM + text helpers ──
+    function acMake(tag: string, cls?: string, html?: string): HTMLElement {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (html != null) e.innerHTML = html;
+      return e;
+    }
+    function acEsc(s: string): string {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function acStrip(html: string): string {
+      const t = document.createElement('div');
+      t.innerHTML = html;
+      return (t.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+    function acMd(s: string): string {
+      let h = acEsc(s);
+      h = h.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*]+)\*/g, '$1<i>$2</i>');
+      h = h.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>');
+      return '<p>' + h + '</p>';
+    }
+    function acBubble(role: string, html: string, isErr?: boolean, offerResume?: boolean): HTMLElement {
+      const row = acMake('div', 'ac-msg ' + role);
+      row.appendChild(acMake('div', 'ac-av', role === 'user' ? 'you' : '✦'));
+      const bub = acMake('div', 'ac-bubble' + (isErr ? ' err' : ''), html);
+      if (offerResume) {
+        const chip = acMake('button', 'ac-btn', 'Continue the tour →') as HTMLButtonElement;
+        chip.type = 'button';
+        chip.style.marginTop = '8px';
+        chip.addEventListener('click', () => {
+          autoWalk = true;
+          walkTo(cur + 1);
+        });
+        bub.appendChild(document.createElement('br'));
+        bub.appendChild(chip);
+      }
+      row.appendChild(bub);
+      acLog.appendChild(row);
+      acLog.scrollTop = acLog.scrollHeight;
+      return row;
+    }
+    function acTyping(): HTMLElement {
+      const row = acMake('div', 'ac-msg elle');
+      row.appendChild(acMake('div', 'ac-av', '✦'));
+      row.appendChild(acMake('div', 'ac-bubble ac-typing', '<span></span><span></span><span></span>'));
+      acLog.appendChild(row);
+      acLog.scrollTop = acLog.scrollHeight;
+      return row;
+    }
+
+    // ── speech (the device's own engine — no audio leaves the page) ──
+    let muted = false;
+    try {
+      muted = localStorage.getItem('eip_atlas_muted') === '1';
+    } catch {
+      /* ignore */
+    }
+    let acVoice: SpeechSynthesisVoice | null = null;
+    function acPickVoice(): SpeechSynthesisVoice | null {
+      if (acVoice) return acVoice;
+      const ss = window.speechSynthesis;
+      if (!ss) return null;
+      const vs = ss.getVoices() || [];
+      let best: SpeechSynthesisVoice | null = null;
+      let score = -1;
+      for (const v of vs) {
+        let s = 0;
+        if (/en[-_]US/i.test(v.lang)) s += 40;
+        else if (/^en/i.test(v.lang)) s += 20;
+        if (/female|samantha|zira|aria|jenny|natural|google us/i.test(v.name)) s += 15;
+        if (v.default) s += 5;
+        if (s > score) {
+          score = s;
+          best = v;
+        }
+      }
+      acVoice = best;
+      return best;
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.addEventListener('voiceschanged', () => {
+        acVoice = null;
+        acPickVoice();
+      });
+    }
+    // speak text; call onEnd when done (or, if muted/unsupported, after a
+    // reading-time delay so the tour still auto-advances).
+    function acSpeak(text: string, onEnd?: () => void): void {
+      const ss = window.speechSynthesis;
+      if (!ss || muted || !text) {
+        if (onEnd) window.setTimeout(onEnd, Math.min(9000, 1400 + text.length * 32));
+        return;
+      }
+      ss.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      const v = acPickVoice();
+      if (v) u.voice = v;
+      u.rate = 1.0;
+      u.pitch = 1.02;
+      u.onend = () => onEnd && onEnd();
+      u.onerror = () => onEnd && onEnd();
+      ss.speak(u);
+    }
+    function syncMute() {
+      acMute.textContent = muted ? '🔇' : '🔊';
+      acMute.setAttribute('aria-pressed', String(muted));
+      acMute.classList.toggle('on', muted);
+    }
+    syncMute();
+
+    // ── the walkthrough, run as chat ──
+    let cur = 0;
+    let walking = false;
+    let autoWalk = false;
+    function syncPause() {
+      acPause.textContent = autoWalk ? '❚❚' : '▶';
+      acPause.setAttribute('aria-label', autoWalk ? 'Pause auto-advance' : 'Resume auto-advance');
+      acPause.classList.toggle('on', autoWalk);
+    }
+    function walkTo(i: number) {
+      cur = Math.max(0, Math.min(TOUR.length - 1, i));
+      applyStep(cur); // drives the 3D reveals + camera glide (shared machinery)
+      acStepEl.textContent = `${cur + 1} / ${TOUR.length}`;
+      const s = TOUR[cur];
+      acBubble('elle', s.html);
+      const text = acStrip(s.html);
+      // Enforce a minimum reading dwell so the tour paces itself even where the
+      // speech engine is silent or ends instantly (some browsers/headless) —
+      // when speech actually plays, its onend is already past this, so no wait.
+      const started = Date.now();
+      const minDwell = Math.min(14000, 3200 + text.length * 45);
+      acSpeak(text, () => {
+        if (!(autoWalk && walking && cur < TOUR.length - 1)) return;
+        const wait = Math.max(0, minDwell - (Date.now() - started));
+        window.setTimeout(() => {
+          if (autoWalk && walking && cur < TOUR.length - 1) walkTo(cur + 1);
+        }, wait);
+      });
+    }
+    function startWalk() {
+      walking = true;
+      autoWalk = true;
+      controls.autoRotate = false;
+      setMode('combined');
+      acTourEl.hidden = false;
+      acWalk.textContent = '■ Stop tour';
+      syncPause();
+      walkTo(0);
+    }
+    function stopWalk() {
+      walking = false;
+      autoWalk = false;
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      acTourEl.hidden = true;
+      acWalk.textContent = '▶ Walk me through it';
+      guideCam = null;
+      onlyShow(ALL_KEYS);
+      controls.autoRotate = !reduce;
+    }
+
+    acWalk.addEventListener('click', () => (walking ? stopWalk() : startWalk()));
+    acStop.addEventListener('click', stopWalk);
+    acPrev.addEventListener('click', () => {
+      autoWalk = false;
+      syncPause();
+      walkTo(cur - 1);
+    });
+    acNextBtn.addEventListener('click', () => {
+      autoWalk = false;
+      syncPause();
+      if (cur < TOUR.length - 1) walkTo(cur + 1);
+    });
+    acPause.addEventListener('click', () => {
+      autoWalk = !autoWalk;
+      syncPause();
+      if (!autoWalk) {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+      } else if (walking) {
+        walkTo(cur);
+      }
+    });
+    acMute.addEventListener('click', () => {
+      muted = !muted;
+      try {
+        localStorage.setItem('eip_atlas_muted', muted ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+      if (muted && window.speechSynthesis) window.speechSynthesis.cancel();
+      syncMute();
+    });
+    acCollapse.addEventListener('click', () => {
+      const collapsed = chatEl.getAttribute('data-collapsed') === 'true';
+      chatEl.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+      acCollapse.textContent = collapsed ? '▾' : '▸';
+    });
+
+    // ── free Q&A (worker /api/widget-chat, corpus-grounded) ──
+    let acSession = '';
+    try {
+      acSession = localStorage.getItem('eip_atlas_sid') || '';
+    } catch {
+      /* ignore */
+    }
+    if (!acSession) {
+      acSession =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : 'sid-' + Math.abs(Date.now()).toString(36);
+      try {
+        localStorage.setItem('eip_atlas_sid', acSession);
+      } catch {
+        /* ignore */
+      }
+    }
+    const acHist: Array<{ role: string; content: string }> = [];
+    let acAsking = false;
+
+    async function acAsk(raw: string) {
+      const q = (raw || '').trim();
+      if (!q || acAsking) return;
+      // a question mid-tour pauses the auto-advance so she doesn't talk over herself
+      if (walking) {
+        autoWalk = false;
+        syncPause();
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+      }
+      acBubble('user', acEsc(q));
+      acHist.push({ role: 'user', content: q });
+      acAsking = true;
+      acSend.disabled = true;
+      const typing = acTyping();
+      try {
+        const r = await fetch(WORKER + '/api/widget-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: q,
+            messages: acHist.slice(-16),
+            session_id: acSession,
+            source: 'eip:' + location.hostname,
+          }),
+        });
+        const d = (await r.json().catch(() => ({}))) as Record<string, string>;
+        typing.remove();
+        if (r.status === 429) {
+          acBubble('elle', "I've hit a rate limit for now — please try again in a little while.", true);
+          return;
+        }
+        if (!r.ok || d.error) {
+          acBubble('elle', d.error || 'Something interrupted the connection. Please try again.', true);
+          return;
+        }
+        if (d.session_id) {
+          acSession = d.session_id;
+          try {
+            localStorage.setItem('eip_atlas_sid', acSession);
+          } catch {
+            /* ignore */
+          }
+        }
+        const content = d.content || d.response || '';
+        acHist.push({ role: 'assistant', content });
+        acBubble('elle', acMd(content), false, walking && cur < TOUR.length - 1);
+        acSpeak(acStrip(acMd(content)));
+      } catch {
+        typing.remove();
+        acBubble('elle', 'Something interrupted the connection. Please try again.', true);
+      } finally {
+        acAsking = false;
+        acSend.disabled = false;
+      }
+    }
+
+    acForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = acText.value;
+      acText.value = '';
+      acText.style.height = 'auto';
+      acAsk(q);
+    });
+    acText.addEventListener('input', () => {
+      acText.style.height = 'auto';
+      acText.style.height = Math.min(120, acText.scrollHeight) + 'px';
+    });
+    acText.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        acForm.requestSubmit();
+      }
+    });
+
+    // greeting — she offers the walk; audio starts on the first click (autoplay).
+    acBubble(
+      'elle',
+      "Hi — I'm <b>Elle</b>. This is the whole atlas: every layer here is built from math, not drawn. Want me to <b>walk you through it</b>? Tap the button up top and I'll talk you through each layer and move the view as I go — or just ask me anything about what you're looking at."
+    );
   </script>
 </Layout>
