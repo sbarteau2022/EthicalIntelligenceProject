@@ -12,16 +12,18 @@ const { current = '', showAccount = false } = Astro.props;
 ---
 
 <nav class="hub-nav">
-  <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#9A7524"></rect>
-    <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
-    <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#9A7524" opacity=".6"></rect>
-    <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
-    <circle cx="21.5" cy="8.75" r="2" fill="#C9A84C"></circle>
-  </svg>
-  <a href="/">
-    <div class="word">The Ethical Intelligence Project</div>
-    <div class="sub">Powered by Elle AI</div>
+  <a href="/" class="brand">
+    <svg class="mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#9A7524"></rect>
+      <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
+      <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#9A7524" opacity=".6"></rect>
+      <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#9A7524"></rect>
+      <circle cx="21.5" cy="8.75" r="2" fill="#C9A84C"></circle>
+    </svg>
+    <span class="brand-text">
+      <div class="word">The Ethical Intelligence Project</div>
+      <div class="sub">Powered by Elle AI</div>
+    </span>
   </a>
   <div class="hub-links">
     {
