@@ -139,6 +139,10 @@ const nm = neural.meta;
           <button class="lg-row" data-g="nLobes">
             <span class="sw" style="--c:#ffe45c"></span><b>Lemniscate lobes</b> · one per node, tangent to its counterpart
           </button>
+          <button class="lg-row" data-g="nRecog">
+            <span class="sw" style="--c:#fff2c4"></span><b>Recognition path</b> · the singularity threads every node, tracing
+            the lemniscate
+          </button>
           <button class="lg-row" data-g="nThreads">
             <span class="sw" style="--c:#3a8f82"></span><b>Shadow paths</b> · straight tuple-to-singularity binds
           </button>
@@ -985,6 +989,7 @@ const nm = neural.meta;
       nLock: 0xf2ead9,
       nFlowerLife: 0xe06cff,
       nLobe: 0xffe45c,
+      nRecog: 0xfff2c4,
       nThread: 0x55e9d0,
       nEnvelope: 0x7c88b8,
       equilibrium: 0x9fb6ff,
@@ -1560,6 +1565,42 @@ const nm = neural.meta;
         )
       );
     }
+
+    // ── the recognition path: the singularity's own trajectory ──
+    // The 7 equatorial lobes, concatenated into ONE continuous closed curve —
+    // the path the singularity travels: it threads every green node and returns
+    // through the center each time, tracing the lemniscate. No node is the
+    // center; the center visits every node ("every point is the origin").
+    const sharedRecog = new THREE.Group();
+    sharedGrp.add(sharedRecog);
+    const recogRaw: THREE.Vector3[] = [];
+    for (const lobe of N.equator.lobes) for (const q of lobe) recogRaw.push(V3(q));
+    const recogPts: THREE.Vector3[] = [];
+    for (const q of recogRaw) {
+      const last = recogPts[recogPts.length - 1];
+      if (!last || last.distanceToSquared(q) > 1e-6) recogPts.push(q);
+    }
+    const recogCurve = new THREE.CatmullRomCurve3(recogPts, true, 'catmullrom', 0.35);
+    sharedRecog.add(
+      new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(recogCurve.getPoints(640)),
+        new THREE.LineBasicMaterial({ color: COL.nRecog, transparent: true, opacity: 0.3 })
+      )
+    );
+    const recogHead = new THREE.Mesh(
+      new THREE.SphereGeometry(0.03, 18, 18),
+      new THREE.MeshBasicMaterial({ color: COL.nRecog })
+    );
+    sharedRecog.add(recogHead);
+    const RECOG_TRAIL = 56;
+    const recogTrailGeom = new THREE.BufferGeometry();
+    recogTrailGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(RECOG_TRAIL * 3), 3));
+    const recogTrail = new THREE.Line(
+      recogTrailGeom,
+      new THREE.LineBasicMaterial({ color: COL.nRecog, transparent: true, opacity: 0.7 })
+    );
+    sharedRecog.add(recogTrail);
+    let recogU = 0;
     {
       const SEGS = 72;
       for (const [cx, cz] of N.equator.flower.centers) {
@@ -1822,6 +1863,7 @@ const nm = neural.meta;
       nHalos: nHaloParts,
       nFlowerLife: nFlowerParts,
       nLobes: nLobeParts,
+      nRecog: [sharedRecog],
       nThreads: nThreadParts,
       nEnvelope: [nEnvelope],
       nBelt: [belt],
@@ -1932,6 +1974,11 @@ const nm = neural.meta;
         show: ['nFlowerLife', 'nLobes'],
         cam: { p: [2.8, 1.5, 3.2], t: [0, 0, 0] },
         html: 'Around each node, a circle; off each node, a <b>lobe</b> reaching for its neighbor until they touch. This is the relational layer — not the parts themselves, but how every part is in conversation with the ones beside it.',
+      },
+      {
+        show: ['nTuples', 'nLobes', 'nRecog'],
+        cam: { p: [1.7, 3.0, 1.9], t: [0, 0, 0] },
+        html: "And the center doesn't sit still — watch the <b>singularity</b> travel. It threads every node at the equator and returns through the middle each time, tracing the <b>lemniscate</b>. Each petal is one recognition; the path is how the center reaches every node without any one node being the center.",
       },
       {
         show: ['uPillars', 'uBridges'],
@@ -2101,6 +2148,8 @@ const nm = neural.meta;
 
     const clock = new THREE.Clock();
     const _camTmp = new THREE.Vector3();
+    const _recogA = new THREE.Vector3();
+    const _recogB = new THREE.Vector3();
     function frame() {
       const dt = clock.getDelta();
       if (!frozen && !reduce) {
@@ -2127,6 +2176,19 @@ const nm = neural.meta;
       vessel.rotation.y += frozen ? 0 : dt * 0.15;
       ghost.rotation.y += frozen ? 0 : -dt * 0.05;
       equilibrium.rotation.y = ghost.rotation.y; // the shadow tracks its body
+      // the recognition singularity travels the lemniscate path (freezes with F)
+      if (!frozen && !reduce) recogU = (recogU + dt * 0.055) % 1;
+      recogCurve.getPointAt(recogU, _recogA);
+      recogHead.position.copy(_recogA);
+      const _rtp = recogTrail.geometry.getAttribute('position') as THREE.BufferAttribute;
+      for (let i = 0; i < RECOG_TRAIL; i++) {
+        let uu = recogU - (i / RECOG_TRAIL) * 0.1;
+        if (uu < 0) uu += 1;
+        recogCurve.getPointAt(uu, _recogB);
+        _rtp.setXYZ(i, _recogB.x, _recogB.y, _recogB.z);
+      }
+      _rtp.needsUpdate = true;
+
       controls.update();
       composer.render();
       requestAnimationFrame(frame);
@@ -2246,9 +2308,22 @@ const nm = neural.meta;
         acPickVoice();
       });
     }
-    // speak text; call onEnd when done (or, if muted/unsupported, after a
-    // reading-time delay so the tour still auto-advances).
-    function acSpeak(text: string, onEnd?: () => void): void {
+    // Elle's own voice: the worker TTS (one voice everywhere), with the device's
+    // speech engine as the fallback when it's unavailable, rate-limited, or the
+    // audio can't autoplay. Audio is cached per text so repeats don't re-bill.
+    let acAudio: HTMLAudioElement | null = null;
+    const acAudioCache = new Map<string, string>();
+    function acStopAudio(): void {
+      if (acAudio) {
+        acAudio.pause();
+        acAudio.onended = null;
+        acAudio.onerror = null;
+        acAudio = null;
+      }
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+    // the device's own engine — the fallback path.
+    function acBrowserSpeak(text: string, onEnd?: () => void): void {
       const ss = window.speechSynthesis;
       if (!ss || muted || !text) {
         if (onEnd) window.setTimeout(onEnd, Math.min(9000, 1400 + text.length * 32));
@@ -2263,6 +2338,47 @@ const nm = neural.meta;
       u.onend = () => onEnd && onEnd();
       u.onerror = () => onEnd && onEnd();
       ss.speak(u);
+    }
+    // speak text; call onEnd when done (or, if muted, after a reading-time delay
+    // so the tour still auto-advances). Branded worker voice first, browser next.
+    async function acSpeak(text: string, onEnd?: () => void): Promise<void> {
+      acStopAudio();
+      if (muted || !text) {
+        if (onEnd) window.setTimeout(onEnd, Math.min(9000, 1400 + text.length * 32));
+        return;
+      }
+      try {
+        let url = acAudioCache.get(text);
+        if (!url) {
+          const r = await fetch(WORKER + '/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, lang: 'EN' }),
+          });
+          if (!r.ok) throw new Error('tts ' + r.status);
+          const blob = await r.blob();
+          if (!blob.size) throw new Error('empty audio');
+          url = URL.createObjectURL(blob);
+          acAudioCache.set(text, url);
+        }
+        if (muted) {
+          if (onEnd) onEnd();
+          return;
+        }
+        const a = new Audio(url);
+        acAudio = a;
+        a.onended = () => {
+          if (acAudio === a) acAudio = null;
+          if (onEnd) onEnd();
+        };
+        a.onerror = () => {
+          if (acAudio === a) acAudio = null;
+          acBrowserSpeak(text, onEnd);
+        };
+        await a.play();
+      } catch {
+        acBrowserSpeak(text, onEnd);
+      }
     }
     function syncMute() {
       acMute.textContent = muted ? '🔇' : '🔊';
@@ -2313,7 +2429,7 @@ const nm = neural.meta;
     function stopWalk() {
       walking = false;
       autoWalk = false;
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      acStopAudio();
       acTourEl.hidden = true;
       acWalk.textContent = '▶ Walk me through it';
       guideCam = null;
@@ -2337,7 +2453,7 @@ const nm = neural.meta;
       autoWalk = !autoWalk;
       syncPause();
       if (!autoWalk) {
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        acStopAudio();
       } else if (walking) {
         walkTo(cur);
       }
@@ -2349,7 +2465,7 @@ const nm = neural.meta;
       } catch {
         /* ignore */
       }
-      if (muted && window.speechSynthesis) window.speechSynthesis.cancel();
+      if (muted) acStopAudio();
       syncMute();
     });
     acCollapse.addEventListener('click', () => {
@@ -2386,7 +2502,7 @@ const nm = neural.meta;
       if (walking) {
         autoWalk = false;
         syncPause();
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        acStopAudio();
       }
       acBubble('user', acEsc(q));
       acHist.push({ role: 'user', content: q });
