@@ -30,6 +30,10 @@ export const headerData = {
           href: getPermalink('/about'),
         },
         {
+          text: 'Principles',
+          href: getPermalink('/principled'),
+        },
+        {
           text: 'Services',
           href: getPermalink('/services'),
         },
@@ -76,6 +80,7 @@ export const footerData = {
       title: 'Company',
       links: [
         { text: 'About', href: getPermalink('/about') },
+        { text: 'Principles', href: getPermalink('/principled') },
         { text: 'Pricing', href: getPermalink('/pricing') },
         { text: 'Contact', href: getPermalink('/contact') },
         { text: 'Donate', href: '/donate' },
@@ -85,6 +90,7 @@ export const footerData = {
   secondaryLinks: [
     { text: 'Terms', href: getPermalink('/terms') },
     { text: 'Privacy Policy', href: getPermalink('/privacy') },
+    { text: 'Design System', href: getPermalink('/design-system') },
   ],
   // Profile URLs are platform roots until the real profiles exist — swap in
   // the account URLs as they're created (PhilArchive already points at the
