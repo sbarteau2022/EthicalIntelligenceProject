@@ -464,6 +464,9 @@
 .eih .cards.four {
   grid-template-columns: repeat(4, 1fr);
 }
+.eih .cards.two {
+  grid-template-columns: repeat(2, 1fr);
+}
 .eih .card {
   background: var(--card);
   border: 1px solid var(--b2);
@@ -504,7 +507,8 @@
 }
 @media (max-width: 560px) {
   .eih .cards,
-  .eih .cards.four {
+  .eih .cards.four,
+  .eih .cards.two {
     grid-template-columns: 1fr;
   }
 }
