@@ -2,20 +2,31 @@
 // Shared auth modal + window.EIH global for hub pages that talk to the worker.
 // Uses the SAME token key as /elle and /landing/product, so one sign-in works
 // across every surface of the site.
+//
+// OAUTH ONLY, DELIBERATELY: no email/password form. "Sign in" and "sign up"
+// are the same Google button — the worker's /api/elle-oauth upserts by email,
+// so someone who already has a password-based account just signs in with
+// Google using the same address and lands on their existing row.
+//
+// Needs PUBLIC_GOOGLE_CLIENT_ID set at build time (Google Cloud Console →
+// OAuth client ID, type "Web application") AND the elle-worker secret
+// GOOGLE_CLIENT_ID set to the same value (wrangler secret put GOOGLE_CLIENT_ID)
+// — the worker verifies the credential's `aud` against it. Until both are
+// set, the modal shows a "temporarily unavailable" message instead of a
+// broken button.
+const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
 ---
 
-<div class="eih-auth" id="eih-auth">
+<div class="eih-auth" id="eih-auth" data-client-id={GOOGLE_CLIENT_ID}>
   <div class="card">
     <button class="x" id="eih-auth-x" aria-label="Close">×</button>
     <h2 id="eih-auth-title">Sign in</h2>
     <div class="h-sub">One free account for Elle, your Optimus journal, and the analysis engine.</div>
-    <label>Email</label>
-    <input id="eih-email" type="email" autocomplete="email" placeholder="you@example.com" />
-    <label>Password</label>
-    <input id="eih-pw" type="password" autocomplete="current-password" placeholder="••••••••" />
+    <div class="google-btn-wrap" id="eih-google-btn"></div>
+    <p class="unavailable" id="eih-auth-unavailable" style="display:none">
+      Sign-in is being set up — check back shortly.
+    </p>
     <div class="err" id="eih-auth-err"></div>
-    <button class="primary" id="eih-auth-go">Sign in</button>
-    <div class="toggle" id="eih-auth-toggle">New here? <b>Create a free account</b></div>
   </div>
 </div>
 
@@ -34,13 +45,11 @@
     }
 
     const authEl = document.getElementById('eih-auth');
-    const emailEl = document.getElementById('eih-email');
-    const pwEl = document.getElementById('eih-pw');
     const errEl = document.getElementById('eih-auth-err');
-    const goEl = document.getElementById('eih-auth-go');
     const titleEl = document.getElementById('eih-auth-title');
-    const toggleEl = document.getElementById('eih-auth-toggle');
-    let mode = 'signin';
+    const unavailableEl = document.getElementById('eih-auth-unavailable');
+    const googleBtnEl = document.getElementById('eih-google-btn');
+    const CLIENT_ID = authEl.dataset.clientId || '';
     let onAuthed = null;
 
     function emit() {
@@ -48,22 +57,11 @@
       const acct = document.getElementById('eih-acct');
       if (acct) acct.textContent = token ? 'Sign out' : 'Sign in';
     }
-    function setMode(m) {
-      mode = m;
-      titleEl.textContent = m === 'signup' ? 'Create your free account' : 'Sign in';
-      goEl.textContent = m === 'signup' ? 'Create account' : 'Sign in';
-      toggleEl.innerHTML =
-        m === 'signup' ? 'Already have an account? <b>Sign in</b>' : 'New here? <b>Create a free account</b>';
-      pwEl.setAttribute('autocomplete', m === 'signup' ? 'new-password' : 'current-password');
-    }
     function openAuth(startMode, cb) {
-      setMode(startMode || 'signin');
+      titleEl.textContent = startMode === 'signup' ? 'Create your free account' : 'Sign in';
       errEl.textContent = '';
       onAuthed = cb || null;
       authEl.classList.add('show');
-      setTimeout(function () {
-        emailEl.focus();
-      }, 60);
     }
     function closeAuth() {
       authEl.classList.remove('show');
@@ -77,19 +75,12 @@
       }
       emit();
     }
-    function doAuth() {
-      const email = emailEl.value.trim(),
-        pw = pwEl.value;
-      if (!email || !pw) {
-        errEl.textContent = 'Email and password required.';
-        return;
-      }
-      goEl.disabled = true;
+    function onGoogleCredential(response) {
       errEl.textContent = '';
-      fetch(WORKER + '/api/elle-auth', {
+      fetch(WORKER + '/api/elle-oauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: mode === 'signup' ? 'signup' : 'login', email: email, password: pw }),
+        body: JSON.stringify({ credential: response.credential }),
       })
         .then(function (r) {
           return r.json().then(function (d) {
@@ -98,7 +89,7 @@
         })
         .then(function (res) {
           if (!res.ok || !res.d.access_token) {
-            errEl.textContent = res.d.error || 'Failed (' + res.status + ')';
+            errEl.textContent = res.d.error || 'Google sign-in failed (' + res.status + ')';
             return;
           }
           token = res.d.access_token;
@@ -113,20 +104,39 @@
         })
         .catch(function () {
           errEl.textContent = 'Connection failed. Try again.';
-        })
-        .finally(function () {
-          goEl.disabled = false;
         });
     }
+    function initGoogle() {
+      if (!CLIENT_ID) {
+        unavailableEl.style.display = 'block';
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.async = true;
+      s.defer = true;
+      s.onload = function () {
+        try {
+          window.google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onGoogleCredential });
+          window.google.accounts.id.renderButton(googleBtnEl, {
+            theme: 'filled_black',
+            size: 'large',
+            shape: 'pill',
+            text: 'continue_with',
+            width: 280,
+          });
+        } catch {
+          unavailableEl.style.display = 'block';
+        }
+      };
+      s.onerror = function () {
+        unavailableEl.style.display = 'block';
+      };
+      document.head.appendChild(s);
+    }
+    initGoogle();
 
     document.getElementById('eih-auth-x').addEventListener('click', closeAuth);
-    goEl.addEventListener('click', doAuth);
-    pwEl.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') doAuth();
-    });
-    toggleEl.addEventListener('click', function (e) {
-      if (e.target.tagName === 'B') setMode(mode === 'signup' ? 'signin' : 'signup');
-    });
     authEl.addEventListener('click', function (e) {
       if (e.target === authEl) closeAuth();
     });
