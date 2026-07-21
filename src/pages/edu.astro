@@ -92,10 +92,10 @@ const COURSES = [
     </div>
 
     <nav class="site-nav glass">
-      <div class="logo">
+      <a class="logo" href="/">
         <div class="mark"></div>
         <div>Atlas Edu<small>The education platform of the MadMind Institute</small></div>
-      </div>
+      </a>
       <div class="nav-links">
         <a class="nav-link" href="#catalog">Catalog</a>
         <a class="nav-link" href="#how">How it works</a>
@@ -431,6 +431,17 @@ const COURSES = [
   #edu .nav-link:hover {
     color: var(--ink);
     background: rgba(255, 255, 255, 0.6);
+  }
+  @media (max-width: 720px) {
+    #edu .nav-links {
+      display: none;
+    }
+    #edu .logo small {
+      display: none;
+    }
+    #edu .site-nav {
+      padding: 10px 12px;
+    }
   }
 
   /* ===== HERO ===== */

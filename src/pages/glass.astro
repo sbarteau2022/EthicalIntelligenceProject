@@ -34,10 +34,10 @@ const metadata = {
     </div>
 
     <nav class="site-nav glass">
-      <div class="logo">
+      <a class="logo" href="/">
         <div class="globe"></div>
         <div>MadMind Institute<small>A 501(c)(3) initiative of the Ethical Intelligence Project</small></div>
-      </div>
+      </a>
       <div class="nav-links">
         <a class="nav-link" href="#corpus">Corpus</a>
         <a class="nav-link" href="#frameworks">Frameworks</a>
@@ -494,6 +494,17 @@ const metadata = {
   #eipg .nav-link:hover {
     color: var(--text);
     background: var(--surface-strong);
+  }
+  @media (max-width: 720px) {
+    #eipg .nav-links {
+      display: none;
+    }
+    #eipg .logo small {
+      display: none;
+    }
+    #eipg .site-nav {
+      padding: 10px 12px;
+    }
   }
 
   /* ===== HERO ===== */

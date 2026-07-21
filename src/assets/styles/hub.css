@@ -167,10 +167,22 @@
   background: rgba(250, 248, 243, 0.88);
   backdrop-filter: blur(10px);
 }
+.eih .hub-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
 .eih .hub-nav .mark {
   width: 26px;
   height: 26px;
   flex-shrink: 0;
+}
+.eih .hub-nav .brand-text {
+  min-width: 0;
+  overflow: hidden;
 }
 .eih .hub-nav .word {
   font-family: var(--font-display);
@@ -179,6 +191,8 @@
   color: var(--ink);
   line-height: 1;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .eih .hub-nav .sub {
   font-size: 0.58rem;
@@ -188,6 +202,20 @@
   font-family: var(--font-mono);
   margin-top: 2px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 480px) {
+  .eih .hub-nav {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+  .eih .hub-nav .word {
+    font-size: 0.95rem;
+  }
+  .eih .hub-nav .sub {
+    display: none;
+  }
 }
 .eih .hub-links {
   margin-left: auto;
@@ -251,6 +279,7 @@
 /* mobile drawer */
 .eih .hub-burger {
   display: none;
+  flex-shrink: 0;
   margin-left: auto;
   background: none;
   border: none;
