@@ -910,8 +910,8 @@ const nm = neural.meta;
     }
   </style>
 
-  <script type="application/json" id="harmonic-snap" set:html={JSON.stringify(harmonic)} />
-  <script type="application/json" id="neural-snap" set:html={JSON.stringify(neural)} />
+  <script type="application/json" id="harmonic-snap" is:inline set:html={JSON.stringify(harmonic)} />
+  <script type="application/json" id="neural-snap" is:inline set:html={JSON.stringify(neural)} />
 
   <script>
     import * as THREE from 'three';
