@@ -331,7 +331,7 @@ const hist = ring.fractured.jumpHistogram as Record<string, number>;
     }
   </style>
 
-  <script type="application/json" id="frac-snap" set:html={JSON.stringify(snapshot)} />
+  <script type="application/json" id="frac-snap" is:inline set:html={JSON.stringify(snapshot)} />
 
   <script>
     import * as THREE from 'three';

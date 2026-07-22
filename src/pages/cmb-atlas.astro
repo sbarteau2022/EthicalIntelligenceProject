@@ -300,7 +300,7 @@ const cv = snapshot.cosmicVariance;
     }
   </style>
 
-  <script type="application/json" id="cmb-snap" set:html={JSON.stringify(snapshot)} />
+  <script type="application/json" id="cmb-snap" is:inline set:html={JSON.stringify(snapshot)} />
 
   <script>
     import * as THREE from 'three';
