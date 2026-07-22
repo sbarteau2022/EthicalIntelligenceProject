@@ -83,7 +83,6 @@ export const footerData = {
         { text: 'Principles', href: getPermalink('/principled') },
         { text: 'Pricing', href: getPermalink('/pricing') },
         { text: 'Contact', href: getPermalink('/contact') },
-        { text: 'Donate', href: '/donate' },
       ],
     },
   ],
