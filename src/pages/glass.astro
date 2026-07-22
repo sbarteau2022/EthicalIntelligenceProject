@@ -46,6 +46,14 @@ const metadata = {
         <a class="nav-link" href="/about">About</a>
       </div>
       <a class="btn gold" href="#corpus">Read the work</a>
+      <button class="mnav-burger" id="eipg-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      <div class="mnav-drawer" id="eipg-drawer">
+        <a href="#corpus">Corpus</a>
+        <a href="#frameworks">Frameworks</a>
+        <a href="#journal">Journal</a>
+        <a href="/edu">Edu</a>
+        <a href="/about">About</a>
+      </div>
     </nav>
 
     <div class="wrap">
@@ -495,6 +503,50 @@ const metadata = {
     color: var(--text);
     background: var(--surface-strong);
   }
+  #eipg .mnav-burger {
+    display: none;
+    flex-shrink: 0;
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  #eipg .mnav-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text);
+    margin: 4px 0;
+    border-radius: 2px;
+  }
+  #eipg .mnav-drawer {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 12px;
+    right: 12px;
+    flex-direction: column;
+    background: #0a0a0c;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 8px;
+    z-index: 61;
+  }
+  #eipg .mnav-drawer.open {
+    display: flex;
+  }
+  #eipg .mnav-drawer a {
+    padding: 12px 14px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: var(--r-btn);
+    font-size: 14px;
+  }
+  #eipg .mnav-drawer a:hover {
+    background: var(--surface);
+  }
   @media (max-width: 720px) {
     #eipg .nav-links {
       display: none;
@@ -504,6 +556,9 @@ const metadata = {
     }
     #eipg .site-nav {
       padding: 10px 12px;
+    }
+    #eipg .mnav-burger {
+      display: block;
     }
   }
 
@@ -932,3 +987,29 @@ const metadata = {
     }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    const burger = document.getElementById('eipg-burger');
+    const drawer = document.getElementById('eipg-drawer');
+    if (!burger || !drawer) return;
+    burger.addEventListener('click', function () {
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        drawer.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (
+        drawer.classList.contains('open') &&
+        !drawer.contains(e.target) &&
+        e.target !== burger &&
+        !burger.contains(e.target)
+      ) {
+        drawer.classList.remove('open');
+      }
+    });
+  })();
+</script>
