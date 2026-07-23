@@ -513,7 +513,7 @@ const tLast = tr[tr.length - 1];
     }
   </style>
 
-  <script type="application/json" id="stair-snap" set:html={JSON.stringify(snapshot)} />
+  <script type="application/json" id="stair-snap" is:inline set:html={JSON.stringify(snapshot)} />
 
   <script>
     import * as THREE from 'three';

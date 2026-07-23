@@ -92,10 +92,10 @@ const COURSES = [
     </div>
 
     <nav class="site-nav glass">
-      <div class="logo">
+      <a class="logo" href="/">
         <div class="mark"></div>
         <div>Atlas Edu<small>The education platform of the MadMind Institute</small></div>
-      </div>
+      </a>
       <div class="nav-links">
         <a class="nav-link" href="#catalog">Catalog</a>
         <a class="nav-link" href="#how">How it works</a>
@@ -103,6 +103,13 @@ const COURSES = [
         <a class="nav-link" href="/glass">Corpus ↗</a>
       </div>
       <a class="btn gold" href="/learn">Browse the catalog</a>
+      <button class="mnav-burger" id="edu-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      <div class="mnav-drawer" id="edu-drawer">
+        <a href="#catalog">Catalog</a>
+        <a href="#how">How it works</a>
+        <a href="#elle">Elle</a>
+        <a href="/glass">Corpus ↗</a>
+      </div>
     </nav>
 
     <div class="wrap">
@@ -432,6 +439,64 @@ const COURSES = [
     color: var(--ink);
     background: rgba(255, 255, 255, 0.6);
   }
+  #edu .mnav-burger {
+    display: none;
+    flex-shrink: 0;
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  #edu .mnav-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--ink);
+    margin: 4px 0;
+    border-radius: 2px;
+  }
+  #edu .mnav-drawer {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 12px;
+    right: 12px;
+    flex-direction: column;
+    background: #f6f4ee;
+    box-shadow: 0 12px 40px rgba(25, 21, 9, 0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 8px;
+    z-index: 61;
+  }
+  #edu .mnav-drawer.open {
+    display: flex;
+  }
+  #edu .mnav-drawer a {
+    padding: 12px 14px;
+    color: var(--ink);
+    text-decoration: none;
+    border-radius: var(--r-btn);
+    font-size: 14px;
+  }
+  #edu .mnav-drawer a:hover {
+    background: var(--card);
+  }
+  @media (max-width: 720px) {
+    #edu .nav-links {
+      display: none;
+    }
+    #edu .logo small {
+      display: none;
+    }
+    #edu .site-nav {
+      padding: 10px 12px;
+    }
+    #edu .mnav-burger {
+      display: block;
+    }
+  }
 
   /* ===== HERO ===== */
   #edu .hero {
@@ -742,3 +807,29 @@ const COURSES = [
     }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    const burger = document.getElementById('edu-burger');
+    const drawer = document.getElementById('edu-drawer');
+    if (!burger || !drawer) return;
+    burger.addEventListener('click', function () {
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        drawer.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (
+        drawer.classList.contains('open') &&
+        !drawer.contains(e.target) &&
+        e.target !== burger &&
+        !burger.contains(e.target)
+      ) {
+        drawer.classList.remove('open');
+      }
+    });
+  })();
+</script>

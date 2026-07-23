@@ -587,7 +587,6 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
               id="chat-input"
               placeholder="Ask about your costs, invoices, price trends…"
               rows="1"
-              onkeydown="handleKey(event)"
               oninput="autoResize(this)"></textarea>
             <button class="send-btn" id="send-btn" onclick="sendMessage()">
               <svg
@@ -730,6 +729,10 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 160) + 'px';
       }
+
+      // Wired here instead of an inline onkeydown attribute — TS flags the
+      // implicit inline-handler `event` global as deprecated (ts6385).
+      document.getElementById('chat-input').addEventListener('keydown', handleKey);
 
       function newChat() {
         sessionId = '';
