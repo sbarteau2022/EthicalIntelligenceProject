@@ -1,79 +1,139 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-import HeroText from '~/components/widgets/HeroText.astro';
-import ContactUs from '~/components/widgets/Contact.astro';
-import Features2 from '~/components/widgets/Features2.astro';
+// ============================================================
+// CONTACT — a real form wired to elle-worker's /api/contact, which
+// logs to elle_outreach_log and (once RESEND_API_KEY is set) emails
+// Stewart directly. No sales team, no phone tree — just a message.
+// ============================================================
+import '~/assets/styles/hub.css';
+import Layout from '~/layouts/Layout.astro';
+import HubNav from '~/components/hub/HubNav.astro';
+import HubFooter from '~/components/hub/HubFooter.astro';
 
 const metadata = {
-  title: 'Contact',
+  title: 'Contact — The Ethical Intelligence Project',
+  description: 'Get in touch with The Ethical Intelligence Project — no sales team, no phone tree, just a message.',
 };
 ---
 
 <Layout metadata={metadata}>
-  <!-- HeroText Widget ******************* -->
+  <div class="eih">
+    <HubNav current="/contact" />
 
-  <HeroText tagline="Contact" title="Let's Connect!" />
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="eyebrow rv">Contact</div>
+      <h1>Get in touch.</h1>
+      <p class="lede">
+        No sales team, no phone tree — a message here goes directly to Stewart. If you'd rather ask something the
+        product itself can answer, <a href="/elle">Elle</a> is faster.
+      </p>
+    </section>
 
-  <ContactUs
-    id="form"
-    title="Drop us a message today!"
-    subtitle="For quicker answers, explore our FAQs section. You may find the solution you're looking  for right there! If not, our support team is delighted to help you."
-    inputs={[
-      {
-        type: 'text',
-        name: 'name',
-        label: 'Name',
-      },
-      {
-        type: 'email',
-        name: 'email',
-        label: 'Email',
-      },
-    ]}
-    textarea={{
-      label: 'Message',
-    }}
-    disclaimer={{
-      label:
-        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
-    }}
-    description="Our support team typically responds within 24 business hours."
-  />
+    <!-- FORM -->
+    <section class="wrap" style="max-width:560px">
+      <form id="eip-contact-form" class="contact-form">
+        <label for="c-name">Name</label>
+        <input id="c-name" name="name" type="text" autocomplete="name" required />
 
-  <!-- Features2 Widget ************** -->
+        <label for="c-email">Email</label>
+        <input id="c-email" name="email" type="email" autocomplete="email" required />
 
-  <Features2
-    title="We are here to help!"
-    items={[
-      {
-        title: 'General support',
-        description: `Chat with us for inquiries related to account management, website navigation, payment issues, accessing purchased templates or general questions about the website's functionality.`,
-      },
-      {
-        title: 'Contact sales',
-        description:
-          'Chat with us for questions about purchases, customization options, licensing for commercial use, inquiries about specific template, etc.',
-      },
-      {
-        title: 'Technical support',
-        description:
-          'Chat with us when facing issues like template installation, problems editing difficulties, compatibility issues with software or download errors, or other technical challenges related to using the templates.',
-      },
-      {
-        title: 'Phone',
-        description: '+1 (234) 567-890',
-        icon: 'tabler:headset',
-      },
-      {
-        title: 'Email',
-        description: 'contact@support.com',
-        icon: 'tabler:mail',
-      },
-      {
-        title: 'Location',
-        description: '1234 Lorem Ipsum St, 12345, Miami, EEUU',
-        icon: 'tabler:map-pin',
-      },
-    ]}
-  />
+        <label for="c-message">Message</label>
+        <textarea id="c-message" name="message" rows="6" required></textarea>
+
+        <button class="btn" type="submit" id="c-submit">Send message</button>
+        <div class="contact-status" id="c-status" role="status"></div>
+      </form>
+    </section>
+
+    <HubFooter />
+  </div>
+
+  <style>
+    .eih .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .eih .contact-form label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin: 12px 0 2px;
+    }
+    .eih .contact-form label:first-child {
+      margin-top: 0;
+    }
+    .eih .contact-form button {
+      margin-top: 22px;
+      align-self: flex-start;
+    }
+    .eih .contact-status {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+    }
+    .eih .contact-status.ok {
+      color: var(--gold);
+    }
+    .eih .contact-status.err {
+      color: #b3452e;
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
+      const form = document.getElementById('eip-contact-form');
+      const statusEl = document.getElementById('c-status');
+      const submitEl = document.getElementById('c-submit');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('c-name').value.trim();
+        const email = document.getElementById('c-email').value.trim();
+        const message = document.getElementById('c-message').value.trim();
+        if (!name || !email || !message) return;
+
+        submitEl.disabled = true;
+        statusEl.textContent = 'Sending…';
+        statusEl.className = 'contact-status';
+
+        fetch(WORKER + '/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            thought: 'From: ' + name + ' <' + email + '>\n\n' + message,
+            outreach_type: 'contact_form',
+            initiated_by: email,
+            needs_response: true,
+          }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, d: d };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok || !res.d.success) {
+              statusEl.textContent = 'Something went wrong — try again, or email us directly.';
+              statusEl.className = 'contact-status err';
+              return;
+            }
+            statusEl.textContent = "Sent. We'll get back to you.";
+            statusEl.className = 'contact-status ok';
+            form.reset();
+          })
+          .catch(function () {
+            statusEl.textContent = 'Connection failed. Try again.';
+            statusEl.className = 'contact-status err';
+          })
+          .finally(function () {
+            submitEl.disabled = false;
+          });
+      });
+    })();
+  </script>
 </Layout>
