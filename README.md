@@ -39,17 +39,17 @@ For agent/AI-assistant conventions (house format, verification checklist, path a
 
 The site presents the project as one presence with nine expressions — the **Nine Engines**:
 
-| #   | Engine                    | Focus                                | Where it lives                            |
-| :-- | :------------------------ | :------------------------------------ | :----------------------------------------- |
-| 01  | Elle Law                  | Rights & legal reasoning             | external — [elle-law.pages.dev](https://elle-law.pages.dev) |
-| 02  | Harmonizer                | Mental health & peer support         | external — [harmonizer-two.vercel.app](https://harmonizer-two.vercel.app) |
-| 03  | Atlas Edu                 | Education & navigation               | `/learn` (in this repo) |
-| 04  | Agricultural Intelligence | USDA & farm resources                | `/business` (in this repo) |
-| 05  | Healthcare Navigation     | Benefits & patient rights            | `/elle` (in this repo) |
-| 06  | Small Business Hub        | Licensing, grants & compliance       | `/business` (in this repo) |
-| 07  | Civic Intelligence        | Government documents, translated     | `/elle` (in this repo) |
+| #   | Engine                    | Focus                                | Where it lives                                                                                                                |
+| :-- | :------------------------ | :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| 01  | Elle Law                  | Rights & legal reasoning             | external — [elle-law.pages.dev](https://elle-law.pages.dev)                                                                   |
+| 02  | Harmonizer                | Mental health & peer support         | external — [harmonizer-two.vercel.app](https://harmonizer-two.vercel.app)                                                     |
+| 03  | Atlas Edu                 | Education & navigation               | `/learn` (in this repo)                                                                                                       |
+| 04  | Agricultural Intelligence | USDA & farm resources                | `/business` (in this repo)                                                                                                    |
+| 05  | Healthcare Navigation     | Benefits & patient rights            | `/elle` (in this repo)                                                                                                        |
+| 06  | Small Business Hub        | Licensing, grants & compliance       | `/business` (in this repo)                                                                                                    |
+| 07  | Civic Intelligence        | Government documents, translated     | `/elle` (in this repo)                                                                                                        |
 | 08  | RAPID²AI                  | Hospitality operational intelligence | external — [rapidai.pages.dev](https://rapidai.pages.dev/coo/), plus operator surfaces in this repo (`/app`, `/chef`, `/coo`) |
-| 09  | The Observer              | Research & testimony                 | `/observer` (in this repo) |
+| 09  | The Observer              | Research & testimony                 | `/observer` (in this repo)                                                                                                    |
 
 (See the `engines` array in [`src/pages/index.astro`](./src/pages/index.astro) for the source of this table.)
 
@@ -95,22 +95,22 @@ npm install
 
 The build reads these at build time (all optional — the site degrades gracefully without them):
 
-| Variable                       | Used for                                                                                     |
-| :------------------------------ | :--------------------------------------------------------------------------------------------|
-| `PUBLIC_GOOGLE_CLIENT_ID`       | Google OAuth "Web application" client ID, baked into the static build so sign-in on `/elle`, the Hub (`HubAuth`), and RAPID²AI surfaces render a working button. Left unset → sign-in shows a "temporarily unavailable" message instead of a broken button. The matching `elle-worker` secret (`GOOGLE_CLIENT_ID`, same value) must also be set on the worker side. |
-| `PUBLIC_RAPIDAI_CHAT_API_URL`   | Overrides the RAPID²AI chat endpoint (`/app`); defaults to `https://elle-worker.sbarteau2022.workers.dev/api/atlas`. |
+| Variable                      | Used for                                                                                                                                                                                                                                                                                                                                                            |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PUBLIC_GOOGLE_CLIENT_ID`     | Google OAuth "Web application" client ID, baked into the static build so sign-in on `/elle`, the Hub (`HubAuth`), and RAPID²AI surfaces render a working button. Left unset → sign-in shows a "temporarily unavailable" message instead of a broken button. The matching `elle-worker` secret (`GOOGLE_CLIENT_ID`, same value) must also be set on the worker side. |
+| `PUBLIC_RAPIDAI_CHAT_API_URL` | Overrides the RAPID²AI chat endpoint (`/app`); defaults to `https://elle-worker.sbarteau2022.workers.dev/api/atlas`.                                                                                                                                                                                                                                                |
 
 ### Commands
 
 All commands are run from the root of the project, from a terminal:
 
 | Command             | Action                                             |
-| :------------------ | :-------------------------------------------------- |
+| :------------------ | :------------------------------------------------- |
 | `npm install`       | Installs dependencies                              |
 | `npm run dev`       | Starts local dev server at `localhost:4321`        |
 | `npm run build`     | Build your production site to `./dist/`            |
 | `npm run preview`   | Preview your build locally, before deploying       |
-| `npm run check`     | Run `astro check` + ESLint + Prettier               |
+| `npm run check`     | Run `astro check` + ESLint + Prettier              |
 | `npm run fix`       | Auto-fix ESLint and Prettier issues                |
 | `npm run astro ...` | Run CLI commands like `astro add`, `astro preview` |
 
@@ -206,16 +206,16 @@ Guests get corpus-aware answers; signed-in users (Google OAuth) get full corpus 
 Each page has a corresponding generator under `scripts/` and a committed JSON snapshot under `src/data/`:
 
 | Page               | Generator                                | Snapshot                                  |
-| ------------------- | ----------------------------------------- | ------------------------------------------ |
-| `/atlas`            | `scripts/generate-harmonic-snapshot.mjs`  | `src/data/harmonic-snapshot.json`         |
-| `/neural-atlas`     | `scripts/generate-neural-snapshot.py`     | `src/data/neural-structure-snapshot.json` |
-| `/master-atlas`     | (reads both snapshots above)              | —                                          |
-| `/orbital-atlas`    | `scripts/generate-orbital-snapshot.py`    | `src/data/orbital-snapshot.json`          |
-| `/hologram-atlas`   | `scripts/generate-hologram-snapshot.py`   | `src/data/hologram-snapshot.json`         |
-| `/staircase-atlas`  | `scripts/generate-circlemap-snapshot.py`  | `src/data/circlemap-snapshot.json`        |
-| `/fracture-atlas`   | `scripts/generate-fracture-snapshot.py`   | `src/data/fracture-snapshot.json`         |
-| `/cmb-atlas`        | `scripts/generate-cmb-snapshot.py`        | `src/data/cmb-snapshot.json`              |
-| `/entropy-atlas`    | `scripts/generate-entropy-snapshot.py`    | `src/data/entropy-snapshot.json`          |
+| ------------------ | ---------------------------------------- | ----------------------------------------- |
+| `/atlas`           | `scripts/generate-harmonic-snapshot.mjs` | `src/data/harmonic-snapshot.json`         |
+| `/neural-atlas`    | `scripts/generate-neural-snapshot.py`    | `src/data/neural-structure-snapshot.json` |
+| `/master-atlas`    | (reads both snapshots above)             | —                                         |
+| `/orbital-atlas`   | `scripts/generate-orbital-snapshot.py`   | `src/data/orbital-snapshot.json`          |
+| `/hologram-atlas`  | `scripts/generate-hologram-snapshot.py`  | `src/data/hologram-snapshot.json`         |
+| `/staircase-atlas` | `scripts/generate-circlemap-snapshot.py` | `src/data/circlemap-snapshot.json`        |
+| `/fracture-atlas`  | `scripts/generate-fracture-snapshot.py`  | `src/data/fracture-snapshot.json`         |
+| `/cmb-atlas`       | `scripts/generate-cmb-snapshot.py`       | `src/data/cmb-snapshot.json`              |
+| `/entropy-atlas`   | `scripts/generate-entropy-snapshot.py`   | `src/data/entropy-snapshot.json`          |
 
 The Node generator needs no extra dependencies; the Python generators require `numpy` (`pip install numpy`) and take from a few seconds up to several minutes to run. See [`docs/ATLAS.md`](./docs/ATLAS.md) for the full record, the dependency map between pages, and exact regeneration commands.
 
