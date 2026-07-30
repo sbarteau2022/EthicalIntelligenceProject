@@ -20,19 +20,21 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
     <title>RAPID²AI — Intelligence</title>
     <script is:inline src="https://accounts.google.com/gsi/client" async defer></script>
     <script is:inline src="/rapidai-auth.js"></script>
+    <link rel="stylesheet" href="/rapid-design.css" />
+    <script is:inline src="/rapid-design.js" defer></script>
     <style>
       :root {
-        --bg: #0a0e0c;
-        --surface: #111714;
-        --surface2: #192118;
-        --border: #2a332a;
-        --gold: #c9a55c;
-        --gold-dim: #a07e3a;
-        --text: #e8ede9;
-        --text-dim: #7a8278;
-        --green: #4caf72;
-        --user-bubble: #1a3a2a;
-        --ai-bubble: #111714;
+        --bg: #f2f2f3;
+        --surface: color-mix(in srgb, #fff 80%, transparent);
+        --surface2: #eceef2;
+        --border: #ced3da;
+        --gold: #b3902f;
+        --gold-dim: #8a6f22;
+        --text: #1d1f20;
+        --text-dim: #767e8a;
+        --green: #3f8f5f;
+        --user-bubble: color-mix(in srgb, var(--green) 12%, #fff);
+        --ai-bubble: color-mix(in srgb, #fff 82%, transparent);
       }
       * {
         margin: 0;
@@ -44,9 +46,8 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         height: 100%;
       }
       body {
-        background: var(--bg);
         color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: var(--r-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
         display: flex;
         flex-direction: column;
         height: 100vh;
@@ -57,7 +58,7 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         display: none;
         position: fixed;
         inset: 0;
-        background: var(--bg);
+        background: linear-gradient(160deg, #1b2233 0%, #313d58 40%, #202838 75%, #161b28 100%);
         align-items: center;
         justify-content: center;
         z-index: 9999;
@@ -65,29 +66,31 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         gap: 1.5rem;
       }
       .gate-brand {
-        font-family: Georgia, serif;
-        font-style: italic;
-        color: var(--gold);
-        font-size: 1.4rem;
+        font-family: var(--r-font-heading, 'Barlow Condensed', serif);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--r-gold-400);
+        font-size: 1.5rem;
       }
       .gate-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid color-mix(in srgb, var(--r-gold-400) 32%, transparent);
+        border-radius: 18px;
         padding: 2.5rem 3rem;
         text-align: center;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
         align-items: center;
+        box-shadow: 0 24px 60px -24px rgba(15, 20, 30, 0.55);
       }
       .gate-title {
-        color: var(--text);
+        color: #e8ede9;
         font-size: 1rem;
         font-weight: 600;
       }
       .gate-desc {
-        color: var(--text-dim);
+        color: #9aa3ad;
         font-size: 0.82rem;
         max-width: 280px;
         line-height: 1.6;
@@ -115,7 +118,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
 
       /* HEADER */
       .app-header {
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-bottom: 1px solid var(--border);
         padding: 0 1.5rem;
         height: 56px;
@@ -125,10 +130,11 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         flex-shrink: 0;
       }
       .header-brand {
-        font-family: Georgia, serif;
-        font-style: italic;
+        font-family: var(--r-font-heading, 'Barlow Condensed', sans-serif);
+        font-weight: 600;
+        letter-spacing: 0.03em;
         color: var(--gold);
-        font-size: 1.05rem;
+        font-size: 1.1rem;
       }
       .header-brand span {
         font-size: 0.68rem;
@@ -157,9 +163,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         transition: all 0.15s;
       }
       .view-pill.active {
-        background: rgba(201, 165, 92, 0.1);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border-color: var(--gold-dim);
-        color: var(--gold);
+        color: #6b5411;
       }
       .view-pill:hover {
         color: var(--text);
@@ -192,7 +198,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       }
       .chat-sidebar {
         width: 240px;
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 66%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
@@ -213,16 +221,16 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       }
       .new-chat-btn {
         font-size: 0.72rem;
-        background: rgba(201, 165, 92, 0.1);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border: 1px solid var(--gold-dim);
-        color: var(--gold);
+        color: #6b5411;
         padding: 3px 10px;
-        border-radius: 4px;
+        border-radius: 999px;
         cursor: pointer;
-        transition: background 0.15s;
+        transition: filter 0.15s;
       }
       .new-chat-btn:hover {
-        background: rgba(201, 165, 92, 0.18);
+        filter: brightness(0.97);
       }
       .chat-list {
         flex: 1;
@@ -241,12 +249,12 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         border-left: 2px solid transparent;
       }
       .chat-list-item:hover {
-        background: rgba(255, 255, 255, 0.03);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
         color: var(--text);
       }
       .chat-list-item.active {
         color: var(--gold);
-        background: rgba(201, 165, 92, 0.06);
+        background: color-mix(in srgb, var(--r-gold-050) 65%, transparent);
         border-left-color: var(--gold);
       }
       .chat-sidebar-footer {
@@ -293,28 +301,31 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         font-weight: 600;
       }
       .msg-avatar-ai {
-        background: rgba(201, 165, 92, 0.15);
-        color: var(--gold);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
+        color: #6b5411;
         border: 1px solid var(--gold-dim);
       }
       .msg-avatar-user {
         background: var(--user-bubble);
         color: var(--green);
-        border: 1px solid #2a4a3a;
+        border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
       }
       .msg-body {
         background: var(--ai-bubble);
+        backdrop-filter: blur(10px) saturate(115%);
+        -webkit-backdrop-filter: blur(10px) saturate(115%);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 14px;
         padding: 0.875rem 1rem;
         font-size: 0.875rem;
         line-height: 1.65;
         color: var(--text);
         max-width: calc(100% - 42px);
+        box-shadow: 0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset;
       }
       .msg.user .msg-body {
         background: var(--user-bubble);
-        border-color: #2a4a3a;
+        border-color: color-mix(in srgb, var(--green) 30%, transparent);
       }
       .msg-body p + p {
         margin-top: 0.5rem;
@@ -347,10 +358,11 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         font-size: 2.5rem;
       }
       .empty-title {
-        font-family: Georgia, serif;
-        font-style: italic;
+        font-family: var(--r-font-heading, 'Barlow Condensed', sans-serif);
+        font-weight: 600;
+        letter-spacing: 0.01em;
         color: var(--gold);
-        font-size: 1.25rem;
+        font-size: 1.4rem;
       }
       .empty-desc {
         color: var(--text-dim);
@@ -367,9 +379,15 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         max-width: 400px;
       }
       .empty-prompt {
-        background: var(--surface);
+        background: linear-gradient(
+          152deg,
+          color-mix(in srgb, #fff 82%, transparent),
+          color-mix(in srgb, var(--r-ti-100) 68%, transparent)
+        );
+        backdrop-filter: blur(10px) saturate(115%);
+        -webkit-backdrop-filter: blur(10px) saturate(115%);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 0.75rem 1rem;
         font-size: 0.8rem;
         color: var(--text-dim);
@@ -387,7 +405,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       /* INPUT */
       .chat-input-area {
         padding: 1rem 1.5rem;
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-top: 1px solid var(--border);
         flex-shrink: 0;
       }
@@ -395,9 +415,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         display: flex;
         gap: 0.75rem;
         align-items: flex-end;
-        background: var(--bg);
+        background: color-mix(in srgb, #fff 85%, transparent);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 0.6rem 0.75rem;
         transition: border-color 0.15s;
       }
@@ -422,9 +442,9 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       }
       .send-btn {
         background: var(--gold);
-        color: #0a0e0c;
+        color: #fff;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         width: 34px;
         height: 34px;
         cursor: pointer;
@@ -435,7 +455,7 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         transition: background 0.15s;
       }
       .send-btn:hover {
-        background: #e0b96a;
+        background: var(--r-gold-400, #c9a83f);
       }
       .send-btn:disabled {
         background: var(--gold-dim);
@@ -497,7 +517,7 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
       }
     </style>
   </head>
-  <body>
+  <body class="rapid-app">
     <!-- AUTH GATE OVERLAY -->
     <div id="rapidai-gate">
       <div class="gate-brand">RAPID²AI</div>
@@ -566,7 +586,7 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
               Your full operational context — invoice data, price trends, ledger health, and purveyor intelligence —
               available as conversation.
             </div>
-            <div class="empty-prompts">
+            <div class="empty-prompts" data-r-cascade>
               <div class="empty-prompt" onclick="sendPrompt(this.textContent)">
                 What's driving the food cost increase this week?
               </div>
@@ -746,13 +766,17 @@ const googleClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ?? '';
         <div class="empty-icon">🧠</div>
         <div class="empty-title">RAPID²AI Intelligence</div>
         <div class="empty-desc">Your full operational context — invoice data, price trends, ledger health, and purveyor intelligence — available as conversation.</div>
-        <div class="empty-prompts">
+        <div class="empty-prompts" data-r-cascade>
           <div class="empty-prompt" onclick="sendPrompt(this.textContent)">What's driving the food cost increase this week?</div>
           <div class="empty-prompt" onclick="sendPrompt(this.textContent)">Summarize price volatility for my top 5 SKUs</div>
           <div class="empty-prompt" onclick="sendPrompt(this.textContent)">Which invoices still need review?</div>
           <div class="empty-prompt" onclick="sendPrompt(this.textContent)">Compare this month's COGS to last month</div>
         </div>
       </div>`;
+        // Re-run the shared reveal-on-scroll pass (rapid-design.js) so the
+        // freshly injected [data-r-cascade] block animates in instead of
+        // sitting at opacity:0 forever — it only listens for scroll/resize.
+        window.dispatchEvent(new Event('resize'));
       }
 
       // Auth gate
