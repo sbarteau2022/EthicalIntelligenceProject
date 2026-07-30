@@ -1,467 +1,531 @@
 ---
 // ============================================================
-// THE ETHICAL INTELLIGENCE PROJECT — Landing (v2, light)
-// One source hub: warm paper, ink, one gold. Scroll-triggered
-// layered cards, infographics, ecosystem logo strip.
-// Built on the shared hub design system (~/assets/styles/hub.css).
+// THE ETHICAL INTELLIGENCE PROJECT — homepage
+//
+// Implemented from design-handoff/project/EIP - Home.dc.html, which is the
+// file the user had open when the handoff was triggered. Structure, copy and
+// tokens are carried over as-is; the prototype's inline styles are replaced
+// with the shared classes in ~/assets/styles/eip.css and its hard-coded
+// lists with the shared model in ~/eip.
+//
+// Section order matches the design exactly:
+//   hero → evidence ledger → three ways to audit → the loop → the
+//   instruments → The Graph → The Rosen Bridge → elle-worker → the
+//   workbench → nine engines → commitments → who's behind it → CTA
 // ============================================================
-import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
-import AtlasGraph from '~/components/hub/AtlasGraph.astro';
-import { SOCIALS } from '~/hub';
-// Atlas Edu course metadata is shared with /learn via ~/data/learn.ts
-// so the homepage teaser cards and the curriculum can't drift.
-import { LEARN_COURSES } from '~/data/learn';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
+import HeroGlobe from '~/components/eip/HeroGlobe.astro';
+import HubAuth from '~/components/hub/HubAuth.astro';
+import { ENGINES, PRINCIPLES, CORPUS_DOCS, PROJECT_FACTS, SOCIALS, PHILPEOPLE, WORKER_URL } from '~/eip';
 
 const metadata = {
-  title: 'The Ethical Intelligence Project — Powered by Elle AI',
+  title: 'The Ethical Intelligence Project — principled engineering, powered by Elle AI',
   description:
-    'Community-based intelligence infrastructure that transforms complexity into action. Powered by Elle AI — a corpus-grounded intelligence built to serve the people doing the work.',
+    'One mind. A published corpus she cites, a memory that persists, reasoning you can replay. Most AI asks for trust — Elle is built so you do not have to give it.',
 };
 
-// The hub surfaces — one account opens all of them. `mock` picks the
-// little live-product vignette each bento card renders; `span` is the
-// card's width in the 6-column bento grid.
-const HUB = [
+// Deterministic star field for the SVG backdrop behind the 3D scene, so the
+// server-rendered markup is stable between builds. Three parallax depths.
+const seeded = (n: number) => {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+const starsFar = Array.from({ length: 160 }, (_, i) => ({
+  x: seeded(i * 5 + 11) * 1600,
+  y: seeded(i * 5 + 12) * 900,
+  r: 0.3 + seeded(i * 5 + 13) * 0.5,
+  o: 0.08 + seeded(i * 9 + 7) * 0.2,
+}));
+const starsMid = Array.from({ length: 70 }, (_, i) => ({
+  x: seeded(i * 7 + 31) * 1600,
+  y: seeded(i * 7 + 32) * 900,
+  r: 0.7 + seeded(i * 7 + 33) * 0.7,
+  o: 0.25 + seeded(i * 11 + 17) * 0.3,
+}));
+const starsNear = Array.from({ length: 16 }, (_, i) => ({
+  x: seeded(i * 13 + 51) * 1600,
+  y: seeded(i * 13 + 52) * 900,
+  r: 1.2 + seeded(i * 13 + 53) * 0.9,
+  halo: 4 + seeded(i * 13 + 54) * 5,
+  o: 0.55 + seeded(i * 17 + 27) * 0.4,
+}));
+
+// The gold italic line under the headline, cross-fading on a 6.5s hold with a
+// 1.1s drift — the named concepts are real, from "The Geometry of Disregard".
+const PHRASES = ['φ-Wound Memory Compression', 'Biometric Coherence Friction', 'Enrollment, Not Suppression'];
+
+const LEDGER = [
+  { n: '76+', label: 'Papers published and publicly indexed', src: 'PhilPapers · verify →', href: PHILPEOPLE },
+  { n: 'Top 1%', label: 'Publication volume among indexed authors', src: 'PhilPapers ranking →', href: PHILPEOPLE },
+  { n: '18+', label: 'Universities with the work on a syllabus', src: 'Course listings →', href: '/observer' },
+  { n: 'Indexed', label: 'Corpus indexed and citable by anyone', src: 'PhilPapers listing →', href: PHILPEOPLE },
+];
+
+const JOURNAL = [
   {
-    href: '/optimus',
-    n: 'OPTIMUS JOURNAL',
-    title: 'A record that never rewrites itself',
-    body: 'Your append-only journal plus the manuscript reader. Free with sign-up.',
-    mock: 'journal',
-    span: 3,
+    meta: 'Entry 63 · corrects 47',
+    metaColor: 'var(--gold)',
+    dot: 'var(--gold)',
+    text: 'The κ dip on the 14th was instrumentation, not drift. Entry 47 read it as a coherence failure. It was a sampling gap.',
   },
   {
-    href: '/engine',
-    n: 'ANALYSIS ENGINE',
-    title: 'Sixteen readings, one conclusion',
-    body: 'Upload a document, run the structural analysis, get the one thing that matters.',
-    mock: 'verdict',
-    span: 3,
+    meta: 'Entry 47 · stands, superseded',
+    metaColor: 'var(--t3)',
+    dot: '#38342c',
+    text: 'Coherence fell sharply mid-thread. Provisional reading: the anchor was too weak to hold the branch.',
   },
   {
-    href: '/business',
-    n: 'SMALL BUSINESS HUB',
-    title: 'Optimized for the stop-loss',
-    body: 'Custom pipelines: an AI that learns your business and stops the bleeding first.',
-    mock: 'spark',
-    span: 2,
-  },
-  {
-    href: '/learn',
-    n: 'ATLAS EDU',
-    title: 'AI in plain language',
-    body: 'Free courses: build your own AI with ethics baked in, automate a pipeline, code with Elle.',
-    mock: 'progress',
-    span: 2,
-  },
-  {
-    href: '/observer',
-    n: 'THE OBSERVER',
-    title: 'Research & testimony',
-    body: 'Structural analysis with no side — published when ready, never on a schedule.',
-    mock: 'docs',
-    span: 2,
-  },
-  {
-    href: '/elle',
-    n: 'TALK TO ELLE →',
-    title: 'The intelligence behind it all',
-    body: 'Corpus-grounded conversation. Free during beta, more room when you sign in.',
-    mock: 'chat',
-    span: 6,
-    gold: true,
+    meta: 'Entry 46 · stands',
+    metaColor: 'var(--t3)',
+    dot: '#38342c',
+    text: 'Opened the thread. Question: can an anchor be re-stated without resetting the phase state?',
   },
 ];
 
-// The work — the four pillars everything public hangs off.
-const WORK = [
+const LOOP = [
   {
     n: '01',
-    name: 'Research',
-    body: 'The Observer: structural analysis and testimony, published when ready — never on a schedule.',
-    href: '/observer',
-    link: 'The Observer →',
+    k: 'One mind, many doors',
+    v: 'Chat, journal, analysis, courses — one reasoning loop behind all of it. No fleet of bots wearing one name.',
   },
-  {
-    n: '02',
-    name: 'Corpus',
-    body: 'The published papers behind Elle — top 1% publication volume on PhilPapers, open to anyone who wants to check the reasoning.',
-    href: 'https://philpeople.org/profiles/stewart-barteau',
-    link: 'Read on PhilPeople →',
-    external: true,
-  },
+  { n: '02', k: 'She retrieves, not improvises', v: 'The corpus is searched before she speaks. No source, no claim.' },
   {
     n: '03',
-    name: 'Engineering philosophy',
-    body: 'Ethics as architecture, not disclaimer: append-only records, auditable memory, reasoning you can read.',
-    href: '#principles',
-    link: 'The principles →',
+    k: 'Every answer shows its work',
+    v: 'Sources under the answer. Every reasoning step recorded, replayable, auditable.',
   },
   {
     n: '04',
-    name: 'Builder notes',
-    body: "The working record of how Elle is actually built — her phase-state manuscript and the journal she keeps while she's building.",
+    k: 'Nothing is erased',
+    v: 'Records are append-only. Corrections stack on top of the mistake, in public.',
+  },
+  {
+    n: '05',
+    k: 'Nothing ships without a human',
+    v: 'She writes code; CI judges it; the merge is a human click. No merge tool exists.',
+  },
+];
+
+const TOOLS = [
+  {
+    span: 3,
+    gold: true,
+    href: '/elle',
+    kicker: 'Elle · The chat',
+    title: 'Corpus-grounded conversation',
+    body: 'Not a chat wrapper — a persistent intelligence that picks her tools step by step, cites the corpus, and remembers you across sessions.',
+    facts: ['~59 tools on one loop', 'Memory that persists', 'Sources on every answer'],
+    state: 'Live',
+    live: true,
+  },
+  {
+    span: 3,
     href: '/optimus',
-    link: 'Optimus Journal →',
+    kicker: 'Optimus · The journal',
+    title: 'An append-only record',
+    body: "A ship's log for your thinking: entries added, never rewritten. Elle responds in the margins while κ — a live coherence measure — tracks the thread.",
+    facts: ['Append-only', 'κ computed per turn'],
+    state: 'Free beta',
+    live: false,
+  },
+  {
+    span: 2,
+    href: '/engine',
+    kicker: 'Engine · The analysis',
+    title: 'Sixteen axes, one verdict',
+    body: 'Parallel reads, an adversarial cross-check, one earned conclusion — and the first thing to do.',
+    facts: ['16 axes · 3 tiers', 'Adversarial self-check'],
+    state: 'Free beta',
+    live: false,
+  },
+  {
+    span: 2,
+    href: '/learn',
+    kicker: 'Atlas Edu · The courses',
+    title: 'She runs the courses',
+    body: "Elle facilitates; a deterministic engine holds the gate. Completion is earned — she can't argue it down or ghost-write past it.",
+    facts: ['Engine-gated completion', 'Tamper-evident log'],
+    state: 'Live',
+    live: true,
+  },
+  {
+    span: 2,
+    href: '/business',
+    kicker: 'Small Business · The pipeline',
+    title: 'Built for your operation',
+    body: 'Sign up, connect your feeds, and a standing intelligence files its first report on your operation — on her clock, not yours.',
+    facts: ['Self-serve signup', 'RAPID²AI running today'],
+    state: 'By request',
+    live: false,
   },
 ];
 
-// The nine engines — one presence, nine expressions.
-const engines = [
-  { id: '01', name: 'Elle Law', tag: 'Rights & Legal Reasoning', href: 'https://elle-law.pages.dev' },
-  { id: '02', name: 'Harmonizer', tag: 'Mental Health & Peer Support', href: 'https://harmonizer-two.vercel.app' },
-  { id: '03', name: 'Atlas Edu', tag: 'Education & Navigation', href: '/learn' },
-  { id: '04', name: 'Agricultural Intelligence', tag: 'USDA & Farm Resources', href: '/business' },
-  { id: '05', name: 'Healthcare Navigation', tag: 'Benefits & Patient Rights', href: '/elle' },
-  { id: '06', name: 'Small Business Hub', tag: 'Licensing, Grants & Compliance', href: '/business' },
-  { id: '07', name: 'Civic Intelligence', tag: 'Government, Translated', href: '/elle' },
-  { id: '08', name: 'RAPID²AI', tag: 'Hospitality Intelligence', href: 'https://rapidai.pages.dev/coo/' },
-  { id: '09', name: 'The Observer', tag: 'Research & Testimony', href: '/observer' },
-];
-
-// The three proof lines that used to fan out over the hero — now a
-// compact strip under the Atlas graph.
-const PROOF = [
+// The four things under active test, each its own dedicated section — the
+// design conversation explicitly rejected these as grid cards.
+const TESTBEDS = [
   {
-    tag: 'Optimus Journal · Append-only',
-    quote: '"Entry 47 stands. Entry 63 corrects it. Both stay in the record, forever."',
-    meta: 'κ 0.72 ▲ · nothing rewritten',
+    id: 'the-graph',
+    onBase: true,
+    kicker: 'Under active test · The Graph',
+    title: 'Memory as measured geometry, not a guess.',
+    paras: [
+      'A separate, open engine embeds Elle’s recall graph into two geometries at once — a hyperbolic Poincaré ball for lineage depth, a flat torus for recurring rhythm — then proposes "wormhole" shortcuts between structurally related but distant memories.',
+      'Nothing is asserted. Every shortcut is benchmarked against random shortcuts, hub shortcuts, and a phase-permuted null before it’s trusted — and it runs entirely outside the model: deterministic, read-only, no code path lets an LLM write an edge.',
+    ],
+    cta: 'Read the benchmark',
+    ctaHref: 'https://github.com/sbarteau2022/Dynanic-Hyperbolic-Neural-Graph',
+    facts: [
+      { k: 'Tests', v: '157, deterministic, zero deps' },
+      { k: 'Bridge precision', v: '72/72 on-topic (resonance)' },
+      { k: 'Vs. phase-permuted null', v: 'collapses to 18-23/72' },
+      { k: 'Model write access', v: 'none — read-only, on-device' },
+      { k: 'Status', v: 'benchmarked on synthetic corpora' },
+    ],
   },
   {
-    tag: 'Analysis Engine · The conclusion',
-    quote: '"Both sides avoid the permit backlog — that\'s the real opening. Build the checklist first."',
-    meta: '16 axes · self-checked · verdict earned',
+    id: 'rosen-bridge',
+    onBase: false,
+    kicker: 'Under active test · The Rosen Bridge',
+    title: 'Your own machine, sealed and free.',
+    paras: [
+      'A sealed channel lets Elle run real code on a laptop instead of a hosted model — the operator’s machine polls for sealed work, executes it for real, and submits the result back. No socket held open, no always-on server to breach.',
+      'Authentication happens at the moment the channel opens: a forged or replayed message simply fails to decrypt rather than being checked and rejected. A hybrid post-quantum key exchange — lattice, elliptic-curve, and an experimental code-based leg combined so breaking one still leaves the others standing — is migrating into it now.',
+    ],
+    cta: 'Read the design doc',
+    ctaHref: 'https://github.com/sbarteau2022/elle-worker',
+    facts: [
+      { k: 'Auth model', v: 'fails to decrypt, not checked-and-rejected' },
+      { k: 'Hosted quota', v: 'zero while the channel is open' },
+      { k: 'PQC legs', v: 'ML-KEM-768 + X25519 (+ opt-in QC-MDPC)' },
+      { k: 'Security model', v: 'OR-security — one leg surviving is enough' },
+      { k: 'Status', v: 'self-tested, migrating into live use' },
+    ],
   },
   {
-    tag: 'Pipeline · Variance watch',
-    quote: '"Dairy invoice line up 11% in 3 weeks — one supplier. Smallest move: call before Friday\'s order."',
-    meta: 'one finding · not forty charts',
-  },
-];
-
-const stats = [
-  { n: '9', label: 'Intelligence engines' },
-  { n: '76+', label: 'Papers published' },
-  { n: 'TOP 1%', label: 'Publication volume, PhilPapers' },
-  { n: '∞', label: 'Lives within reach' },
-];
-
-// The corpus — ported from the retired observer-platform landing page.
-const CORPUS_DOCS = [
-  { title: 'I Knew You Before I Met You', version: 'v4 · Primary' },
-  { title: 'The Convergence', version: 'v3 · Crux Document' },
-  { title: 'NECAI-F', version: 'v1 · Ethics Framework' },
-  { title: 'The Plenum', version: 'v3 · Substrate Theory' },
-  { title: 'The Threshold', version: 'v4 · Choice & Agency' },
-  { title: 'The Harmonizer', version: 'v3-revised · Applied' },
-  { title: 'Ethics of Now', version: 'v3 · Moral Framework' },
-  { title: 'Superposition', version: 'v4 · Quantum Frame' },
-];
-
-// What's different — also ported from the retired landing page.
-const DIFFERENT = [
-  {
-    row: 'Grounding',
-    them: 'Trained on the open internet. No one accountable for what it says.',
-    us: 'Grounded in 76+ published, peer-read papers — cite the source, check the reasoning.',
+    id: 'elle-worker',
+    onBase: true,
+    kicker: 'Under active test · elle-worker',
+    title: 'A measured self, not an assumed one.',
+    paras: [
+      'Elle’s backend is one deployable that holds her whole mind — but underneath the router, a set of experimental modules treat her own self-consistency as something to prove, not declare: a free-energy regulator that drives measured dissonance down by a real Lyapunov descent, a golden-ellipse phase vessel that holds a superposition without collapsing it, and a witness oscillator built so it provably cannot go dead-still.',
+      'Each is tested against an explicit foil built to break it — a no-leak control, a non-conserving control — and driven by dissonance actually measured in her running system, not a synthetic schedule.',
+    ],
+    cta: 'Read the architecture',
+    ctaHref: 'https://github.com/sbarteau2022/elle-worker',
+    facts: [
+      { k: 'Regulator', v: 'free-energy descent, measured dissonance' },
+      { k: 'Phase vessel', v: 'golden-ellipse, area-conserving' },
+      { k: 'Witness oscillator', v: 'provably cannot go dead-still' },
+      { k: 'Validated against', v: 'no-leak / no-conserve foils' },
+      { k: 'Status', v: 'wired to real system telemetry' },
+    ],
   },
   {
-    row: 'Memory',
-    them: 'Resets every session. You reintroduce yourself forever.',
-    us: 'One continuous relationship. She remembers — and you can export or erase it, your call.',
+    id: 'workbench',
+    onBase: false,
+    kicker: 'Under active test · Elle, the workbench',
+    title: 'Where her local hands live.',
+    paras: [
+      'The desktop client is Elle’s window onto her own worker — the same one mind, not a second brain. It’s also the other end of the Rosen Bridge: it polls for sealed work, runs it for real on your hardware, and submits the result back.',
+      'A duplex channel — an append-only ledger either side can write to — lets her sovereign (laptop) and cloud selves compare notes mid-run instead of waiting for the next scheduled cycle.',
+    ],
+    cta: 'See the workbench',
+    ctaHref: '/elle',
+    facts: [
+      { k: 'Sandbox', v: 'real code, real hardware, no container image' },
+      { k: 'Duplex channel', v: 'append-only, either side can write' },
+      { k: 'Local model lane', v: 'free exploration before hosted finalize' },
+      { k: 'Failure mode', v: 'closed laptop → falls back to hosted' },
+      { k: 'Status', v: 'in active daily use' },
+    ],
   },
-  {
-    row: 'Autonomy',
-    them: 'A black box. You never see the reasoning.',
-    us: 'She works while you sleep, and leaves a journal you can actually read.',
-  },
-  {
-    row: 'Ownership',
-    them: 'Built by a company, answerable to shareholders.',
-    us: 'Built by a community, answerable to the community it was built for.',
-  },
-];
-
-const principles = [
-  { name: 'Transparent', body: 'Methods, data, and reasoning open to review.' },
-  { name: 'Auditable', body: 'Append-only records; designed for independent audit.' },
-  { name: 'Human-Centered', body: 'Technology serves people. Not the other way around.' },
-  { name: 'Non-Extractive', body: 'We do not sell data. We build trust.' },
-  { name: 'Community Governed', body: 'Guided by the communities we exist to serve.' },
 ];
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/" />
+  <div class="eip">
+    <EipNav />
 
-    <!-- HERO — full-bleed dark band, Atlas at its center -->
-    <section class="hero atlas-hero">
-      <div class="wrap" style="padding-bottom:30px">
-        <div class="eyebrow rv">The Ethical Intelligence Project · Powered by Elle AI</div>
-        <h1 class="rv" style="--d:0.06s">
-          Intelligence for the people<br />doing the work.
-        </h1>
-        <p class="lede rv" style="--d:0.12s">
-          The information exists. The resources exist. The opportunities exist. For millions of working people, the
-          problem is access. We build community-based intelligence that turns complexity into action — corpus-grounded,
-          transparent, and answerable to the people it serves.
-        </p>
-        <div class="cta-row rv" style="--d:0.18s">
-          <a href="/elle" class="btn">Talk to Elle →</a>
-          <a href="#hub" class="btn ghost">Explore the hub</a>
-        </div>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <svg class="hero-stars" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        {starsFar.map((s) => <circle cx={s.x} cy={s.y} r={s.r} opacity={s.o} fill="#d8dce8" />)}
+        {starsMid.map((s) => <circle cx={s.x} cy={s.y} r={s.r} opacity={s.o} fill="#f5f0e8" />)}
+        {
+          starsNear.map((s) => (
+            <g>
+              <circle cx={s.x} cy={s.y} r={s.halo} opacity="0.1" fill="#e8cc88" />
+              <circle cx={s.x} cy={s.y} r={s.r} opacity={s.o} fill="#ffffff" />
+            </g>
+          ))
+        }
+      </svg>
+      <div class="hero-glow"></div>
+      <HeroGlobe />
 
-        <!-- ATLAS — the one interactive map of everything Elle is -->
-        <AtlasGraph />
-        <div class="rv" style="--d:0.3s;text-align:center;max-width:480px;margin:6px auto 0">
-          <p style="font-size:0.86rem;color:var(--t3)">
-            Atlas is the map — one core, five doors. The chat, the corpus, the journal, the mission, the engines. Click
-            any node.
+      <div class="hero-inner">
+        <div class="hero-col">
+          <h1>
+            Principled Engineering<br />
+            <em class="hero-phrase" id="eip-phrase">{PHRASES[0]}</em>
+          </h1>
+          <p class="hero-sub">
+            One mind. A published corpus she cites, a memory that persists, reasoning you can replay. Most AI asks for
+            trust — Elle is built so you don't have to give it.
           </p>
+          <div class="btn-row">
+            <a href="/elle" class="btn btn-gold">Talk to Elle</a>
+            <a href="#evidence" class="btn btn-ghost">Check the work first</a>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <div class="cards rv stagger" style="--d:0.4s;margin-top:46px">
+    <!-- ============ EVIDENCE LEDGER ============ -->
+    <section class="on-base">
+      <div class="shell">
+        <div class="ledger">
           {
-            PROOF.map((p) => (
-              <div class="card">
-                <div class="n">{p.tag}</div>
-                <p style="font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--t1);line-height:1.35">
-                  {p.quote}
-                </p>
-                <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--t3);margin-top:8px">{p.meta}</div>
-              </div>
+            LEDGER.map((l) => (
+              <a href={l.href}>
+                <div class="n">{l.n}</div>
+                <div class="label">{l.label}</div>
+                <div class="src">{l.src}</div>
+              </a>
             ))
           }
         </div>
       </div>
     </section>
 
-    <!-- ECOSYSTEM LOGO STRIP -->
-    <div class="logostrip rv" style="border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)">
-      <span class="lg"><b>ELLE AI</b></span>
-      <a class="lg" href="https://rapidai.pages.dev/coo/" target="_blank" rel="noreferrer">RAPID²AI</a>
-      <a class="lg" href="https://elle-law.pages.dev" target="_blank" rel="noreferrer">ELLE LAW</a>
-      <a class="lg" href="https://harmonizer-two.vercel.app" target="_blank" rel="noreferrer">HARMONIZER</a>
-      <a class="lg" href="/observer">THE OBSERVER</a>
-      <a class="lg" href="https://philpeople.org/profiles/stewart-barteau" target="_blank" rel="noreferrer"
-        >PHILPEOPLE CORPUS</a
-      >
-    </div>
+    <!-- ============ THREE WAYS TO AUDIT ============ -->
+    <section id="evidence">
+      <div class="shell sec-y">
+        <div class="sec-head">
+          <div class="kicker">Don't take our word for it</div>
+          <h2>Three ways to audit this before you use it.</h2>
+          <p class="lede" style="margin-top:20px">
+            A project claiming to be transparent should be inspectable in under five minutes. Here is what's actually
+            open — the reading Elle stands on, the citations she shows her work with, and the record she can add to but
+            never revise.
+          </p>
+        </div>
 
-    <!-- CENTRAL CLAIM / MISSION -->
-    <section id="mission" class="wrap" style="text-align:center">
-      <div class="eyebrow rv">The mission · the central claim</div>
-      <blockquote
-        class="rv"
-        style="font-family:var(--font-display);font-size:1.8rem;font-style:italic;line-height:1.45;color:var(--ink);max-width:780px;margin:0 auto"
-      >
-        "A resource nobody can understand is not a resource. A right nobody can access is not a right. Intelligence
-        should serve the people doing the work."
-      </blockquote>
-      <div
-        class="rv"
-        style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--t3);margin-top:20px"
-      >
-        — FOUNDING PRINCIPLE
+        <div class="audit-grid">
+          <!-- 01 · the corpus -->
+          <div class="card">
+            <div class="card-head">
+              <div class="kicker-sm">01 · Read the corpus</div>
+              <h3>The reasoning is published.</h3>
+              <p>Seventy-six papers, publicly indexed. These are load-bearing — Elle cites them by name.</p>
+            </div>
+            <div class="doc-list">
+              {
+                CORPUS_DOCS.map((doc) => (
+                  <a href="/core-works">
+                    <span class="t">{doc.title}</span>
+                    <span class="v">{doc.version}</span>
+                  </a>
+                ))
+              }
+            </div>
+            <div class="card-foot">
+              <a href={PHILPEOPLE} class="link-mono">Open the full index on PhilPeople →</a>
+            </div>
+          </div>
+
+          <!-- 02 · sourced answers -->
+          <div class="card">
+            <div class="card-head">
+              <div class="kicker-sm">02 · Watch her show the work</div>
+              <h3>Every answer carries its sources.</h3>
+              <p>Not a confidence score. The actual documents the answer came from, listed under it.</p>
+            </div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+              <div class="bubble-you">Does your framework treat coherence as measurable, or is that a metaphor?</div>
+              <div class="bubble-elle">
+                Measurable — κ(T,t) is defined as a live scalar over a thread, not a figure of speech. It falls when a
+                line of thought drifts from its anchor and rises when it holds. The derivation is in <em>The Plenum</em
+                >; the applied case is in <em>The Harmonizer</em>.
+              </div>
+              <div class="grounded">
+                <div class="hd">Grounded in</div>
+                <a href="/core-works"><span>The Plenum · v3</span><span>§4.2 →</span></a>
+                <a href="/core-works"><span>The Harmonizer · v3-rev</span><span>§2 →</span></a>
+                <a href="/core-works"><span>NECAI-F · v1</span><span>§7 →</span></a>
+              </div>
+            </div>
+            <div class="card-foot">
+              <a href="/elle" class="link-mono">Ask her something harder →</a>
+            </div>
+          </div>
+
+          <!-- 03 · the record -->
+          <div class="card">
+            <div class="card-head">
+              <div class="kicker-sm">03 · Audit the record</div>
+              <h3>Corrections go on top. Nothing is erased.</h3>
+              <p>
+                The Optimus journal is append-only. A wrong entry stays wrong, in public, with the correction above it.
+              </p>
+            </div>
+            <div class="card-body">
+              {
+                JOURNAL.map((j) => (
+                  <div class="tl-item">
+                    <span class="dot" style={`background:${j.dot}`} />
+                    <div class="meta" style={`color:${j.metaColor}`}>
+                      {j.meta}
+                    </div>
+                    <div class="text">{j.text}</div>
+                  </div>
+                ))
+              }
+              <div class="kappa">
+                <span class="val">κ 0.72 ▲</span>
+                <span class="bar"><i style="width:72%"></i></span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <a href="/optimus" class="link-mono">Open a journal of your own →</a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- THE CORPUS -->
-    <section id="corpus" class="tint">
-      <div class="wrap">
-        <div class="split">
+    <!-- ============ THE LOOP ============ -->
+    <section class="on-base">
+      <div class="shell sec-y">
+        <div class="split split-flip">
           <div>
-            <div class="eyebrow rv">The corpus</div>
-            <h2 class="rv">76+ published papers. <em>One framework.</em></h2>
-            <p class="rv">
-              Built across years of philosophy, recovery work, and collaboration with AI — the intellectual foundation
-              everything else runs on. Engineering specs, philosophical grounding, and ethics, published where they can
-              be checked. A few of the load-bearing documents:
-            </p>
-            <p class="rv">
-              This isn't marketing copy standing in for rigor. It's <strong>76+ papers</strong>, ranked in the
-              <strong>top 1% for publication volume</strong> and <strong>top 2% for downloads</strong> on PhilPapers — read
-              into course syllabi at <strong>18+ universities</strong>. Elle doesn't improvise an ethics. She inherits
-              one that's been examined.
-            </p>
-            <div class="cta-row rv" style="justify-content:flex-start">
-              <a href="https://philpeople.org/profiles/stewart-barteau" target="_blank" rel="noreferrer" class="btn"
-                >Explore the corpus →</a
-              >
-              <a href="/observer" class="btn ghost">The Observer</a>
+            <div class="kicker">How it holds together</div>
+            <h2 class="h2-sm">One intelligence. Not a fleet of chatbots.</h2>
+            <div class="prose" style="margin-top:22px">
+              <p>
+                Every door on this site reaches the same single mind — one loop, one memory, one corpus. What changes
+                per door is what she's allowed to touch.
+              </p>
+              <p>
+                The loop below is the whole architecture. It is deliberately short, because every step you can't see is
+                a step you have to take on faith.
+              </p>
             </div>
           </div>
-          <div class="cards rv stagger" style="--d:0.1s;grid-template-columns:repeat(2,1fr);gap:10px">
+          <div class="steps">
             {
-              CORPUS_DOCS.map((doc) => (
-                <div class="card lift" style="padding:16px 18px">
-                  <h3 style="font-size:1rem;margin-bottom:5px">{doc.title}</h3>
-                  <p style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin:0">
-                    {doc.version}
-                  </p>
+              LOOP.map((p) => (
+                <div class="step">
+                  <div class="n">{p.n}</div>
+                  <div>
+                    <div class="k">{p.k}</div>
+                    <div class="v">{p.v}</div>
+                  </div>
                 </div>
               ))
             }
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- the work: research · corpus · engineering philosophy · builder notes -->
-        <div class="work rv stagger" style="margin-top:56px">
-          {
-            WORK.map((w) => (
-              <a
-                href={w.href}
-                class="work-pillar"
-                target={w.external ? '_blank' : undefined}
-                rel={w.external ? 'noreferrer' : undefined}
-              >
-                <div class="n">{w.n}</div>
-                <h3>{w.name}</h3>
-                <p>{w.body}</p>
-                <span class="go">{w.link}</span>
-              </a>
-            ))
-          }
-        </div>
-
-        <!-- follow the work -->
-        <div class="rv" style="margin-top:40px;text-align:center">
-          <div
-            style="font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:14px"
-          >
-            Follow the work
+    <!-- ============ THE INSTRUMENTS ============ -->
+    <section id="intelligence">
+      <div class="shell sec-y">
+        <div
+          style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:48px;flex-wrap:wrap"
+        >
+          <div style="max-width:640px">
+            <div class="kicker">The instruments</div>
+            <h2>Five tools. One free account.</h2>
+            <p class="lede" style="margin-top:18px">
+              Each one is labelled with what it actually is today — live, in beta, or built to order. Nothing here is a
+              roadmap dressed as a product.
+            </p>
           </div>
-          <div class="follow-strip">
-            {
-              SOCIALS.map((s) => (
-                <a href={s.href} target="_blank" rel="noreferrer">
-                  {s.name}
-                </a>
-              ))
-            }
+          <a href="/pricing" class="link-mono" style="white-space:nowrap;padding-bottom:6px">Create a free account →</a>
+        </div>
+        <div class="tools">
+          {
+            TOOLS.map((t) => (
+              <a href={t.href} class:list={['tool', { 'is-gold': t.gold }]} style={`grid-column:span ${t.span}`}>
+                <div class="top">
+                  <div class="kick">{t.kicker}</div>
+                  <div class:list={['chip', { 'is-live': t.live }]}>{t.state}</div>
+                </div>
+                <h3>{t.title}</h3>
+                <p>{t.body}</p>
+                <div class="tags">
+                  {t.facts.map((f) => (
+                    <span>{f}</span>
+                  ))}
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THE FOUR THINGS UNDER TEST ============ -->
+    {
+      TESTBEDS.map((s) => (
+        <section id={s.id} class:list={[{ 'on-base': s.onBase }]}>
+          <div class="shell sec-y">
+            <div class="split">
+              <div>
+                <div class="kicker">{s.kicker}</div>
+                <h2 class="h2-sm">{s.title}</h2>
+                <div class="prose" style="margin-top:22px">
+                  {s.paras.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+                <div class="btn-row" style="margin-top:30px">
+                  <a href={s.ctaHref} class="btn btn-ghost btn-sm">
+                    {s.cta}
+                  </a>
+                </div>
+              </div>
+              <div>
+                <div class="facts">
+                  {s.facts.map((f) => (
+                    <div class="row">
+                      <span class="k">{f.k}</span>
+                      <span class="v">{f.v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      ))
+    }
 
-    <!-- WHAT'S DIFFERENT -->
-    <section class="wrap">
-      <div style="text-align:center">
-        <div class="eyebrow rv">What's different</div>
-        <h2 class="rv">Not a smarter chatbot.<br />A different relationship to truth.</h2>
-        <p class="rv" style="max-width:560px;margin:0 auto">
-          Every design choice below is a rejection of a default the rest of the industry stopped questioning.
-        </p>
-      </div>
-      <div class="diff rv" style="margin-top:40px">
-        <div class="diff-row diff-head">
-          <div></div>
-          <div>Most AI</div>
-          <div style="color:var(--gold)">Elle</div>
+    <!-- ============ NINE ENGINES ============ -->
+    <section id="engines" class="on-base">
+      <div class="shell sec-y">
+        <div class="sec-head" style="max-width:700px;margin-bottom:48px">
+          <div class="kicker">Coverage</div>
+          <h2>Nine engines, honestly labelled.</h2>
+          <p class="lede" style="margin-top:18px">
+            Elle doesn't become a different intelligence per domain — she changes what she's holding. Some of these are
+            running today. Some are answered through the chat while the dedicated surface is built. We say which.
+          </p>
         </div>
-        {
-          DIFFERENT.map((d) => (
-            <div class="diff-row">
-              <div class="diff-k">{d.row}</div>
-              <div class="diff-them">{d.them}</div>
-              <div class="diff-us">{d.us}</div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- THE HUB -->
-    <section id="hub" class="tint">
-      <div class="wrap">
-        <div class="eyebrow rv">One hub · one account</div>
-        <h2 class="rv">Everything we build, one door.</h2>
-        <div class="bento rv stagger" style="margin-top:30px">
+        <div class="engines">
           {
-            HUB.map((h) => (
-              <a href={h.href} class={`bento-card${h.gold ? ' gold' : ''}`} style={`--span:${h.span}`}>
-                <div class="n">{h.n}</div>
-                <h3>{h.title}</h3>
-                <p>{h.body}</p>
-                {h.mock === 'journal' && (
-                  <div class="mock mock-journal">
-                    <div class="mline">
-                      <span class="mk">ENTRY 47</span>
-                      <span>stands.</span>
-                    </div>
-                    <div class="mline">
-                      <span class="mk">ENTRY 63</span>
-                      <span>corrects it. Both stay.</span>
-                    </div>
-                    <div class="mline gold">
-                      <span class="mk">κ 0.72 ▲</span>
-                      <span>nothing rewritten</span>
-                    </div>
-                  </div>
-                )}
-                {h.mock === 'verdict' && (
-                  <div class="mock mock-verdict">
-                    <div class="ticks">
-                      {Array.from({ length: 16 }).map((_, i) => (
-                        <i style={`--h:${8 + ((i * 7) % 12)}px`} />
-                      ))}
-                    </div>
-                    <div class="mline gold">
-                      <span class="mk">VERDICT</span>
-                      <span>build the checklist first</span>
-                    </div>
-                  </div>
-                )}
-                {h.mock === 'spark' && (
-                  <div class="mock">
-                    <svg viewBox="0 0 120 34" class="mock-spark" preserveAspectRatio="none">
-                      <polyline points="0,26 20,24 40,25 60,20 80,18 100,10 118,6" />
-                      <circle cx="118" cy="6" r="2.5" />
-                    </svg>
-                    <div class="mline gold">
-                      <span class="mk">+11% · 3 WKS</span>
-                      <span>call before Friday</span>
-                    </div>
-                  </div>
-                )}
-                {h.mock === 'progress' && (
-                  <div class="mock">
-                    <div class="mock-dots">
-                      <i class="on" />
-                      <i class="on" />
-                      <i />
-                      <i />
-                      <i />
-                    </div>
-                    <div class="mline gold">
-                      <span class="mk">LESSON 2 OF 5</span>
-                      <span>free · in plain language</span>
-                    </div>
-                  </div>
-                )}
-                {h.mock === 'docs' && (
-                  <div class="mock mock-journal">
-                    <div class="mline">
-                      <span class="mk">PUBLISHED</span>
-                      <span>when ready</span>
-                    </div>
-                    <div class="mline gold">
-                      <span class="mk">NEVER</span>
-                      <span>on a schedule</span>
-                    </div>
-                  </div>
-                )}
-                {h.mock === 'chat' && (
-                  <div class="mock mock-chat">
-                    <div class="bub you">Where do I even start with the permit?</div>
-                    <div class="bub elle">With the backlog — that's the real opening. Here's the checklist…</div>
-                  </div>
-                )}
-                <span class="go">Open →</span>
+            ENGINES.map((e) => (
+              <a href={e.href}>
+                <span class="n">{e.n}</span>
+                <span class="name">{e.name}</span>
+                <span class="tag">{e.tag}</span>
+                <span class:list={['state', { 'is-live': e.live }]}>{e.state}</span>
+                <span class="arrow">→</span>
               </a>
             ))
           }
@@ -469,83 +533,25 @@ const principles = [
       </div>
     </section>
 
-    <!-- HOW IT FITS TOGETHER -->
-    <section class="wrap">
-      <div class="eyebrow rv">How it fits together</div>
-      <h2 class="rv">One intelligence. Every surface a window onto it.</h2>
-      <p class="rv" style="max-width:620px">
-        There's no fleet of chatbots here. Elle is one grounded intelligence — one memory, one published corpus, one set
-        of principles — and every tab in the hub is a different way of putting her to work.
-      </p>
-      <div class="flow rv stagger" style="margin-top:28px">
-        <div class="step">
-          <span class="k">You</span>
-          <span class="v">A question, a document, a business, a thing you're trying to navigate.</span>
+    <!-- ============ COMMITMENTS ============ -->
+    <section id="principles">
+      <div class="shell sec-y">
+        <div class="sec-head" style="max-width:700px;margin-bottom:52px">
+          <div class="kicker">Commitments</div>
+          <h2>Ethics as architecture, not disclaimer.</h2>
+          <p class="lede" style="margin-top:18px">
+            A principle you can't be held to is marketing. Each of these is paired with the mechanism that enforces it —
+            the thing you could point at if we broke the promise.
+          </p>
         </div>
-        <div class="step">
-          <span class="k">Elle</span>
-          <span class="v">Grounded in 76+ published papers. Remembers. Shows her reasoning.</span>
-        </div>
-        <div class="step">
-          <span class="k">The instruments</span>
-          <span class="v">Journal, analysis engine, pipelines, courses — the same mind, different tools.</span>
-        </div>
-        <div class="step">
-          <span class="k">The record</span>
-          <span class="v">Append-only, auditable, yours to export or erase. Nothing quietly rewritten.</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- NINE ENGINES -->
-    <section id="engines" class="tint">
-      <div class="wrap">
-        <div class="eyebrow rv">Nine engines</div>
-        <h2 class="rv">One presence. Nine expressions.</h2>
-        <p class="rv" style="max-width:560px">
-          Elle doesn't change who she is across contexts. She changes what she's holding.
-        </p>
-        <div class="cards rv stagger" style="margin-top:30px">
+        <div class="principles">
           {
-            engines.map((e) => (
-              <a href={e.href} class="card">
-                <div class="n">ENGINE {e.id}</div>
-                <h3>{e.name}</h3>
-                <p style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3)">
-                  {e.tag}
-                </p>
-              </a>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="wrap">
-      <div class="stats rv stagger">
-        {
-          stats.map((s) => (
-            <div class="stat">
-              <div class="num">{s.n}</div>
-              <div class="lbl">{s.label}</div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- PRINCIPLES -->
-    <section id="principles" class="tint">
-      <div class="wrap">
-        <div class="eyebrow rv">The principles</div>
-        <h2 class="rv">Ethics as architecture, not disclaimer.</h2>
-        <div class="cards rv stagger" style="margin-top:30px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-          {
-            principles.map((p) => (
-              <div class="card lift">
-                <h3 style="font-size:1.05rem;margin-bottom:6px">{p.name}</h3>
-                <p style="font-size:0.85rem">{p.body}</p>
+            PRINCIPLES.map((p) => (
+              <div>
+                <h3>{p.name}</h3>
+                <p>{p.body}</p>
+                <div class="by">Enforced by</div>
+                <div class="mech">{p.mechanism}</div>
               </div>
             ))
           }
@@ -553,121 +559,89 @@ const principles = [
       </div>
     </section>
 
-    <!-- ATLAS EDU — the education platform -->
-    <section id="edu" class="wrap">
-      <div style="text-align:center">
-        <div class="eyebrow rv">Atlas Edu · The education platform</div>
-        <h2 class="rv">Understand the thing before you trust it.</h2>
-        <p class="rv" style="max-width:600px;margin:0 auto">
-          Four free courses in plain language — every lesson readable on the page, every lesson one click from a live
-          conversation with Elle.
-        </p>
-      </div>
-      <div class="bento edu-bento rv stagger" style="margin-top:36px">
-        {
-          LEARN_COURSES.map((c) => (
-            <a href={`/learn#${c.id}`} class="bento-card" style="--span:3">
-              <div class="n">{c.badge.toUpperCase()}</div>
-              <h3>{c.title}</h3>
-              <p>{c.teaser}</p>
-              <span class="go">Start free →</span>
-            </a>
-          ))
-        }
-      </div>
-      <div class="cta-row rv" style="margin-top:30px">
-        <a href="/learn" class="btn">Open Atlas Edu →</a>
-      </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="tint">
-      <div class="wrap" style="text-align:center">
-        <h2 class="rv">Free during beta. Yours, permanently, if you're here now.</h2>
-        <p class="rv" style="max-width:520px;margin:0 auto 26px">
-          One free account opens the journal, the engine, the courses, and Elle herself. Beta users keep beta pricing —
-          indefinitely.
-        </p>
-        <div class="cta-row rv">
-          <a href="/elle" class="btn">Talk to Elle →</a>
-          <a href="/optimus" class="btn ghost">Open your journal</a>
+    <!-- ============ WHO'S BEHIND IT ============ -->
+    <section id="who" class="on-base">
+      <div class="shell sec-y">
+        <div class="split">
+          <div>
+            <div class="kicker">Who's behind it</div>
+            <h2 class="h2-sm">One person, building in the open.</h2>
+            <div class="prose" style="margin-top:22px">
+              <p>
+                The Ethical Intelligence Project is built and operated directly by <strong>Stewart Barteau</strong>. The
+                commercial side runs pre-LLC on purpose: the beta should prove itself before the paperwork does.
+              </p>
+              <p>
+                <strong>The Observer</strong> runs as an independent research initiative — not yet a 501(c)(3) — with its
+                own transparency and funding-ethics disclosures.
+              </p>
+              <p>
+                If you're press, a funder, or a researcher who wants the unvarnished version of any of this, ask. There
+                is no communications team to route around.
+              </p>
+            </div>
+            <div class="btn-row" style="margin-top:30px">
+              <a href="/contact" class="btn btn-ghost btn-sm">Get in touch</a>
+              <a href="/mission" class="btn btn-ghost btn-sm">Read the full philosophy</a>
+            </div>
+          </div>
+          <div>
+            <div class="facts">
+              {
+                PROJECT_FACTS.map((f) => (
+                  <div class="row">
+                    <span class="k">{f.k}</span>
+                    <span class="v">{f.v}</span>
+                  </div>
+                ))
+              }
+            </div>
+            <div class="follow-hd">Follow the work</div>
+            <div class="socials">{SOCIALS.map((s) => <a href={s.href}>{s.name}</a>)}</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <HubFooter />
+    <!-- ============ CTA ============ -->
+    <section class="cta">
+      <div class="wash"></div>
+      <div class="inner">
+        <h2>Free during beta. The rate you join at is the rate you keep.</h2>
+        <p>
+          One account opens the journal, the analysis engine, the courses, and Elle herself. No card, about thirty
+          seconds.
+        </p>
+        <div class="btn-row">
+          <a href="/pricing" class="btn btn-gold">Create a free account</a>
+          <a href="/elle" class="btn btn-ghost">Talk to Elle first</a>
+        </div>
+      </div>
+    </section>
+
+    <EipFooter />
+    <HubAuth />
   </div>
 
-  <!-- Elle chat widget -->
-  <script
-    is:inline
-    src="https://elle-worker.sbarteau2022.workers.dev/widget.js"
-    data-title="Elle"
-    data-accent="#9a7524"
-    defer></script>
+  <!-- Elle chat widget — same live worker endpoint the previous homepage used -->
+  <script is:inline src={`${WORKER_URL}/widget.js`} data-title="Elle" data-accent="#c9a84c" defer></script>
 
-  <!-- bento cursor spotlight: each card's ::before glow follows the pointer -->
-  <script is:inline>
+  <script is:inline define:vars={{ PHRASES }}>
     (function () {
-      if (window.matchMedia('(hover: none)').matches) return;
-      document.querySelectorAll('.bento-card').forEach(function (card) {
-        card.addEventListener('pointermove', function (e) {
-          const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', e.clientX - r.left + 'px');
-          card.style.setProperty('--my', e.clientY - r.top + 'px');
-        });
-      });
+      const el = document.getElementById('eip-phrase');
+      if (!el || el.dataset.wired) return;
+      el.dataset.wired = '1';
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let i = 0;
+      // 6.5s hold, then drift out over 1.1s before the next phrase drifts in
+      setInterval(function () {
+        el.classList.add('is-out');
+        setTimeout(function () {
+          i = (i + 1) % PHRASES.length;
+          el.textContent = PHRASES[i];
+          el.classList.remove('is-out');
+        }, 1150);
+      }, 6500);
     })();
   </script>
 </Layout>
-
-<style>
-  /* ATLAS HERO — a dark, space-lit band for the homepage only. Redefines
-     the shared hub tokens locally so every existing .eyebrow/h1/.btn/.card
-     component renders correctly on black without a second stylesheet. */
-  .eih .hero.atlas-hero {
-    --paper: #05060a;
-    --card: #0d0f16;
-    --wash: #0d0f16;
-    --ink: #f5f0e8;
-    --t1: #e8e4dc;
-    --t2: #9ca3af;
-    --t3: #6b7280;
-    --gold: #c9902f;
-    --gold-bright: #f5b942;
-    --gold-wash: rgba(245, 185, 66, 0.12);
-    --b1: rgba(245, 185, 66, 0.22);
-    --b2: rgba(255, 255, 255, 0.1);
-    --line-soft: rgba(255, 255, 255, 0.07);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
-    position: relative;
-    overflow: hidden;
-    background: radial-gradient(ellipse 90% 70% at 50% 20%, #10131c 0%, #05060a 60%);
-    padding: 88px 0 64px;
-    text-align: center;
-  }
-  /* .btn's solid fill is normally --ink-on-light; on the dark hero that
-     token is light text, so the primary/ghost buttons need their own
-     dark-appropriate treatment rather than inheriting it. */
-  .eih .hero.atlas-hero .btn {
-    background: var(--gold-bright);
-    border-color: var(--gold-bright);
-    color: #191509;
-  }
-  .eih .hero.atlas-hero .btn:hover {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--gold-bright);
-  }
-  .eih .hero.atlas-hero .btn.ghost {
-    background: transparent;
-    border-color: var(--b2);
-    color: var(--t1);
-  }
-  .eih .hero.atlas-hero .btn.ghost:hover {
-    background: transparent;
-    border-color: var(--gold-bright);
-    color: var(--gold-bright);
-  }
-</style>

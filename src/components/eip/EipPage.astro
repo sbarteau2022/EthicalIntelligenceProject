@@ -1,0 +1,26 @@
+---
+// Shell every overhauled page uses: the dark scope, the floating nav, the
+// footer and the auth modal. Pages supply only their own sections.
+import '~/assets/styles/eip.css';
+import Layout from '~/layouts/Layout.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
+import HubAuth from '~/components/hub/HubAuth.astro';
+import type { MetaData } from '~/types';
+
+export interface Props {
+  metadata?: MetaData;
+  /** Highlights the matching top-level nav link. */
+  current?: string;
+}
+const { metadata, current = '' } = Astro.props;
+---
+
+<Layout metadata={metadata}>
+  <div class="eip">
+    <EipNav current={current} />
+    <slot />
+    <EipFooter />
+    <HubAuth />
+  </div>
+</Layout>

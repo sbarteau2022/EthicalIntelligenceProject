@@ -1,24 +1,25 @@
 ---
-import Layout from '~/layouts/Layout.astro';
-import { getHomePermalink } from '~/utils/permalinks';
+// 404 — was the AstroWind template page (Tailwind utility classes, light
+// theme); rebuilt on the dark Observer shell.
+import EipPage from '~/components/eip/EipPage.astro';
 
-const title = `Error 404`;
+const metadata = { title: 'Not found — The Ethical Intelligence Project' };
 ---
 
-<Layout metadata={{ title }}>
-  <section class="flex items-center h-full p-16">
-    <div class="container flex flex-col items-center justify-center px-5 mx-auto my-8">
-      <div class="max-w-md text-center">
-        <h2 class="mb-8 font-bold text-9xl">
-          <span class="sr-only">Error</span>
-          <span class="text-primary">404</span>
-        </h2>
-        <p class="text-3xl font-semibold md:text-3xl">Sorry, we couldn't find this page.</p>
-        <p class="mt-4 mb-8 text-lg text-muted dark:text-slate-400">
-          But don't worry, you can find plenty of other things on our homepage.
-        </p>
-        <a rel="noopener noreferrer" href={getHomePermalink()} class="btn ml-4">Back to homepage</a>
+<EipPage metadata={metadata}>
+  <section style="border-bottom:0">
+    <div class="shell-narrow" style="padding-top:140px;padding-bottom:140px;text-align:center">
+      <div class="kicker">Error 404</div>
+      <h1 style="margin-bottom:22px">This page isn't on the record.</h1>
+      <p class="lede" style="max-width:520px;margin:0 auto 38px">
+        Nothing here is quietly removed — but this address was never written. The corpus, the journal and Elle herself
+        are all a click away.
+      </p>
+      <div class="btn-row" style="justify-content:center">
+        <a href="/" class="btn btn-gold">Back to the homepage</a>
+        <a href="/core-works" class="btn btn-ghost">Read the corpus</a>
+        <a href="/elle" class="btn btn-ghost">Ask Elle</a>
       </div>
     </div>
   </section>
-</Layout>
+</EipPage>

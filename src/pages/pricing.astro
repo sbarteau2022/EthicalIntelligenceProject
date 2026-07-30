@@ -1,152 +1,161 @@
 ---
 // ============================================================
-// PRICING — currently a beta sign-up page. No billing is wired up
-// yet: every "Join the beta" button opens the real free sign-up
-// flow (window.EIH, shared with /elle, /optimus, /engine, etc.) and
-// grants the same free account every other hub page promises.
-// The $10/$20 figures are the beta rates that take effect once
-// billing turns on — beta members keep the rate they joined at,
-// same promise already made on /business.
+// PRICING — from the "Pricing" screen in EIP - Pages.dc.html.
+//
+// Every CTA still routes through window.EIH (HubAuth) exactly as the previous
+// version did: signed in → straight to /optimus, otherwise the Google sign-up
+// modal. No payment is collected during beta; the plans record the rate a
+// member locks in.
 // ============================================================
-import '~/assets/styles/hub.css';
-import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
-import HubAuth from '~/components/hub/HubAuth.astro';
+import EipPage from '~/components/eip/EipPage.astro';
 
 const metadata = {
   title: 'Pricing — The Ethical Intelligence Project',
   description:
-    'The Ethical Intelligence Project is in beta. Join free right now — no card required — and lock in beta pricing ($10/mo or $20/mo) for when billing turns on.',
+    'Join free during beta and keep the rate you joined at. No card, nothing to cancel — the prices here are what takes effect when billing turns on.',
 };
+
+const PLANS = [
+  {
+    name: 'Free',
+    price: '$0',
+    per: 'always',
+    now: 'No account needed for the courses',
+    body: 'Guest access to Elle, all four Atlas Edu courses, the corpus, and everything The Observer publishes.',
+    featured: false,
+    items: [
+      'Guest conversations with Elle',
+      'All four courses, in full',
+      'The published corpus',
+      'The Observer archive',
+    ],
+    cta: 'Start reading',
+  },
+  {
+    name: 'Standard',
+    price: '$10',
+    per: '/mo after beta',
+    now: 'Free during beta · locked at $10',
+    body: 'The whole hub: your append-only journal, the analysis engine, and Elle with full corpus reasoning and memory.',
+    featured: true,
+    items: [
+      'Everything in Free',
+      'Optimus Journal + manuscript reader',
+      'Analysis Engine, 16 axes per run',
+      'Full corpus reasoning and memory',
+      '60 requests per hour',
+    ],
+    cta: 'Join the beta — free',
+  },
+  {
+    name: 'Plus',
+    price: '$20',
+    per: '/mo after beta',
+    now: 'Free during beta · locked at $20',
+    body: 'For people who want to shape what gets built. Same tools, higher ceilings, a direct line.',
+    featured: false,
+    items: [
+      'Everything in Standard',
+      'Higher rate ceiling',
+      'Priority support, answered by a person',
+      'Direct input on the roadmap',
+    ],
+    cta: 'Join at the Plus rate',
+  },
+];
+
+const FAQS = [
+  {
+    q: 'Is the beta really free?',
+    a: 'Yes. Sign in with Google, no card, nothing to cancel. Nothing is charged and no payment details are collected during beta.',
+  },
+  {
+    q: 'What happens when beta ends?',
+    a: 'Billing starts at whichever rate you joined at — $10 or $20 — and you are told well before anything is charged. If you joined during beta, that rate does not go up.',
+  },
+  {
+    q: 'What do you do with my conversations?',
+    a: 'Nothing. They are not sold and not used as training data. You can export the whole record or delete your account and everything in it, from the account menu.',
+  },
+  {
+    q: 'Can I switch plans later?',
+    a: 'Any time. Reach out and we will move you — the locked beta rate follows you to the tier you move to.',
+  },
+  {
+    q: 'Why is a pre-LLC project charging money?',
+    a: 'It is not, yet. The beta is free precisely because the structure is still forming. The rates above exist so early users know what they are agreeing to before it does.',
+  },
+];
 ---
 
-<Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/pricing" showAccount={true} />
-
-    <!-- HERO -->
-    <section class="hero wrap">
-      <div class="eyebrow rv">Beta · Free to join</div>
-      <h1>Join free during beta. Lock in the rate.</h1>
-      <p class="lede">
-        We're in beta, so signing up costs nothing — no card required. The plans below are the rates that take effect
-        once billing turns on, and <strong>beta members keep the rate they joined at, indefinitely</strong>. The earlier
-        you join, the less you'll ever pay.
+<EipPage metadata={metadata} current="/pricing">
+  <section>
+    <div class="shell" style="padding-top:96px;padding-bottom:60px;text-align:center">
+      <div class="kicker">Public beta · nothing is being charged</div>
+      <h1>Join free. Keep the rate you joined at.</h1>
+      <p class="lede" style="max-width:600px;margin:0 auto">
+        No card, nothing to cancel. The prices below are what takes effect when billing turns on — and beta members stay
+        at the rate they signed up at, indefinitely.
       </p>
-      <div class="cta-row">
-        <button class="btn" id="pricing-cta">Join the beta — free</button>
-        <a href="#plans" class="btn ghost">See the beta rates</a>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- PLANS -->
-    <section id="plans" class="wrap">
-      <div class="eyebrow rv">After beta</div>
-      <h2 class="rv">Two plans. Both free right now.</h2>
-      <div class="cards two rv stagger">
-        <div class="card">
-          <div class="n">STANDARD</div>
-          <h3>$10<span class="per">/mo after beta</span></h3>
-          <p>Full access to the whole hub: your Optimus journal, the Analysis Engine, Atlas Edu courses, and Elle.</p>
-          <ul class="plan-list">
-            <li>✓ Optimus Journal</li>
-            <li>✓ Analysis Engine</li>
-            <li>✓ Atlas Edu courses</li>
-            <li>✓ Talk to Elle</li>
-          </ul>
-          <button class="btn plan-cta" data-plan="standard">Join the beta — free</button>
-        </div>
-        <div class="card">
-          <div class="n">PLUS</div>
-          <h3>$20<span class="per">/mo after beta</span></h3>
-          <p>Everything in Standard, plus priority support and direct input on what we build next.</p>
-          <ul class="plan-list">
-            <li>✓ Everything in Standard</li>
-            <li>✓ Priority support</li>
-            <li>✓ Direct input on the roadmap</li>
-          </ul>
-          <button class="btn plan-cta" data-plan="plus">Join the beta — free</button>
-        </div>
+  <section class="on-base">
+    <div class="shell" style="padding-top:76px;padding-bottom:76px">
+      <div class="plans">
+        {
+          PLANS.map((p) => (
+            <div class:list={['plan', { 'is-featured': p.featured }]}>
+              <div class="top">
+                <span class="nm">{p.name}</span>
+                {p.featured && <span class="flag">Most joined</span>}
+              </div>
+              <div class="price">
+                <b>{p.price}</b>
+                <span>{p.per}</span>
+              </div>
+              <div class="now">{p.now}</div>
+              <p>{p.body}</p>
+              <div class="items">
+                {p.items.map((i) => (
+                  <div>
+                    <i>✓</i>
+                    <span>{i}</span>
+                  </div>
+                ))}
+              </div>
+              <button class="go plan-cta" type="button">
+                {p.cta}
+              </button>
+            </div>
+          ))
+        }
       </div>
-      <p class="plan-note">
-        No payment is collected during beta. Pick whichever rate you want to lock in — you can change your mind later.
+      <p style="text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--t3);margin:26px 0 0">
+        No payment is collected during beta. Pick the rate you want to lock in — you can move later.
       </p>
-    </section>
+    </div>
+  </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="wrap">
-      <div class="eyebrow rv">Questions</div>
-      <h2 class="rv">Beta pricing FAQ</h2>
-      <div class="cards rv stagger">
-        <div class="card">
-          <h3>Is the beta really free?</h3>
-          <p>Yes. Sign up with an email and password, no card required, and you're in.</p>
-        </div>
-        <div class="card">
-          <h3>What happens when beta ends?</h3>
-          <p>
-            Billing starts at whichever rate you joined at — $10/mo or $20/mo. You'll be notified before anything is
-            charged.
-          </p>
-        </div>
-        <div class="card">
-          <h3>Can I switch plans later?</h3>
-          <p>Yes, any time — reach out and we'll move you.</p>
-        </div>
-        <div class="card">
-          <h3>What do I actually get?</h3>
-          <p>
-            One account for the whole hub: the Optimus journal, the Analysis Engine, Atlas Edu courses, and Elle
-            herself.
-          </p>
-        </div>
+  <section>
+    <div class="shell-narrow sec-y">
+      <h2 class="h2-sm" style="margin-bottom:36px">Questions people actually ask</h2>
+      <div class="faqs">
+        {
+          FAQS.map((f) => (
+            <div class="row">
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))
+        }
       </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="wrap" style="text-align:center">
-      <h2 class="rv">Ready to join?</h2>
-      <p style="max-width:520px;margin:0 auto 26px">It's free during beta — takes about thirty seconds.</p>
-      <div class="cta-row">
-        <button class="btn" id="pricing-cta-2">Join the beta — free</button>
-      </div>
-    </section>
-
-    <HubFooter />
-  </div>
-
-  <HubAuth />
-
-  <style>
-    .eih .plan-list {
-      list-style: none;
-      margin: 16px 0 20px;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 0.92rem;
-      color: var(--t2);
-    }
-    .eih .card h3 .per {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--t3);
-    }
-    .eih .plan-cta {
-      width: 100%;
-      justify-content: center;
-    }
-    .eih .plan-note {
-      margin-top: 18px;
-      font-size: 0.85rem;
-      color: var(--t3);
-    }
-  </style>
+    </div>
+  </section>
 
   <script is:inline>
     (function () {
+      // unchanged behaviour: signed in → the journal, otherwise the sign-up modal
       function joinBeta() {
         if (window.EIH && window.EIH.getToken()) {
           window.location.href = '/optimus';
@@ -154,11 +163,9 @@ const metadata = {
           window.EIH.openAuth('signup');
         }
       }
-      document.getElementById('pricing-cta').addEventListener('click', joinBeta);
-      document.getElementById('pricing-cta-2').addEventListener('click', joinBeta);
       document.querySelectorAll('.plan-cta').forEach(function (btn) {
         btn.addEventListener('click', joinBeta);
       });
     })();
   </script>
-</Layout>
+</EipPage>

@@ -3,10 +3,10 @@
 // OPTIMUS — your append-only journal + the manuscript reader
 // Free with sign-up · rate-limited on the free tier
 // ============================================================
-import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import HubAuth from '~/components/hub/HubAuth.astro';
 
 const metadata = {
@@ -17,8 +17,8 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/optimus" showAccount={true} />
+  <div class="eip eip-app">
+    <EipNav />
 
     <!-- HERO -->
     <section class="hero wrap">
@@ -143,15 +143,15 @@ const metadata = {
       </div>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <HubAuth />
 
   <style>
     @media (max-width: 760px) {
-      .eih .opt-j-grid,
-      .eih .opt-r-grid {
+      .eip-app .opt-j-grid,
+      .eip-app .opt-r-grid {
         grid-template-columns: 1fr !important;
       }
     }

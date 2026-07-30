@@ -15,9 +15,10 @@
 // contract is identical.
 // ============================================================
 import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import snapshot from '~/data/harmonic-snapshot.json';
 
 const metadata = {
@@ -31,8 +32,8 @@ const coherenceStr = `${u.coherence.structural.toFixed(2)}, ${u.coherence.relati
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/atlas" />
+  <div class="eip eih">
+    <EipNav />
 
     <section class="atlas-stage">
       <canvas id="atlas-canvas" aria-label="Rotatable 3D globe of the harmonic architecture"></canvas>
@@ -83,7 +84,7 @@ const coherenceStr = `${u.coherence.structural.toFixed(2)}, ${u.coherence.relati
       <noscript><div class="atlas-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <style>

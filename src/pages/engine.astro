@@ -4,10 +4,10 @@
 // Methods overview + free-tier limits. Backed by /api/falcon
 // (16 axes · 3 tiers · ~17 model calls per run).
 // ============================================================
-import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import HubAuth from '~/components/hub/HubAuth.astro';
 
 const metadata = {
@@ -18,8 +18,8 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/engine" showAccount={true} />
+  <div class="eip eip-app">
+    <EipNav />
 
     <!-- HERO -->
     <section class="hero wrap">
@@ -144,7 +144,7 @@ const metadata = {
       </div>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <HubAuth />

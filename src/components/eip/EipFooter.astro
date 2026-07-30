@@ -1,0 +1,44 @@
+---
+// Shared footer for every overhauled surface. Column data comes from ~/eip
+// so the link set can't drift from the nav.
+import { FOOTER_COLS } from '~/eip';
+const year = new Date().getFullYear();
+---
+
+<footer class="foot">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="brand">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
+            <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+            <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
+            <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+            <circle cx="21.5" cy="8.75" r="2" fill="#E8CC88"></circle>
+          </svg>
+          <span>The Ethical Intelligence Project</span>
+        </div>
+        <p class="blurb">Community-based intelligence infrastructure. Powered by Elle AI.</p>
+      </div>
+      {
+        FOOTER_COLS.map((col) => (
+          <div>
+            <div class="ct">{col.title}</div>
+            <div class="links">
+              {col.links.map((l) => (
+                <a href={l.href}>{l.text}</a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="base">
+      <div class="c">© {year} The Ethical Intelligence Project · Co-authored with Claude (Anthropic)</div>
+      <div class="legal">
+        <a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/design-system">Design system</a>
+      </div>
+    </div>
+  </div>
+</footer>
