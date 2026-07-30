@@ -1,6 +1,8 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-
+// Layout for the markdown pages (/terms, /privacy). Previously built on
+// AstroWind's PageLayout; now on the dark Observer shell so the legal pages
+// match the rest of the site.
+import EipPage from '~/components/eip/EipPage.astro';
 import type { MetaData } from '~/types';
 
 export interface Props {
@@ -10,19 +12,72 @@ export interface Props {
 }
 
 const { frontmatter } = Astro.props;
-
-const metadata: MetaData = {
-  title: frontmatter?.title,
-};
+const metadata: MetaData = { title: frontmatter?.title };
 ---
 
-<Layout metadata={metadata}>
-  <section class="px-4 py-16 sm:px-6 mx-auto lg:px-8 lg:py-20 max-w-4xl">
-    <h1 class="font-bold font-heading text-4xl md:text-5xl leading-tighter tracking-tighter">{frontmatter.title}</h1>
-    <div
-      class="mx-auto prose prose-lg max-w-4xl dark:prose-invert dark:prose-headings:text-slate-300 prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8"
-    >
-      <slot />
+<EipPage metadata={metadata}>
+  <section style="border-bottom:0">
+    <div class="shell-narrow" style="padding-top:96px;padding-bottom:96px">
+      <h1 style="margin-bottom:32px">{frontmatter.title}</h1>
+      <div class="md-prose">
+        <slot />
+      </div>
     </div>
   </section>
-</Layout>
+</EipPage>
+
+<style is:global>
+  /* the markdown body — dark-appropriate, no Tailwind typography plugin */
+  .eip .md-prose {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    color: var(--t2);
+  }
+  .eip .md-prose h2 {
+    font-size: 1.8rem;
+    margin: 44px 0 14px;
+  }
+  .eip .md-prose h3 {
+    font-size: 1.3rem;
+    margin: 32px 0 12px;
+  }
+  .eip .md-prose p,
+  .eip .md-prose li {
+    margin: 0 0 1.1em;
+  }
+  .eip .md-prose ul,
+  .eip .md-prose ol {
+    padding-left: 1.3em;
+    margin: 0 0 1.4em;
+  }
+  .eip .md-prose strong {
+    color: var(--t1);
+  }
+  .eip .md-prose a {
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .eip .md-prose a:hover {
+    color: var(--gold-l);
+  }
+  .eip .md-prose code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--raised);
+    border: 0.5px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 5px;
+  }
+  .eip .md-prose hr {
+    border: 0;
+    border-top: 0.5px solid var(--line);
+    margin: 40px 0;
+  }
+  .eip .md-prose blockquote {
+    margin: 0 0 1.4em;
+    padding-left: 18px;
+    border-left: 2px solid var(--gold-line);
+    color: var(--t2);
+  }
+</style>

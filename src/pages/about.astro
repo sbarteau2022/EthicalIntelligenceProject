@@ -1,134 +1,96 @@
 ---
 // ============================================================
-// ABOUT — who's behind the project and how it's actually structured
-// right now: Stewart Barteau, direct, pre-LLC, plus the one part
-// (The Observer) that already runs under a real incorporated nonprofit.
-// Built on the shared hub design system, matching /business, /principled.
+// ABOUT — from the "About" screen in EIP - Pages.dc.html.
+//
+// Two corrections from the design conversation are applied here: The Observer
+// is an independent research initiative (NOT a 501(c)(3)), and there are no
+// "Hermann, Missouri" references — the previous version of this page carried
+// both.
 // ============================================================
-import '~/assets/styles/hub.css';
-import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipPage from '~/components/eip/EipPage.astro';
+import { ENGINES, PROJECT_FACTS } from '~/eip';
 
 const metadata = {
   title: 'About — The Ethical Intelligence Project',
   description:
-    'The Ethical Intelligence Project is built and operated by Stewart Barteau, based in Hermann, Missouri — community-based intelligence infrastructure powered by Elle AI, organized around nine engines built for the people doing the work.',
+    'Community-based intelligence infrastructure, powered by Elle — one corpus-grounded intelligence with a memory she can see but never rewrite. Built and operated directly by Stewart Barteau.',
 };
-
-const ENGINES = [
-  { n: '01', name: 'Elle Law', tag: 'Rights & legal reasoning', href: '/elle' },
-  { n: '02', name: 'Harmonizer', tag: 'Mental health & peer support', href: '/elle' },
-  { n: '03', name: 'Atlas Edu', tag: 'Education & navigation', href: '/edu' },
-  { n: '04', name: 'Agricultural Intelligence', tag: 'USDA & farm resources', href: '/business' },
-  { n: '05', name: 'Healthcare Navigation', tag: 'Benefits & patient rights', href: '/elle' },
-  { n: '06', name: 'Small Business Hub', tag: 'Licensing, grants & compliance', href: '/business' },
-  { n: '07', name: 'Civic Intelligence', tag: 'Government, translated', href: '/elle' },
-  { n: '08', name: 'RAPID²AI', tag: 'Hospitality intelligence', href: '/business' },
-  { n: '09', name: 'The Observer', tag: 'Research & testimony', href: '/observer' },
-];
 ---
 
-<Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/about" />
-
-    <!-- HERO -->
-    <section class="hero wrap">
-      <div class="eyebrow rv">About</div>
+<EipPage metadata={metadata} current="/about">
+  <section class="page-hero">
+    <div class="inner">
+      <div class="kicker">About</div>
       <h1>Intelligence built to serve the people doing the work.</h1>
       <p class="lede">
-        The Ethical Intelligence Project is community-based intelligence infrastructure, powered by Elle — one
-        corpus-grounded intelligence with a memory she can see but never rewrite. It's organized around nine engines,
-        each built for people who don't have a staff of lawyers or analysts standing by: rights and legal reasoning,
-        mental health and peer support, education, agriculture, healthcare navigation, small business, civic life,
-        hospitality, and research and testimony.
+        Community-based intelligence infrastructure, powered by Elle — one corpus-grounded intelligence with a memory
+        she can see but never rewrite. It exists for people who don't have a staff of lawyers or analysts standing by,
+        and it is built so the people it serves can check the work.
       </p>
-      <div class="cta-row">
-        <a href="/principled" class="btn">Read the full philosophy</a>
-        <a href="/pricing" class="btn ghost">Join the beta</a>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- WHO'S BEHIND IT -->
-    <section class="wrap">
-      <div class="split rv">
+  <section class="on-base">
+    <div class="shell sec-y">
+      <div class="split split-flip">
         <div>
-          <div class="eyebrow rv">Who's behind it</div>
-          <h2 class="rv">One person, building it directly — plus the part that's already a real nonprofit.</h2>
-          <p>
-            The Ethical Intelligence Project is built and operated directly by <strong>Stewart Barteau</strong>, based
-            in Hermann, Missouri. The commercial side — Elle, Optimus, the Analysis Engine, Atlas Edu, the Small
-            Business Hub — is currently run this way deliberately, ahead of forming a company around it, so the beta can
-            prove itself before the paperwork does.
-          </p>
-          <p>
-            <strong>The Observer</strong> is different: it already operates under the Observer Foundation, a 501(c)(3) nonprofit
-            incorporated in Missouri, with its own public transparency and funding-ethics disclosures. It's the one piece
-            of this project that isn't waiting on anything.
-          </p>
+          <div class="kicker">Who's behind it</div>
+          <h2 class="h2-sm">One person, building in the open.</h2>
+          <div class="prose" style="margin-top:22px">
+            <p>
+              Built and operated directly by <strong>Stewart Barteau</strong>. The commercial side — Elle, Optimus, the
+              Analysis Engine, Atlas Edu, the Small Business Hub — runs pre-LLC on purpose, so the beta proves itself
+              before the paperwork does.
+            </p>
+            <p>
+              <strong>The Observer</strong> runs as an independent research initiative — not yet a 501(c)(3) — with its own
+              public transparency and funding-ethics disclosures.
+            </p>
+            <p>
+              Elle is built on four frameworks — NECAI-F, the Observer Series, RBDA and κ(T,t) — that treat coherence as
+              measurable rather than claimed. The short version: don't flatten a live question, hold many readings at
+              once, anchor so you can't quietly drift, and keep a live number for how well it is holding together.
+            </p>
+          </div>
         </div>
         <div>
-          <div class="eyebrow rv">The facts</div>
-          <div class="limit-list rv">
-            <div class="limit-row"><span class="k">Operated by</span><span class="v">Stewart Barteau</span></div>
-            <div class="limit-row"><span class="k">Based in</span><span class="v">Hermann, Missouri</span></div>
-            <div class="limit-row">
-              <span class="k">Commercial products</span><span class="v">pre-LLC, direct</span>
-            </div>
-            <div class="limit-row">
-              <span class="k">The Observer</span><span class="v">Observer Foundation, 501(c)(3)</span>
-            </div>
-            <div class="limit-row"><span class="k">Status</span><span class="v">beta</span></div>
+          <div class="kicker">The facts</div>
+          <div class="facts">
+            {
+              PROJECT_FACTS.map((f) => (
+                <div class="row">
+                  <span class="k">{f.k}</span>
+                  <span class="v">{f.v}</span>
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- PHILOSOPHY -->
-    <section class="wrap" style="text-align:center">
-      <div class="eyebrow rv">The idea underneath it</div>
-      <h2 class="rv">What survives is what refuses to collapse or drift.</h2>
-      <p style="max-width:640px;margin:0 auto 26px">
-        Elle is built on a set of frameworks — NECAI-F, the Observer Series, RBDA, and κ(T,t) — that treat coherence as
-        something you can actually measure, not just claim. The short version: don't flatten a live question, hold many
-        readings at once, anchor so you can't quietly drift, and keep a live number for how well it's all holding
-        together.
-      </p>
-      <div class="cta-row">
-        <a href="/principled" class="btn ghost">See how it all connects →</a>
-      </div>
-    </section>
-
-    <!-- ENGINES -->
-    <section class="wrap">
-      <div class="eyebrow rv">The nine engines</div>
-      <h2 class="rv">One presence, nine expressions.</h2>
-      <div class="cards rv stagger">
+  <section>
+    <div class="shell sec-y">
+      <div class="kicker">Coverage</div>
+      <h2 class="h2-sm" style="margin-bottom:36px">Nine engines, honestly labelled.</h2>
+      <div class="engines">
         {
           ENGINES.map((e) => (
-            <a class="card" href={e.href}>
-              <div class="n">{e.n}</div>
-              <h3>{e.name}</h3>
-              <p>{e.tag}</p>
+            <a href={e.href}>
+              <span class="n">{e.n}</span>
+              <span class="name">{e.name}</span>
+              <span class="tag">{e.tag}</span>
+              <span class:list={['state', { 'is-live': e.live }]}>{e.state}</span>
+              <span class="arrow">→</span>
             </a>
           ))
         }
       </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="wrap" style="text-align:center">
-      <h2 class="rv">Questions? Just ask.</h2>
-      <p style="max-width:520px;margin:0 auto 26px">
-        No sales team, no phone tree — reach out directly, or ask Elle yourself.
-      </p>
-      <div class="cta-row">
-        <a href="/contact" class="btn">Get in touch</a>
-        <a href="/elle" class="btn ghost">Ask Elle</a>
+      <div class="btn-row" style="margin-top:40px">
+        <a href="/mission" class="btn btn-ghost btn-sm">Read the mission</a>
+        <a href="/contact" class="btn btn-ghost btn-sm">Get in touch</a>
       </div>
-    </section>
-
-    <HubFooter />
-  </div>
-</Layout>
+    </div>
+  </section>
+</EipPage>

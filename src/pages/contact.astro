@@ -1,94 +1,130 @@
 ---
 // ============================================================
-// CONTACT — a real form wired to elle-worker's /api/contact, which
-// logs to elle_outreach_log and (once RESEND_API_KEY is set) emails
-// Stewart directly. No sales team, no phone tree — just a message.
+// CONTACT — from the "Contact" screen in EIP - Pages.dc.html.
+//
+// The form is the real one: it still POSTs to elle-worker's /api/contact,
+// which logs to elle_outreach_log and emails Stewart once RESEND_API_KEY is
+// set. The design's "what brings you here" chips are wired in as a real
+// selection that rides along in the message body.
 // ============================================================
-import '~/assets/styles/hub.css';
-import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipPage from '~/components/eip/EipPage.astro';
+import { WORKER_URL } from '~/eip';
 
 const metadata = {
   title: 'Contact — The Ethical Intelligence Project',
-  description: 'Get in touch with The Ethical Intelligence Project — no sales team, no phone tree, just a message.',
+  description: 'No sales team, no phone tree — a message here goes directly to Stewart.',
 };
+
+const ROUTES = [
+  {
+    kicker: 'Faster than this form',
+    title: 'Ask Elle',
+    body: 'Anything about the corpus, the method, the tools, or the limits. No email address required.',
+    href: '/elle',
+  },
+  {
+    kicker: 'Press and funders',
+    title: 'The unvarnished version',
+    body: 'Happy to walk through what is built, what is not, and what the money would do. Say so in the message.',
+    href: '#eip-contact-form',
+  },
+  {
+    kicker: 'Small business',
+    title: 'Scope a pipeline',
+    body: 'Tell us what you run and we will tell you where a pipeline would look first, and what it would cost.',
+    href: '/business',
+  },
+];
+
+const REASONS = [
+  'Just curious',
+  'Press or funder',
+  'Research collaboration',
+  'Scope a pipeline',
+  'Something is broken',
+];
 ---
 
-<Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/contact" />
+<EipPage metadata={metadata} current="/contact">
+  <section>
+    <div class="shell" style="padding-top:96px;padding-bottom:90px">
+      <div class="split" style="gap:80px">
+        <div>
+          <div class="kicker">Contact</div>
+          <h1 style="font-size:clamp(2.2rem,5vw,3.4rem)">No sales team. No phone tree.</h1>
+          <p class="lede" style="font-size:1.08rem;margin:0 0 34px">
+            A message here goes directly to Stewart. If it's something the product can answer faster, Elle is one click
+            away and doesn't need your email address.
+          </p>
+          <div class="routes">
+            {
+              ROUTES.map((r) => (
+                <a href={r.href}>
+                  <div class="k">{r.kicker}</div>
+                  <div class="t">{r.title}</div>
+                  <div class="b">{r.body}</div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
 
-    <!-- HERO -->
-    <section class="hero wrap">
-      <div class="eyebrow rv">Contact</div>
-      <h1>Get in touch.</h1>
-      <p class="lede">
-        No sales team, no phone tree — a message here goes directly to Stewart. If you'd rather ask something the
-        product itself can answer, <a href="/elle">Elle</a> is faster.
-      </p>
-    </section>
+        <div class="form-card">
+          <form id="eip-contact-form">
+            <div class="field">
+              <label for="c-name">Name</label>
+              <input id="c-name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="c-email">Email</label>
+              <input id="c-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <div class="lbl">What brings you here</div>
+              <div class="chips" id="c-reasons">
+                {
+                  REASONS.map((r) => (
+                    <button type="button" data-reason={r} aria-pressed="false">
+                      {r}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+            <div class="field">
+              <label for="c-message">Message</label>
+              <textarea id="c-message" name="message" rows="6" required></textarea>
+            </div>
+            <button class="btn btn-gold" type="submit" id="c-submit">Send message</button>
+            <div class="form-status" id="c-status" role="status"></div>
+            <div class="note">
+              Goes to one inbox. Usually answered within two working days. Nothing here is added to a mailing list.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- FORM -->
-    <section class="wrap" style="max-width:560px">
-      <form id="eip-contact-form" class="contact-form">
-        <label for="c-name">Name</label>
-        <input id="c-name" name="name" type="text" autocomplete="name" required />
-
-        <label for="c-email">Email</label>
-        <input id="c-email" name="email" type="email" autocomplete="email" required />
-
-        <label for="c-message">Message</label>
-        <textarea id="c-message" name="message" rows="6" required></textarea>
-
-        <button class="btn" type="submit" id="c-submit">Send message</button>
-        <div class="contact-status" id="c-status" role="status"></div>
-      </form>
-    </section>
-
-    <HubFooter />
-  </div>
-
-  <style>
-    .eih .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .eih .contact-form label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--t3);
-      margin: 12px 0 2px;
-    }
-    .eih .contact-form label:first-child {
-      margin-top: 0;
-    }
-    .eih .contact-form button {
-      margin-top: 22px;
-      align-self: flex-start;
-    }
-    .eih .contact-status {
-      margin-top: 12px;
-      font-size: 0.85rem;
-      min-height: 1.2em;
-    }
-    .eih .contact-status.ok {
-      color: var(--gold);
-    }
-    .eih .contact-status.err {
-      color: #b3452e;
-    }
-  </style>
-
-  <script is:inline>
+  <script is:inline define:vars={{ WORKER_URL }}>
     (function () {
-      const WORKER = 'https://elle-worker.sbarteau2022.workers.dev';
       const form = document.getElementById('eip-contact-form');
       const statusEl = document.getElementById('c-status');
       const submitEl = document.getElementById('c-submit');
+      const reasonWrap = document.getElementById('c-reasons');
+
+      // single-select chips — purely additive context for the message body
+      let reason = '';
+      reasonWrap.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-reason]');
+        if (!btn) return;
+        const on = btn.getAttribute('aria-pressed') === 'true';
+        reasonWrap.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.setAttribute('aria-pressed', on ? 'false' : 'true');
+        reason = on ? '' : btn.dataset.reason;
+      });
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -99,13 +135,13 @@ const metadata = {
 
         submitEl.disabled = true;
         statusEl.textContent = 'Sending…';
-        statusEl.className = 'contact-status';
+        statusEl.className = 'form-status';
 
-        fetch(WORKER + '/api/contact', {
+        fetch(WORKER_URL + '/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            thought: 'From: ' + name + ' <' + email + '>\n\n' + message,
+            thought: 'From: ' + name + ' <' + email + '>' + (reason ? '\nReason: ' + reason : '') + '\n\n' + message,
             outreach_type: 'contact_form',
             initiated_by: email,
             needs_response: true,
@@ -119,16 +155,20 @@ const metadata = {
           .then(function (res) {
             if (!res.ok || !res.d.success) {
               statusEl.textContent = 'Something went wrong — try again, or email us directly.';
-              statusEl.className = 'contact-status err';
+              statusEl.className = 'form-status err';
               return;
             }
             statusEl.textContent = "Sent. We'll get back to you.";
-            statusEl.className = 'contact-status ok';
+            statusEl.className = 'form-status ok';
             form.reset();
+            reasonWrap.querySelectorAll('button').forEach(function (b) {
+              b.setAttribute('aria-pressed', 'false');
+            });
+            reason = '';
           })
           .catch(function () {
             statusEl.textContent = 'Connection failed. Try again.';
-            statusEl.className = 'contact-status err';
+            statusEl.className = 'form-status err';
           })
           .finally(function () {
             submitEl.disabled = false;
@@ -136,4 +176,4 @@ const metadata = {
       });
     })();
   </script>
-</Layout>
+</EipPage>

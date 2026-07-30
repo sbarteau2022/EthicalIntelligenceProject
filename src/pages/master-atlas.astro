@@ -19,9 +19,10 @@
 // renderer draws them; it re-derives nothing.
 // ============================================================
 import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import harmonic from '~/data/harmonic-snapshot.json';
 import neural from '~/data/neural-structure-snapshot.json';
 
@@ -36,8 +37,8 @@ const nm = neural.meta;
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/master-atlas" />
+  <div class="eip eih">
+    <EipNav />
 
     <section class="master-stage">
       <canvas id="master-canvas" aria-label="Rotatable 3D rendering combining the unified function and the neural map"
@@ -242,7 +243,7 @@ const nm = neural.meta;
       </form>
     </div>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <style>

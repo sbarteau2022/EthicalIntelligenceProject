@@ -1,0 +1,1067 @@
+---
+// ============================================================
+// HERO GLOBE — the full-bleed three.js Earth from the design handoff.
+//
+// This is a faithful port of the `startAtlas` / `buildEarthTextures`
+// renderer in design-handoff/project/EIP - Home.dc.html, which the design
+// conversation iterated on for dozens of passes. Everything the user
+// explicitly asked for is preserved, and everything they explicitly cut
+// stays cut. In particular:
+//
+//   KEPT  · real Natural Earth coastlines rasterised into the texture
+//         · topography: fBm terrain + 11 named mountain ranges as ridged
+//           spines, driving hillshade, hypsometric tint AND real geometry
+//           displacement on a 256-segment sphere
+//         · the "obscene depth" pass — three-light rig baked per-pixel,
+//           ambient occlusion, ray-marched cast shadows, aerial perspective,
+//           bathymetric shelf glow
+//         · deep abyssal trenches + brighter shallows in the ocean, and 90
+//           earthy brown highland patches on the land
+//         · ~130 readership nodes weighted by relative readership, firing
+//           like synapses (sudden spikes, long dark gaps) with thread
+//           filaments between them
+//         · real 23.4° axial tilt, spin around the tilted axis
+//         · three parallax star shells + three deep-space nebulae
+//
+//   CUT   · the comet / shooting star (removed on request)
+//         · both cloud decks and all weather (removed on request)
+//         · the equator line and the vertical divider (removed on request)
+//         · every directional / spot light, including the key light — the
+//           globe is lit purely by hemisphere + ambient so there is no
+//           hotspot or terminator (removed on request, twice)
+//         · the circular window frame around the globe (removed on request)
+//
+// The coastline topology is served from /data/land-50m.json (vendored from
+// the public-domain world-atlas package) rather than a CDN, so the render
+// can never silently degrade to the coarse offline fallback.
+// ============================================================
+---
+
+<div class="hero-canvas-wrap">
+  <canvas id="eip-globe" aria-hidden="true"></canvas>
+</div>
+
+<script>
+  import * as THREE from 'three';
+
+  // deterministic hash so the scene is identical on every load
+  const seeded = (n: number) => {
+    const x = Math.sin(n * 12.9898) * 43758.5453;
+    return x - Math.floor(x);
+  };
+
+  function llv(lat: number, lon: number, r: number) {
+    const phi = ((90 - lat) * Math.PI) / 180;
+    const theta = ((lon + 180) * Math.PI) / 180;
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+      r * Math.cos(phi),
+      r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+
+  /** Readership nodes — real cities, `w` is relative readership weight. */
+  const CITIES: { lat: number; lon: number; w: number; hub?: boolean }[] = [
+    { lat: 38.7, lon: -91.4, hub: true, w: 1 }, // primary hub node
+    // North America
+    { lat: 40.7, lon: -74.0, w: 1 },
+    { lat: 37.8, lon: -122.4, w: 0.9 },
+    { lat: 43.7, lon: -79.4, w: 0.7 },
+    { lat: 41.9, lon: -87.6, w: 0.75 },
+    { lat: 19.4, lon: -99.1, w: 0.6 },
+    { lat: 47.6, lon: -122.3, w: 0.6 },
+    { lat: 33.7, lon: -84.4, w: 0.5 },
+    { lat: 30.3, lon: -97.7, w: 0.55 },
+    { lat: 42.4, lon: -71.1, w: 0.75 },
+    { lat: 45.5, lon: -73.6, w: 0.45 },
+    { lat: 49.3, lon: -123.1, w: 0.45 },
+    { lat: 25.8, lon: -80.2, w: 0.4 },
+    { lat: 39.7, lon: -105.0, w: 0.4 },
+    { lat: 23.1, lon: -82.4, w: 0.25 },
+    { lat: 9.9, lon: -84.1, w: 0.25 },
+    // South America
+    { lat: -23.5, lon: -46.6, w: 0.7 },
+    { lat: 4.7, lon: -74.1, w: 0.45 },
+    { lat: -34.6, lon: -58.4, w: 0.55 },
+    { lat: -12.0, lon: -77.0, w: 0.35 },
+    { lat: -33.4, lon: -70.7, w: 0.4 },
+    { lat: -22.9, lon: -43.2, w: 0.5 },
+    { lat: 10.5, lon: -66.9, w: 0.25 },
+    { lat: -0.2, lon: -78.5, w: 0.22 },
+    // Europe
+    { lat: 51.5, lon: -0.12, w: 1 },
+    { lat: 52.5, lon: 13.4, w: 0.75 },
+    { lat: 48.9, lon: 2.35, w: 0.8 },
+    { lat: 40.4, lon: -3.7, w: 0.55 },
+    { lat: 41.9, lon: 12.5, w: 0.5 },
+    { lat: 52.4, lon: 4.9, w: 0.6 },
+    { lat: 59.3, lon: 18.1, w: 0.45 },
+    { lat: 60.2, lon: 24.9, w: 0.35 },
+    { lat: 50.1, lon: 14.4, w: 0.35 },
+    { lat: 47.5, lon: 19.0, w: 0.3 },
+    { lat: 38.7, lon: -9.1, w: 0.35 },
+    { lat: 53.3, lon: -6.3, w: 0.4 },
+    { lat: 55.8, lon: 37.6, w: 0.5 },
+    { lat: 41.0, lon: 29.0, w: 0.45 },
+    // Africa
+    { lat: -33.9, lon: 18.4, w: 0.5 },
+    { lat: 6.5, lon: 3.4, w: 0.55 },
+    { lat: -1.3, lon: 36.8, w: 0.45 },
+    { lat: 30.0, lon: 31.2, w: 0.5 },
+    { lat: 33.6, lon: -7.6, w: 0.3 },
+    { lat: 9.0, lon: 38.7, w: 0.28 },
+    { lat: -26.2, lon: 28.0, w: 0.45 },
+    { lat: 5.6, lon: -0.2, w: 0.3 },
+    { lat: -6.8, lon: 39.3, w: 0.25 },
+    // Asia & Middle East
+    { lat: 19.1, lon: 72.9, w: 0.75 },
+    { lat: 28.6, lon: 77.2, w: 0.7 },
+    { lat: 12.9, lon: 77.6, w: 0.65 },
+    { lat: 1.35, lon: 103.8, w: 0.7 },
+    { lat: 35.7, lon: 139.7, w: 0.9 },
+    { lat: 34.7, lon: 135.5, w: 0.5 },
+    { lat: 37.6, lon: 127.0, w: 0.65 },
+    { lat: 39.9, lon: 116.4, w: 0.6 },
+    { lat: 31.2, lon: 121.5, w: 0.6 },
+    { lat: 22.3, lon: 114.2, w: 0.55 },
+    { lat: 25.2, lon: 55.3, w: 0.5 },
+    { lat: 32.1, lon: 34.8, w: 0.45 },
+    { lat: 13.8, lon: 100.5, w: 0.4 },
+    { lat: 14.6, lon: 121.0, w: 0.4 },
+    { lat: -6.2, lon: 106.8, w: 0.45 },
+    { lat: 23.8, lon: 90.4, w: 0.35 },
+    { lat: 41.3, lon: 69.2, w: 0.22 },
+    // Oceania
+    { lat: -33.9, lon: 151.2, w: 0.65 },
+    { lat: -37.8, lon: 145.0, w: 0.55 },
+    { lat: -27.5, lon: 153.0, w: 0.35 },
+    { lat: -31.9, lon: 115.9, w: 0.3 },
+    { lat: -36.8, lon: 174.8, w: 0.35 },
+    { lat: -41.3, lon: 174.8, w: 0.25 },
+    // second tier — wider spread, smaller readerships
+    { lat: 39.1, lon: -94.6, w: 0.3 },
+    { lat: 38.6, lon: -90.2, w: 0.35 },
+    { lat: 44.98, lon: -93.3, w: 0.25 },
+    { lat: 33.4, lon: -112.1, w: 0.22 },
+    { lat: 45.5, lon: -122.7, w: 0.25 },
+    { lat: 39.95, lon: -75.2, w: 0.3 },
+    { lat: 38.9, lon: -77.0, w: 0.4 },
+    { lat: 36.2, lon: -86.8, w: 0.2 },
+    { lat: 40.8, lon: -111.9, w: 0.18 },
+    { lat: 51.0, lon: -114.1, w: 0.2 },
+    { lat: 44.6, lon: -63.6, w: 0.15 },
+    { lat: 20.7, lon: -103.3, w: 0.2 },
+    { lat: 25.7, lon: -100.3, w: 0.2 },
+    { lat: 6.2, lon: -75.6, w: 0.22 },
+    { lat: -8.05, lon: -34.9, w: 0.2 },
+    { lat: -15.8, lon: -47.9, w: 0.25 },
+    { lat: -34.9, lon: -56.2, w: 0.18 },
+    { lat: -16.5, lon: -68.1, w: 0.15 },
+    { lat: -25.3, lon: -57.6, w: 0.14 },
+    { lat: 9.0, lon: -79.5, w: 0.18 },
+    { lat: 14.6, lon: -90.5, w: 0.15 },
+    { lat: 18.5, lon: -69.9, w: 0.16 },
+    { lat: 18.4, lon: -66.1, w: 0.16 },
+    { lat: 59.9, lon: 10.8, w: 0.28 },
+    { lat: 55.7, lon: 12.6, w: 0.3 },
+    { lat: 52.2, lon: 21.0, w: 0.3 },
+    { lat: 48.2, lon: 16.4, w: 0.28 },
+    { lat: 47.4, lon: 8.5, w: 0.3 },
+    { lat: 48.1, lon: 11.6, w: 0.3 },
+    { lat: 45.5, lon: 9.2, w: 0.3 },
+    { lat: 41.4, lon: 2.2, w: 0.32 },
+    { lat: 38.0, lon: 23.7, w: 0.22 },
+    { lat: 44.4, lon: 26.1, w: 0.2 },
+    { lat: 50.45, lon: 30.5, w: 0.25 },
+    { lat: 55.95, lon: -3.2, w: 0.22 },
+    { lat: 50.85, lon: 4.35, w: 0.25 },
+    { lat: 14.7, lon: -17.5, w: 0.15 },
+    { lat: 5.3, lon: -4.0, w: 0.16 },
+    { lat: 0.35, lon: 32.6, w: 0.16 },
+    { lat: -1.95, lon: 30.1, w: 0.14 },
+    { lat: -15.4, lon: 28.3, w: 0.14 },
+    { lat: -17.8, lon: 31.0, w: 0.13 },
+    { lat: 36.75, lon: 3.06, w: 0.18 },
+    { lat: 36.8, lon: 10.2, w: 0.16 },
+    { lat: 15.6, lon: 32.5, w: 0.13 },
+    { lat: 24.7, lon: 46.7, w: 0.25 },
+    { lat: 25.3, lon: 51.5, w: 0.22 },
+    { lat: 31.95, lon: 35.9, w: 0.16 },
+    { lat: 24.9, lon: 67.0, w: 0.3 },
+    { lat: 31.5, lon: 74.3, w: 0.25 },
+    { lat: 13.1, lon: 80.3, w: 0.3 },
+    { lat: 22.6, lon: 88.4, w: 0.3 },
+    { lat: 17.4, lon: 78.5, w: 0.28 },
+    { lat: 27.7, lon: 85.3, w: 0.14 },
+    { lat: 6.9, lon: 79.9, w: 0.16 },
+    { lat: 21.0, lon: 105.8, w: 0.2 },
+    { lat: 10.8, lon: 106.7, w: 0.22 },
+    { lat: 3.14, lon: 101.7, w: 0.28 },
+    { lat: 25.0, lon: 121.5, w: 0.32 },
+    { lat: 35.2, lon: 136.9, w: 0.25 },
+    { lat: 43.1, lon: 141.35, w: 0.18 },
+    { lat: 35.1, lon: 129.0, w: 0.22 },
+    { lat: 30.7, lon: 104.1, w: 0.22 },
+    { lat: 34.3, lon: 108.9, w: 0.2 },
+    { lat: 47.9, lon: 106.9, w: 0.1 },
+    { lat: 43.2, lon: 76.9, w: 0.12 },
+    { lat: -34.9, lon: 138.6, w: 0.2 },
+    { lat: -35.3, lon: 149.1, w: 0.18 },
+    { lat: -43.5, lon: 172.6, w: 0.15 },
+    { lat: -18.1, lon: 178.4, w: 0.1 },
+    { lat: -9.4, lon: 147.2, w: 0.1 },
+  ];
+
+  /** Major ranges as lon/lat polylines with a width and a peak height. */
+  const RANGES = [
+    {
+      pts: [
+        [-150, 62],
+        [-135, 58],
+        [-122, 49],
+        [-116, 40],
+        [-110, 33],
+      ],
+      w: 4.5,
+      h: 1.0,
+    }, // Rockies
+    {
+      pts: [
+        [-72, 8],
+        [-76, -2],
+        [-70, -18],
+        [-70, -33],
+        [-72, -45],
+        [-73, -53],
+      ],
+      w: 3.0,
+      h: 1.0,
+    }, // Andes
+    {
+      pts: [
+        [-6, 43],
+        [2, 43],
+        [8, 46],
+        [14, 47],
+        [19, 47],
+        [25, 46],
+      ],
+      w: 3.0,
+      h: 0.72,
+    }, // Pyrenees/Alps/Carpathians
+    {
+      pts: [
+        [44, 39],
+        [52, 36],
+        [60, 34],
+        [68, 35],
+        [75, 36],
+        [83, 32],
+        [90, 28],
+        [95, 27],
+      ],
+      w: 4.5,
+      h: 1.0,
+    }, // Himalaya
+    {
+      pts: [
+        [60, 55],
+        [64, 60],
+        [62, 66],
+        [60, 70],
+      ],
+      w: 3.0,
+      h: 0.5,
+    }, // Urals
+    {
+      pts: [
+        [100, 50],
+        [110, 48],
+        [120, 46],
+        [130, 48],
+      ],
+      w: 4.0,
+      h: 0.55,
+    }, // Altai/Khangai
+    {
+      pts: [
+        [37, 12],
+        [39, 7],
+        [36, 0],
+        [34, -8],
+        [30, -20],
+        [28, -30],
+      ],
+      w: 3.5,
+      h: 0.6,
+    }, // E-African/Drakensberg
+    {
+      pts: [
+        [-8, 32],
+        [0, 32],
+        [8, 34],
+        [11, 36],
+      ],
+      w: 2.5,
+      h: 0.55,
+    }, // Atlas
+    {
+      pts: [
+        [146, -18],
+        [150, -26],
+        [149, -34],
+        [147, -37],
+      ],
+      w: 2.5,
+      h: 0.45,
+    }, // Great Dividing
+    {
+      pts: [
+        [172, -42],
+        [168, -45],
+      ],
+      w: 2.0,
+      h: 0.55,
+    }, // Southern Alps
+    {
+      pts: [
+        [138, 36],
+        [141, 40],
+        [143, 43],
+      ],
+      w: 2.0,
+      h: 0.5,
+    }, // Japan spine
+  ];
+
+  function buildNebulaTexture(rgbaPrefix: string, peak: number) {
+    const S = 256;
+    const c = document.createElement('canvas');
+    c.width = S;
+    c.height = S;
+    const ctx = c.getContext('2d')!;
+    for (let i = 0; i < 9; i++) {
+      const x = S * (0.3 + seeded(i * 3 + 1) * 0.4);
+      const y = S * (0.3 + seeded(i * 3 + 2) * 0.4);
+      const r = S * (0.15 + seeded(i * 3 + 3) * 0.3);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, rgbaPrefix + (peak * (0.35 + seeded(i * 5 + 4) * 0.65)).toFixed(3) + ')');
+      g.addColorStop(1, rgbaPrefix + '0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return c;
+  }
+
+  async function buildEarthTextures() {
+    const W = 2048;
+    const H = 1024;
+    const toXY = (lon: number, lat: number): [number, number] => [((lon + 180) / 360) * W, ((90 - lat) / 180) * H];
+
+    // Real coastlines — Natural Earth via the vendored world-atlas topology,
+    // decoded by hand (no topojson-client dependency).
+    let landRings: number[][][] | null = null;
+    try {
+      const topo = await (await fetch('/data/land-50m.json')).json();
+      const [sx, sy] = topo.transform.scale;
+      const [tx, ty] = topo.transform.translate;
+      const arcs: number[][][] = topo.arcs.map((arc: number[][]) => {
+        let x = 0;
+        let y = 0;
+        return arc.map(([dx, dy]) => {
+          x += dx;
+          y += dy;
+          return [x * sx + tx, y * sy + ty];
+        });
+      });
+      landRings = [];
+      const addPoly = (rings: number[][]) =>
+        rings.forEach((ring) => {
+          const pts: number[][] = [];
+          ring.forEach((idx) => {
+            const a = idx >= 0 ? arcs[idx] : arcs[~idx].slice().reverse();
+            pts.push(...a);
+          });
+          landRings!.push(pts);
+        });
+      topo.objects.land.geometries.forEach((g: { type: string; arcs: number[][] | number[][][] }) => {
+        if (g.type === 'Polygon') addPoly(g.arcs as number[][]);
+        else if (g.type === 'MultiPolygon') (g.arcs as number[][][]).forEach(addPoly);
+      });
+    } catch {
+      // offline fallback — coarse hand-set outlines
+      landRings = [
+        [
+          [-160, 70],
+          [-140, 72],
+          [-95, 68],
+          [-80, 50],
+          [-70, 45],
+          [-65, 30],
+          [-80, 25],
+          [-97, 18],
+          [-105, 20],
+          [-115, 30],
+          [-125, 40],
+          [-130, 55],
+        ],
+        [
+          [-80, 10],
+          [-70, 5],
+          [-60, 5],
+          [-50, 0],
+          [-35, -5],
+          [-40, -20],
+          [-55, -35],
+          [-65, -55],
+          [-75, -45],
+          [-80, -20],
+        ],
+        [
+          [-10, 60],
+          [0, 62],
+          [10, 70],
+          [25, 71],
+          [30, 68],
+          [40, 60],
+          [35, 45],
+          [20, 40],
+          [0, 43],
+          [-10, 45],
+        ],
+        [
+          [-15, 35],
+          [10, 37],
+          [35, 30],
+          [45, 12],
+          [42, -10],
+          [35, -25],
+          [20, -35],
+          [15, -25],
+          [10, -5],
+          [0, 10],
+          [-15, 15],
+        ],
+        [
+          [35, 45],
+          [60, 55],
+          [90, 60],
+          [110, 65],
+          [130, 55],
+          [150, 45],
+          [140, 30],
+          [120, 20],
+          [100, 10],
+          [95, 25],
+          [75, 25],
+          [65, 25],
+          [50, 30],
+        ],
+        [
+          [113, -12],
+          [130, -12],
+          [145, -15],
+          [153, -28],
+          [145, -38],
+          [130, -32],
+          [115, -22],
+        ],
+      ];
+    }
+
+    const trace = (ctx: CanvasRenderingContext2D) => {
+      ctx.beginPath();
+      landRings!.forEach((ring) => {
+        // unwrap antimeridian jumps so no ring draws a seam-crossing chord
+        let off = 0;
+        let prev: number | null = null;
+        const un = ring.map(([lon, lat]) => {
+          if (prev !== null) {
+            if (lon - prev > 180) off -= 360;
+            else if (lon - prev < -180) off += 360;
+          }
+          prev = lon;
+          return [lon + off, lat];
+        });
+        // draw at three lon offsets so both sides of the wrap are covered
+        [-360, 0, 360].forEach((shift) => {
+          un.forEach(([lon, lat], i) => {
+            const [x, y] = toXY(lon + shift, lat);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.closePath();
+        });
+      });
+    };
+
+    // ---------- colour map ----------
+    const colorCanvas = document.createElement('canvas');
+    colorCanvas.width = W;
+    colorCanvas.height = H;
+    const cctx = colorCanvas.getContext('2d')!;
+
+    // ocean — deep Earth blue with subtle depth variation
+    const og = cctx.createLinearGradient(0, 0, 0, H);
+    og.addColorStop(0, '#14273f');
+    og.addColorStop(0.5, '#1b3a5c');
+    og.addColorStop(1, '#14273f');
+    cctx.fillStyle = og;
+    cctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 2600; i++) {
+      const x = seeded(i * 3 + 1) * W;
+      const y = seeded(i * 3 + 2) * H;
+      const l = 6 + seeded(i * 3 + 3) * 26;
+      cctx.strokeStyle = seeded(i * 5 + 4) > 0.5 ? 'rgba(120,170,220,0.05)' : 'rgba(0,0,0,0.05)';
+      cctx.lineWidth = 1;
+      cctx.beginPath();
+      cctx.moveTo(x, y);
+      cctx.lineTo(x + l, y + (seeded(i * 7 + 5) - 0.5) * 3);
+      cctx.stroke();
+    }
+    // deep trench patches — darker abyssal blues breaking up the flatness
+    for (let i = 0; i < 46; i++) {
+      const x = seeded(i * 9 + 200) * W;
+      const y = seeded(i * 9 + 201) * H;
+      const r = 40 + seeded(i * 9 + 202) * 130;
+      const grad = cctx.createRadialGradient(x, y, 0, x, y, r);
+      grad.addColorStop(0, 'rgba(6,14,28,0.5)');
+      grad.addColorStop(1, 'rgba(6,14,28,0)');
+      cctx.fillStyle = grad;
+      cctx.beginPath();
+      cctx.arc(x, y, r, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    // shallow-water patches — brighter cyan-blue near-shelf variation
+    for (let i = 0; i < 34; i++) {
+      const x = seeded(i * 9 + 300) * W;
+      const y = seeded(i * 9 + 301) * H;
+      const r = 26 + seeded(i * 9 + 302) * 70;
+      const grad = cctx.createRadialGradient(x, y, 0, x, y, r);
+      grad.addColorStop(0, 'rgba(70,130,175,0.22)');
+      grad.addColorStop(1, 'rgba(70,130,175,0)');
+      cctx.fillStyle = grad;
+      cctx.beginPath();
+      cctx.arc(x, y, r, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    // land — real geometry, filled then grained
+    trace(cctx);
+    cctx.fillStyle = '#5c7245';
+    cctx.fill();
+    cctx.strokeStyle = 'rgba(200,190,150,0.5)';
+    cctx.lineWidth = 1.4;
+    cctx.stroke();
+    cctx.save();
+    trace(cctx);
+    cctx.clip();
+    for (let i = 0; i < 4200; i++) {
+      const x = seeded(i * 11 + 6) * W;
+      const y = seeded(i * 11 + 7) * H;
+      const r = 1.5 + seeded(i * 11 + 8) * 5;
+      const pick = seeded(i * 13 + 9);
+      cctx.fillStyle =
+        pick > 0.66 ? 'rgba(170,150,90,0.16)' : pick > 0.33 ? 'rgba(90,120,60,0.16)' : 'rgba(60,80,45,0.14)';
+      cctx.beginPath();
+      cctx.arc(x, y, r, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    // earthy brown patches — exposed soil / highland variation
+    for (let i = 0; i < 90; i++) {
+      const x = seeded(i * 15 + 400) * W;
+      const y = seeded(i * 15 + 401) * H;
+      const r = 10 + seeded(i * 15 + 402) * 34;
+      const grad = cctx.createRadialGradient(x, y, 0, x, y, r);
+      grad.addColorStop(0, 'rgba(112,80,48,0.24)');
+      grad.addColorStop(1, 'rgba(112,80,48,0)');
+      cctx.fillStyle = grad;
+      cctx.beginPath();
+      cctx.arc(x, y, r, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    // desert belts — warm tint around the tropics
+    cctx.fillStyle = 'rgba(190,160,95,0.22)';
+    cctx.fillRect(0, ((90 - 32) / 180) * H, W, (16 / 180) * H);
+    cctx.fillRect(0, ((90 + 15) / 180) * H, W, (18 / 180) * H);
+    // greenland + antarctica read as ice sheets
+    cctx.fillStyle = 'rgba(235,242,248,0.9)';
+    cctx.fillRect(0, 0, W, (16 / 180) * H);
+    cctx.fillRect(0, H - (28 / 180) * H, W, (28 / 180) * H);
+    cctx.restore();
+    // polar sea-ice fade
+    const ice = (y0: number, y1: number) => {
+      const g = cctx.createLinearGradient(0, y0, 0, y1);
+      const top = y0 < H / 2;
+      g.addColorStop(top ? 0 : 1, 'rgba(235,242,248,0.8)');
+      g.addColorStop(top ? 1 : 0, 'rgba(235,242,248,0)');
+      cctx.fillStyle = g;
+      cctx.fillRect(0, Math.min(y0, y1), W, Math.abs(y1 - y0));
+    };
+    ice(0, (7 / 180) * H);
+    ice(H, H - (9 / 180) * H);
+    // no baked graticule, no equator line — clean surface
+
+    // ---------- topography: elevation field + baked relief ----------
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = W;
+    maskCanvas.height = H;
+    const mctx = maskCanvas.getContext('2d')!;
+    mctx.fillStyle = '#000';
+    mctx.fillRect(0, 0, W, H);
+    trace(mctx);
+    mctx.fillStyle = '#fff';
+    mctx.fill();
+    const maskData = mctx.getImageData(0, 0, W, H).data;
+
+    // fBm terrain noise
+    const thash = (ix: number, iy: number) => {
+      const x = Math.sin(ix * 269.5 + iy * 183.3) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    const tsm = (u: number) => u * u * (3 - 2 * u);
+    const tnoise = (x: number, y: number, px: number) => {
+      const ix = Math.floor(x);
+      const iy = Math.floor(y);
+      const fx = x - ix;
+      const fy = y - iy;
+      const i0 = ((ix % px) + px) % px;
+      const i1 = (((ix + 1) % px) + px) % px;
+      const a = thash(i0, iy);
+      const b = thash(i1, iy);
+      const d = thash(i0, iy + 1);
+      const e = thash(i1, iy + 1);
+      const ux = tsm(fx);
+      const uy = tsm(fy);
+      return a + (b - a) * ux + (d - a) * uy + (a - b - d + e) * ux * uy;
+    };
+    const distToRange = (lon: number, lat: number, r: { pts: number[][] }) => {
+      let best = 1e9;
+      for (let i = 0; i < r.pts.length - 1; i++) {
+        const [x1, y1] = r.pts[i];
+        const [x2, y2] = r.pts[i + 1];
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const L = dx * dx + dy * dy;
+        let t = L ? ((lon - x1) * dx + (lat - y1) * dy) / L : 0;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const px = x1 + t * dx - lon;
+        const py = y1 + t * dy - lat;
+        const d = Math.sqrt(px * px + py * py);
+        if (d < best) best = d;
+      }
+      return best;
+    };
+    const elev = new Float32Array(W * H);
+    for (let y = 0; y < H; y++) {
+      const lat = 90 - (y / H) * 180;
+      for (let x = 0; x < W; x++) {
+        const idx = y * W + x;
+        if (maskData[idx * 4] < 128) {
+          elev[idx] = 0;
+          continue;
+        }
+        const lon = (x / W) * 360 - 180;
+        let f = 0;
+        let amp = 0.5;
+        let freq = 14;
+        for (let o = 0; o < 5; o++) {
+          f += amp * tnoise((x / W) * freq, (y / H) * freq * 0.5 + o * 9.1, freq);
+          amp *= 0.5;
+          freq *= 2.2;
+        }
+        let e = f * 0.42; // rolling continental interior
+        for (let ri = 0; ri < RANGES.length; ri++) {
+          const r = RANGES[ri];
+          const d = distToRange(lon, lat, r);
+          if (d < r.w) {
+            const ridge = Math.pow(1 - d / r.w, 1.6);
+            // ridged noise gives peaks and valleys along the spine
+            const rn = 1 - Math.abs(tnoise((x / W) * 90, (y / H) * 45, 90) * 2 - 1);
+            e += ridge * r.h * (0.62 + 0.38 * rn);
+          }
+        }
+        elev[idx] = e > 1.35 ? 1.35 : e;
+      }
+    }
+
+    // three-light rig baked into the texture: warm key upper-left, cool sky
+    // fill upper-right, low warm bounce — plus AO from valley depth
+    const colorPix = cctx.getImageData(0, 0, W, H);
+    const cp = colorPix.data;
+    const LIGHTS = [
+      { x: -0.62, y: -0.68, z: 0.39, i: 1.0, r: 1.06, g: 0.99, b: 0.86 },
+      { x: 0.55, y: -0.42, z: 0.72, i: 0.34, r: 0.72, g: 0.84, b: 1.1 },
+      { x: 0.1, y: 0.8, z: 0.59, i: 0.2, r: 1.12, g: 0.86, b: 0.62 },
+    ].map((l) => {
+      const n = Math.hypot(l.x, l.y, l.z);
+      return { ...l, x: l.x / n, y: l.y / n, z: l.z / n };
+    });
+    // smoothed elevation for a large-scale occlusion term
+    const blur = new Float32Array(W * H);
+    const K = 6;
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        let s = 0;
+        let c = 0;
+        for (let dy = -K; dy <= K; dy += 3) {
+          const yy = y + dy;
+          if (yy < 0 || yy >= H) continue;
+          for (let dx = -K; dx <= K; dx += 3) {
+            s += elev[yy * W + ((((x + dx) % W) + W) % W)];
+            c++;
+          }
+        }
+        blur[y * W + x] = s / c;
+      }
+    }
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 0; x < W; x++) {
+        const idx = y * W + x;
+        if (maskData[idx * 4] < 128) continue;
+        const xl = (x - 1 + W) % W;
+        const xr = (x + 1) % W;
+        const dzdx = (elev[y * W + xr] - elev[y * W + xl]) * 30;
+        const dzdy = (elev[(y + 1) * W + x] - elev[(y - 1) * W + x]) * 30;
+        const nl = Math.sqrt(dzdx * dzdx + dzdy * dzdy + 1);
+        const nx = -dzdx / nl;
+        const ny = -dzdy / nl;
+        const nz = 1 / nl;
+        const e = elev[idx];
+        // ambient occlusion: sit below your neighbourhood → darker
+        const ao = Math.max(0.42, Math.min(1, 0.86 + (e - blur[idx]) * 2.6));
+        let lr = 0;
+        let lg = 0;
+        let lb = 0;
+        for (let li = 0; li < LIGHTS.length; li++) {
+          const L = LIGHTS[li];
+          let d = nx * L.x + ny * L.y + nz * L.z;
+          d = d < 0 ? 0 : d;
+          // wrapped diffuse keeps shadowed faces readable rather than black
+          const w = (d * 0.82 + 0.18) * L.i;
+          lr += w * L.r;
+          lg += w * L.g;
+          lb += w * L.b;
+        }
+        // cast-shadow approximation along the key direction
+        let shadow = 1;
+        for (let s = 2; s <= 14; s += 3) {
+          const sx = (((x + Math.round(LIGHTS[0].x * -s)) % W) + W) % W;
+          const sy = Math.max(0, Math.min(H - 1, y + Math.round(LIGHTS[0].y * -s)));
+          const rise = elev[sy * W + sx] - e;
+          if (rise > s * 0.021) {
+            shadow = Math.min(shadow, 0.58);
+            break;
+          }
+        }
+        const i4 = idx * 4;
+        let r = cp[i4];
+        let g = cp[i4 + 1];
+        let b = cp[i4 + 2];
+        // hypsometric tint: lowland green → savanna tan, kept warm — no grey band
+        if (e > 0.18) {
+          const t = Math.min(1, (e - 0.18) / 0.3);
+          r += (146 - r) * t * 0.4;
+          g += (134 - g) * t * 0.4;
+          b += (92 - b) * t * 0.4;
+        }
+        if (e > 0.55) {
+          const t = Math.min(1, (e - 0.55) / 0.45);
+          r += (152 - r) * t * 0.45;
+          g += (138 - g) * t * 0.45;
+          b += (104 - b) * t * 0.45;
+        }
+        if (e > 0.98) {
+          const t = Math.min(1, (e - 0.98) / 0.3);
+          r += (250 - r) * t * 0.8;
+          g += (252 - g) * t * 0.8;
+          b += (255 - b) * t * 0.8;
+        }
+        // aerial perspective — high ground picks up a faint cool haze
+        const haze = Math.min(0.08, e * 0.06);
+        r += (168 - r) * haze;
+        g += (192 - g) * haze;
+        b += (224 - b) * haze;
+        const m = ao * shadow;
+        cp[i4] = Math.max(0, Math.min(255, r * lr * m));
+        cp[i4 + 1] = Math.max(0, Math.min(255, g * lg * m));
+        cp[i4 + 2] = Math.max(0, Math.min(255, b * lb * m));
+      }
+    }
+    // shallow-shelf glow around every coastline — reads as real bathymetry
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 0; x < W; x++) {
+        const idx = y * W + x;
+        if (maskData[idx * 4] >= 128) continue;
+        let near = 0;
+        for (let s = 1; s <= 7; s += 2) {
+          const xr = (x + s) % W;
+          const xl = (((x - s) % W) + W) % W;
+          const yu = Math.max(0, y - s);
+          const yd = Math.min(H - 1, y + s);
+          if (
+            maskData[(y * W + xr) * 4] >= 128 ||
+            maskData[(y * W + xl) * 4] >= 128 ||
+            maskData[(yu * W + x) * 4] >= 128 ||
+            maskData[(yd * W + x) * 4] >= 128
+          ) {
+            near = 1 - (s - 1) / 8;
+            break;
+          }
+        }
+        if (!near) continue;
+        const i4 = idx * 4;
+        cp[i4] += (58 - cp[i4]) * near * 0.55;
+        cp[i4 + 1] += (128 - cp[i4 + 1]) * near * 0.55;
+        cp[i4 + 2] += (162 - cp[i4 + 2]) * near * 0.55;
+      }
+    }
+    cctx.putImageData(colorPix, 0, 0);
+
+    // ---------- roughness ----------
+    const roughCanvas = document.createElement('canvas');
+    roughCanvas.width = W;
+    roughCanvas.height = H;
+    const rctx = roughCanvas.getContext('2d')!;
+    rctx.fillStyle = '#2a2a2a';
+    rctx.fillRect(0, 0, W, H);
+    trace(rctx);
+    rctx.fillStyle = '#8a8a8a';
+    rctx.fill();
+
+    // ---------- bump + displacement from the elevation field ----------
+    const bumpCanvas = document.createElement('canvas');
+    bumpCanvas.width = W;
+    bumpCanvas.height = H;
+    const bctx = bumpCanvas.getContext('2d')!;
+    const bimg = bctx.createImageData(W, H);
+    for (let i = 0; i < W * H; i++) {
+      const v = Math.round(Math.min(1, elev[i] / 1.35) * 255);
+      bimg.data[i * 4] = v;
+      bimg.data[i * 4 + 1] = v;
+      bimg.data[i * 4 + 2] = v;
+      bimg.data[i * 4 + 3] = 255;
+    }
+    bctx.putImageData(bimg, 0, 0);
+
+    const colorMap = new THREE.CanvasTexture(colorCanvas);
+    colorMap.colorSpace = THREE.SRGBColorSpace;
+    colorMap.anisotropy = 4;
+    const bumpTex = new THREE.CanvasTexture(bumpCanvas);
+    return { colorMap, roughMap: new THREE.CanvasTexture(roughCanvas), bumpMap: bumpTex, dispMap: bumpTex };
+  }
+
+  async function start(canvasEl: HTMLCanvasElement) {
+    const wrap = canvasEl.parentElement!;
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasEl,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+    camera.position.set(0, 0.35, 1.85);
+
+    // Lit by hemisphere + ambient only. Every directional light — including
+    // the key — was removed on request so there is no hotspot or terminator.
+    scene.add(new THREE.HemisphereLight(0xcfe0f5, 0x1a2030, 2.4));
+    scene.add(new THREE.AmbientLight(0x40506a, 2.0));
+
+    // starfield backdrop — three depth layers, each drifting at its own rate
+    const mkStars = (count: number, rMin: number, rMax: number, size: number, opacity: number) => {
+      const g = new THREE.BufferGeometry();
+      const p = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        const r = rMin + Math.random() * (rMax - rMin);
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(2 * Math.random() - 1);
+        p[i * 3] = r * Math.sin(ph) * Math.cos(th);
+        p[i * 3 + 1] = r * Math.cos(ph);
+        p[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      }
+      g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+      const pts = new THREE.Points(
+        g,
+        new THREE.PointsMaterial({ color: 0xf5f0e8, size, transparent: true, opacity, sizeAttenuation: true })
+      );
+      scene.add(pts);
+      return pts;
+    };
+    const starsFar = mkStars(420, 11, 15, 0.012, 0.45);
+    const starsMid = mkStars(260, 8, 11, 0.022, 0.65);
+    const starsNear = mkStars(90, 5.5, 8, 0.04, 0.9);
+
+    // deep-space nebulae — huge soft sprites far behind everything
+    const mkNebula = (tex: HTMLCanvasElement, x: number, y: number, z: number, sx: number, sy: number, op: number) => {
+      const sp = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: new THREE.CanvasTexture(tex),
+          transparent: true,
+          opacity: op,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        })
+      );
+      sp.position.set(x, y, z);
+      sp.scale.set(sx, sy, 1);
+      scene.add(sp);
+      return sp;
+    };
+    const neb1 = mkNebula(buildNebulaTexture('rgba(90,130,200,', 0.55), -6, 2.5, -13, 16, 9, 0.16);
+    const neb2 = mkNebula(buildNebulaTexture('rgba(201,168,76,', 0.5), 7, -2, -14, 13, 8, 0.12);
+    const neb3 = mkNebula(buildNebulaTexture('rgba(110,160,180,', 0.4), 1, 4.5, -15, 24, 6, 0.1); // milky-way-ish band
+
+    // real axial tilt — the spin happens inside, around the tilted axis
+    const tilt = new THREE.Group();
+    tilt.rotation.z = (-23.4 * Math.PI) / 180;
+    tilt.position.x = 1.05; // seated right of the copy; clamped in resize()
+    scene.add(tilt);
+    const world = new THREE.Group();
+    tilt.add(world);
+
+    const R = 1;
+    const { colorMap, roughMap, bumpMap, dispMap } = await buildEarthTextures();
+    const globe = new THREE.Mesh(
+      new THREE.SphereGeometry(R, 256, 256),
+      new THREE.MeshStandardMaterial({
+        map: colorMap,
+        roughnessMap: roughMap,
+        bumpMap,
+        bumpScale: 0.06,
+        displacementMap: dispMap,
+        displacementScale: 0.017,
+        roughness: 1,
+        metalness: 0.12,
+        emissive: 0x101820,
+        emissiveIntensity: 0.4,
+      })
+    );
+    world.add(globe);
+
+    // atmosphere glow — thin blue haze
+    world.add(
+      new THREE.Mesh(
+        new THREE.SphereGeometry(R * 1.05, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0x88b4e8, transparent: true, opacity: 0.09, side: THREE.BackSide })
+      )
+    );
+
+    // readership nodes, sized by relative readership weight
+    const nodeGroup = new THREE.Group();
+    world.add(nodeGroup);
+    const nodePos = CITIES.map((c) => llv(c.lat, c.lon, R * 1.012));
+    const nodes = CITIES.map((c, i) => {
+      const size = 0.0011 + (c.w ?? 0.2) * 0.0026 + (c.hub ? 0.0018 : 0);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0xf5e6b8,
+        emissive: 0xe8cc88,
+        emissiveIntensity: c.hub ? 1.0 : 0.35,
+        roughness: 0.4,
+      });
+      const m = new THREE.Mesh(new THREE.SphereGeometry(size, 12, 12), mat);
+      m.position.copy(nodePos[i]);
+      nodeGroup.add(m);
+      const pingMat = new THREE.MeshBasicMaterial({ color: 0xfff2d0, transparent: true, opacity: 0 });
+      const ping = new THREE.Mesh(new THREE.SphereGeometry(size, 12, 12), pingMat);
+      ping.position.copy(nodePos[i]);
+      nodeGroup.add(ping);
+      return {
+        mat,
+        pingMat,
+        ping,
+        hub: !!c.hub,
+        period: 1.8 + seeded(i * 5 + 1) * 2.6,
+        offset: seeded(i * 7 + 2) * 5,
+      };
+    });
+
+    // synapse threads — filaments that fire like neurons, not flight paths
+    const hubIdx = 0;
+    const pairs: [number, number][] = [];
+    for (let i = 1; i < CITIES.length; i += 3) pairs.push([hubIdx, i]);
+    // regional cross-links — nearest-neighbour style, like dendrites
+    for (let i = 1; i < CITIES.length; i++) {
+      const j = 1 + Math.floor(seeded(i * 17 + 3) * (CITIES.length - 1));
+      if (j !== i && nodePos[i].distanceTo(nodePos[j]) < 0.9) pairs.push([i, j]);
+    }
+    const beamGroup = new THREE.Group();
+    world.add(beamGroup);
+    const beams = pairs.map(([a, b], i) => {
+      const startV = nodePos[a];
+      const endV = nodePos[b];
+      const mid = startV.clone().add(endV).multiplyScalar(0.5);
+      const dist = startV.distanceTo(endV);
+      mid.normalize().multiplyScalar(R * (1 + dist * 0.22));
+      const pts = new THREE.QuadraticBezierCurve3(startV, mid, endV).getPoints(40);
+      const mat = new THREE.LineBasicMaterial({ color: 0xe8cc88, transparent: true, opacity: 0.05 });
+      beamGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+      return { mat, period: 2.4 + seeded(i * 3 + 9) * 3.2, offset: seeded(i * 11 + 4) * 6 };
+    });
+
+    const resize = () => {
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      // keep the globe inside the frustum at any aspect
+      const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
+      const halfW = halfH * camera.aspect;
+      tilt.position.x = Math.max(0, Math.min(1.05, halfW - R - 0.12));
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // pause the loop when the hero scrolls out of view — the ping meshes and
+    // the 256-segment sphere are not worth the frames when nobody's looking
+    let visible = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries[0].isIntersecting;
+      }).observe(wrap);
+    }
+
+    const t0 = performance.now();
+    const flashDur = 0.22;
+    const spike = (t: number, period: number, offset: number) => {
+      const u = (((t + offset) % period) + period) % period;
+      return u < flashDur ? 1 - u / flashDur : 0;
+    };
+    const tick = () => {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      const t = (performance.now() - t0) / 1000;
+      world.rotation.y = t * 0.07;
+      // nebulae drift for depth
+      neb1.position.x = -6 + Math.sin(t * 0.011) * 0.6;
+      neb2.position.y = -2 + Math.sin(t * 0.009 + 2) * 0.5;
+      neb3.position.x = 1 + Math.sin(t * 0.007 + 4) * 0.8;
+      starsFar.rotation.y = t * 0.0022;
+      starsMid.rotation.y = t * 0.005;
+      starsNear.rotation.y = t * 0.009;
+      nodes.forEach((n) => {
+        const s = spike(t, n.period, n.offset);
+        n.mat.emissiveIntensity = (n.hub ? 1.0 : 0.35) + s * 1.3;
+        n.ping.visible = s > 0.01;
+        n.ping.scale.setScalar(1 + (1 - s) * 1.8);
+        n.pingMat.opacity = s * 0.5;
+      });
+      beams.forEach((bm) => {
+        bm.mat.opacity = 0.05 + spike(t, bm.period, bm.offset) * 0.85;
+      });
+      camera.position.y = 0.35 + Math.sin(t * 0.06) * 0.05;
+      renderer.render(scene, camera);
+    };
+    tick();
+  }
+
+  // Kick off last: `start` is hoisted but the module-scope `const`s it reaches
+  // (seeded, CITIES, RANGES) are not, so calling it any earlier throws a
+  // temporal-dead-zone error and the globe silently never draws.
+  const canvasEl = document.getElementById('eip-globe') as HTMLCanvasElement | null;
+  if (canvasEl) start(canvasEl);
+</script>

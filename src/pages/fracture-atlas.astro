@@ -23,9 +23,10 @@
 // The renderer draws it; it re-derives nothing.
 // ============================================================
 import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import snapshot from '~/data/fracture-snapshot.json';
 
 const metadata = {
@@ -51,8 +52,8 @@ const hist = ring.fractured.jumpHistogram as Record<string, number>;
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/master-atlas" />
+  <div class="eip eih">
+    <EipNav />
 
     <section class="holo-stage">
       <canvas
@@ -123,7 +124,7 @@ const hist = ring.fractured.jumpHistogram as Record<string, number>;
       <noscript><div class="holo-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <style>

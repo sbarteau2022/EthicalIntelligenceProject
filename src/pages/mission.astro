@@ -1,0 +1,113 @@
+---
+// ============================================================
+// MISSION — from the "Mission" screen in EIP - Pages.dc.html.
+// ============================================================
+import EipPage from '~/components/eip/EipPage.astro';
+
+const metadata = {
+  title: 'Mission — The Ethical Intelligence Project',
+  description:
+    'Intelligence that can be audited by the people it affects: a published corpus, sourced answers, append-only records, and reasoning any outsider can replay.',
+};
+
+const PILLARS = [
+  {
+    n: '01 · Audit',
+    title: 'Checkable by outsiders',
+    body: 'A published corpus, sources under every answer, and a record that only ever grows. Nothing here needs to be taken on faith.',
+  },
+  {
+    n: '02 · Access',
+    title: 'For people without a staff',
+    body: "Built for the people who don't have lawyers or analysts standing by — the same intelligence, without the retainer.",
+  },
+  {
+    n: '03 · Restraint',
+    title: 'Honest about the edges',
+    body: "Live, in beta, or not built yet — each surface says which. A roadmap dressed as a product is a lie you'll find out about later.",
+  },
+];
+
+const COMMITMENTS = [
+  {
+    name: 'The reasoning is published',
+    body: 'The corpus Elle stands on is publicly indexed and citable, including the parts that are unfinished or wrong.',
+    check: 'PhilPapers index',
+  },
+  {
+    name: 'Answers carry their sources',
+    body: 'Not a confidence score — the actual documents, listed under the answer, openable.',
+    check: 'Sources on every answer',
+  },
+  {
+    name: 'Records are append-only',
+    body: 'Corrections stack on top of mistakes. A wrong entry stays wrong, in public, with the correction above it.',
+    check: 'Optimus journal · run replay',
+  },
+  {
+    name: 'She cannot ship her own code',
+    body: 'Elle writes code and CI judges it, but the merge is a human click. No merge tool exists for her to call.',
+    check: 'Forge → CI → human click',
+  },
+  {
+    name: 'Your records are not a dataset',
+    body: 'Not sold, not trained on. Export everything or delete the account and everything in it, any time.',
+    check: 'Export and delete, any time',
+  },
+];
+---
+
+<EipPage metadata={metadata} current="/mission">
+  <section class="page-hero">
+    <div class="tint" style="background:radial-gradient(ellipse 60% 60% at 20% 0%, #14141f 0%, transparent 62%)"></div>
+    <div class="inner">
+      <div class="kicker">Mission</div>
+      <h1>Intelligence that can be audited by the people it affects.</h1>
+      <p class="lede">
+        Most systems ask you to trust a black box. We build the opposite: a published corpus, sourced answers,
+        append-only records, and reasoning any outsider can replay. Not because trust is bad — because it should be
+        earned in public.
+      </p>
+    </div>
+  </section>
+
+  <section class="on-base">
+    <div class="shell sec-y">
+      <div class="kicker" style="margin-bottom:34px">What we are for</div>
+      <div class="tiles c3">
+        {
+          PILLARS.map((m) => (
+            <div class="tile">
+              <div class="n">{m.n}</div>
+              <h3>{m.title}</h3>
+              <p>{m.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell-narrow sec-y">
+      <h2 class="h2-sm" style="margin-bottom:34px">Commitments, and how you check them</h2>
+      <div class="commitments">
+        {
+          COMMITMENTS.map((c) => (
+            <div class="row">
+              <div>
+                <div class="name">{c.name}</div>
+                <p>{c.body}</p>
+              </div>
+              <div class="check">{c.check}</div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="btn-row" style="margin-top:40px">
+        <a href="/core-works" class="btn btn-gold btn-sm">Read the corpus</a>
+        <a href="/elle" class="btn btn-ghost btn-sm">Ask Elle about any of it</a>
+      </div>
+    </div>
+  </section>
+</EipPage>

@@ -1,346 +1,134 @@
 ---
 // ============================================================
-// LEARN (Atlas Edu) — the e-course module, structured like a
-// course platform: a catalog of course cards up top, a sticky
-// course nav with scrollspy, then each course as an accordion
-// of readable lessons. Progress is saved per device; every
-// lesson can be taken to Elle for a live walkthrough.
-// Curriculum content lives in ~/data/learn.ts (shared with the
-// homepage teaser cards).
+// ATLAS EDU — from the "Atlas Edu" screen in EIP - Pages.dc.html, but driven
+// by the REAL curriculum in ~/data/learn.ts rather than the design's
+// placeholder cards, so /learn and the homepage teasers cannot drift.
+//
+// The design's single static "open lesson" is a <details> accordion here, so
+// every lesson body in the data set reads on the page with no signup wall —
+// which is what the copy promises. Sign-up still goes through window.EIH.
 // ============================================================
-import '~/assets/styles/hub.css';
-import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
-import HubAuth from '~/components/hub/HubAuth.astro';
+import EipPage from '~/components/eip/EipPage.astro';
 import { LEARN_COURSES, MINUTES_PER_LESSON } from '~/data/learn';
 
 const metadata = {
-  title: 'Learn — AI in Plain Language | The Ethical Intelligence Project',
+  title: 'Atlas Edu — AI in plain language',
   description:
-    'Free plain-language AI courses: how models actually work, building your own AI with ethics baked in, automating a pipeline, and learning to code with Elle.',
+    'Free courses in plain language. Every lesson reads on the page — no video, no signup wall — and every lesson is one click from asking Elle about it.',
 };
 
 const totalLessons = LEARN_COURSES.reduce((n, c) => n + c.lessons.length, 0);
+
+// **bold** is the only inline markup the lesson bodies use
+const md = (s: string) => s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 ---
 
-<Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/learn" showAccount={true} />
-
-    <!-- HERO -->
-    <section class="hero wrap">
-      <div class="eyebrow rv">Atlas Edu · Free during beta</div>
-      <h1 class="rv" style="--d:0.06s">AI, explained like you're a person.</h1>
-      <p class="lede rv" style="--d:0.12s">
-        {LEARN_COURSES.length} courses, {totalLessons} lessons, all in plain language — what AI actually is, how to build
-        your own with ethics baked in, how to automate a real pipeline, and how to learn coding with Elle at your elbow. Every
-        lesson is readable right here, and every lesson can be taken straight into a live conversation with Elle.
+<EipPage metadata={metadata} current="/learn">
+  <section>
+    <div class="shell" style="padding-top:96px;padding-bottom:70px">
+      <div class="kicker">Atlas Edu · free, no account needed</div>
+      <h1>Understand the thing before you trust it.</h1>
+      <p class="lede" style="font-size:1.12rem;max-width:620px">
+        {LEARN_COURSES.length} courses, {totalLessons} lessons, in plain language. Every lesson reads on the page — no video,
+        no signup wall — and every one is a click from asking Elle about it while it's fresh.
       </p>
-      <div class="cta-row rv" style="--d:0.18s">
-        <a href="#catalog" class="btn" id="lrn-resume">Browse the catalog</a>
-        <button class="btn ghost" id="lrn-signup">Create a free account</button>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- STICKY COURSE NAV -->
-    <nav class="course-subnav" aria-label="Courses">
-      {
-        LEARN_COURSES.map((course, ci) => (
-          <a href={`#${course.id}`} data-spy={course.id}>
-            {String(ci + 1).padStart(2, '0')} · {course.title}
-          </a>
-        ))
-      }
-    </nav>
-
-    <!-- HOW LEARNING WORKS HERE -->
-    <section class="tint">
-      <div class="wrap">
-        <div class="eyebrow rv">How it works</div>
-        <h2 class="rv">Read it. Try it. Ask the AI about the AI.</h2>
-        <div class="flow rv stagger" style="margin-top:28px">
-          <div class="step">
-            <span class="k">Read a lesson</span>
-            <span class="v">Short, plain-language lessons — five minutes each, no jargon, no math required.</span>
-          </div>
-          <div class="step">
-            <span class="k">Take it to Elle</span>
-            <span class="v"
-              >Every lesson has an "Ask Elle" prompt that opens a live conversation on exactly that idea.</span
-            >
-          </div>
-          <div class="step">
-            <span class="k">Build something small</span>
-            <span class="v"
-              >The build courses end each lesson with a thing that runs — a prompt, a pipeline map, a page.</span
-            >
-          </div>
-          <div class="step">
-            <span class="k">Track your progress</span>
-            <span class="v">Mark lessons complete as you go — progress saves on your device during beta.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CATALOG -->
-    <section id="catalog" class="wrap">
-      <div class="eyebrow rv">The catalog</div>
-      <h2 class="rv">Four tracks. Ethics in all of them.</h2>
-      <p class="rv" style="max-width:640px">
-        Start with Course 01 if AI is new to you — everything else builds on it. All courses are free with an account
-        during beta, and beta learners keep their pricing indefinitely, like everyone else helping us build this.
-      </p>
-      <div class="cat-grid rv stagger">
+  <!-- catalog -->
+  <section class="on-base">
+    <div class="shell" style="padding-top:76px;padding-bottom:76px">
+      <div class="courses">
         {
-          LEARN_COURSES.map((course) => (
-            <a class="cat-card" href={`#${course.id}`} data-cat={course.id}>
-              <span class="badge">{course.badge}</span>
-              <h3>{course.title}</h3>
-              <p>{course.teaser}</p>
-              <div class="cat-meta">
-                <span>{course.lessons.length} lessons</span>
-                <span>~{course.lessons.length * MINUTES_PER_LESSON} min</span>
-                <span>{course.level}</span>
-                <span>Free · beta</span>
+          LEARN_COURSES.map((c, i) => (
+            <a href={`#course-${c.id}`} class:list={['course', { 'is-open': i === 0 }]}>
+              <div class="top">
+                <span class="badge">{c.badge}</span>
+                <span class="count">{c.lessons.length} lessons</span>
               </div>
-              <div class="prog" aria-hidden="true">
-                <i />
+              <h3>{c.title}</h3>
+              <p>{c.teaser}</p>
+              <div class="foot">
+                <div class="meta">
+                  <span>
+                    {c.level} · {c.lessons.length * MINUTES_PER_LESSON} min
+                  </span>
+                  <span class="cta">Read free →</span>
+                </div>
               </div>
-              <span class="go" data-cat-go={course.id}>
-                Start course →
-              </span>
             </a>
           ))
         }
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- COURSES -->
-    <section id="courses" class="wrap" style="padding-top:0">
-      <div style="display:flex;flex-direction:column;gap:26px">
-        {
-          LEARN_COURSES.map((course) => (
-            <div class="course rv" id={course.id} data-course={course.id}>
-              <div class="course-head">
-                <span class="badge">{course.badge}</span>
-                <h3 style="font-size:1.5rem;margin-bottom:8px">{course.title}</h3>
-                <p style="margin:0;font-size:0.95rem">{course.blurb}</p>
-                <div class="course-progress">
-                  <div class="prog" aria-hidden="true">
-                    <i />
-                  </div>
-                  <span class="prog-note" data-prog-note={course.id}>
-                    0 of {course.lessons.length} complete
-                  </span>
-                </div>
-              </div>
-              {course.lessons.map((lesson, li) => (
-                <div class="lesson" data-key={`${course.id}-${li}`}>
-                  <button
-                    class="lesson-head"
-                    type="button"
-                    id={`lh-${course.id}-${li}`}
-                    aria-expanded="false"
-                    aria-controls={`lb-${course.id}-${li}`}
-                  >
-                    <span class="no">{String(li + 1).padStart(2, '0')}</span>
-                    <span>{lesson.title}</span>
-                    <span class="done">✓ done</span>
-                    <span class="chev" aria-hidden="true">
-                      ▸
-                    </span>
-                  </button>
-                  <div
-                    class="lesson-body"
-                    id={`lb-${course.id}-${li}`}
-                    role="region"
-                    aria-labelledby={`lh-${course.id}-${li}`}
-                  >
-                    <div class="lesson-inner">
-                      <div class="lesson-pad">
-                        {lesson.body.split('\n\n').map((para) => (
-                          <p set:html={para.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')} />
-                        ))}
-                        <div class="lesson-actions">
-                          {lesson.ask && (
-                            <a class="mini-btn" href={`/elle?ask=${encodeURIComponent(lesson.ask)}`}>
-                              ✦ Ask Elle about this
-                            </a>
-                          )}
-                          <button class="mini-btn mark-done" type="button" aria-pressed="false">
-                            Mark complete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+  <!-- every course, in full -->
+  {
+    LEARN_COURSES.map((c, ci) => (
+      <section id={`course-${c.id}`} class:list={[{ 'on-base': ci % 2 === 1 }]}>
+        <div class="shell-narrow sec-y">
+          <div class="kicker">{c.badge}</div>
+          <h2 class="h2-sm" style="margin-bottom:18px">
+            {c.title}
+          </h2>
+          <p class="lede" style="margin-bottom:32px">
+            {c.blurb}
+          </p>
+          <div class="lessons">
+            {c.lessons.map((l, li) => (
+              <details open={ci === 0 && li === 0}>
+                <summary>
+                  <span class="no">{String(li + 1).padStart(2, '0')}</span>
+                  <span class="t">{l.title}</span>
+                  <span class="mins">{MINUTES_PER_LESSON} min</span>
+                  <span class="mark">▾</span>
+                </summary>
+                <div class="body">
+                  {l.body ? (
+                    l.body.split(/\n\s*\n/).map((para) => <p set:html={md(para.trim())} />)
+                  ) : (
+                    <p>Publishing during beta — this lesson is being written now.</p>
+                  )}
+                  <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <a href={l.ask ? `/elle?q=${encodeURIComponent(l.ask)}` : '/elle'} class="pill-link is-gold">
+                      Ask Elle about this →
+                    </a>
+                    <button class="pill-link eip-signup" type="button">
+                      Track my progress
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          ))
-        }
-      </div>
-
-      <p class="rv" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--t3);margin-top:22px">
-        New lessons publish to this page during beta. Progress is saved on this device; account-synced progress is on
-        the roadmap.
-      </p>
-    </section>
-
-    <!-- CTA -->
-    <section class="tint">
-      <div class="wrap" style="text-align:center">
-        <h2 class="rv">The best way to understand AI is to have one explain itself.</h2>
-        <p class="rv" style="max-width:520px;margin:0 auto 26px">
-          Every course here runs alongside Elle — grounded, transparent, and free to talk to during beta.
-        </p>
-        <div class="cta-row rv">
-          <a href="/elle" class="btn">Talk to Elle →</a>
-          <a href="/optimus" class="btn ghost">Open your journal</a>
+              </details>
+            ))}
+          </div>
         </div>
+      </section>
+    ))
+  }
+
+  <section class="cta">
+    <div class="wash"></div>
+    <div class="inner">
+      <h2>Completion is earned, not given.</h2>
+      <p>
+        Elle facilitates the courses; a deterministic engine holds the gate. She can't argue a completion down or
+        ghost-write past it — and the log is tamper-evident.
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-gold eip-signup" type="button">Create a free account</button>
+        <a href="/elle" class="btn btn-ghost">Ask Elle a question first</a>
       </div>
-    </section>
-
-    <HubFooter />
-  </div>
-
-  <HubAuth />
+    </div>
+  </section>
 
   <script is:inline>
     (function () {
-      if (window.__lrnInit) return;
-      window.__lrnInit = true;
-
-      const PROG_KEY = 'eip_learn_progress';
-      let progress = {};
-      try {
-        progress = JSON.parse(localStorage.getItem(PROG_KEY) || '{}') || {};
-      } catch {
-        progress = {};
-      }
-      function save() {
-        try {
-          localStorage.setItem(PROG_KEY, JSON.stringify(progress));
-        } catch {
-          /* ignore */
-        }
-      }
-
-      // Per-course progress: fill the header + catalog bars, update the
-      // catalog CTA, and swap the hero CTA to "Continue" once anything is done.
-      function refresh() {
-        let anyDone = false;
-        let resumeTarget = null;
-        document.querySelectorAll('.course').forEach(function (courseEl) {
-          const id = courseEl.dataset.course;
-          const lessons = courseEl.querySelectorAll('.lesson');
-          let done = 0;
-          lessons.forEach(function (l) {
-            if (l.classList.contains('complete')) done++;
-          });
-          if (done > 0) anyDone = true;
-          if (!resumeTarget && done > 0 && done < lessons.length) resumeTarget = id;
-          const pct = lessons.length ? Math.round((done / lessons.length) * 100) : 0;
-          const headBar = courseEl.querySelector('.course-progress .prog i');
-          if (headBar) headBar.style.width = pct + '%';
-          const note = courseEl.querySelector('[data-prog-note="' + id + '"]');
-          if (note) note.textContent = done + ' of ' + lessons.length + ' complete';
-          const card = document.querySelector('[data-cat="' + id + '"]');
-          if (card) {
-            const cardBar = card.querySelector('.prog i');
-            if (cardBar) cardBar.style.width = pct + '%';
-            const go = card.querySelector('[data-cat-go="' + id + '"]');
-            if (go)
-              go.textContent =
-                done === 0 ? 'Start course →' : pct === 100 ? 'Complete ✓ · Review →' : 'Continue · ' + pct + '% →';
-          }
-        });
-        const resume = document.getElementById('lrn-resume');
-        if (resume && anyDone) {
-          resume.textContent = 'Continue learning →';
-          resume.setAttribute('href', '#' + (resumeTarget || 'catalog'));
-        }
-      }
-
-      document.querySelectorAll('.lesson').forEach(function (lesson) {
-        const key = lesson.dataset.key;
-        const head = lesson.querySelector('.lesson-head');
-        const mark = lesson.querySelector('.mark-done');
-        if (progress[key]) {
-          lesson.classList.add('complete');
-          if (mark) {
-            mark.textContent = 'Completed ✓';
-            mark.setAttribute('aria-pressed', 'true');
-          }
-        }
-        head.addEventListener('click', function () {
-          const open = lesson.classList.toggle('open');
-          head.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        if (mark)
-          mark.addEventListener('click', function () {
-            const done = lesson.classList.toggle('complete');
-            progress[key] = done;
-            if (!done) delete progress[key];
-            save();
-            mark.textContent = done ? 'Completed ✓' : 'Mark complete';
-            mark.setAttribute('aria-pressed', done ? 'true' : 'false');
-            refresh();
-          });
-      });
-
-      // open the very first lesson by default so the page starts alive
-      const first = document.querySelector('.lesson');
-      if (first) {
-        first.classList.add('open');
-        const firstHead = first.querySelector('.lesson-head');
-        if (firstHead) firstHead.setAttribute('aria-expanded', 'true');
-      }
-
-      refresh();
-
-      // Scrollspy: highlight the sticky subnav chip for the course in view.
-      const spyLinks = {};
-      document.querySelectorAll('[data-spy]').forEach(function (a) {
-        spyLinks[a.dataset.spy] = a;
-      });
-      if ('IntersectionObserver' in window) {
-        const spy = new IntersectionObserver(
-          function (entries) {
-            entries.forEach(function (e) {
-              const link = spyLinks[e.target.id];
-              if (!link) return;
-              if (e.isIntersecting) {
-                Object.keys(spyLinks).forEach(function (k) {
-                  spyLinks[k].classList.remove('on');
-                });
-                link.classList.add('on');
-              }
-            });
-          },
-          { rootMargin: '-30% 0px -60% 0px' }
-        );
-        document.querySelectorAll('.course').forEach(function (c) {
-          spy.observe(c);
-        });
-      }
-
-      // Gold cursor-follow glow on catalog cards (matches the bento cards).
-      document.querySelectorAll('.cat-card').forEach(function (card) {
-        card.addEventListener('pointermove', function (e) {
-          const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', e.clientX - r.left + 'px');
-          card.style.setProperty('--my', e.clientY - r.top + 'px');
-        });
-      });
-
-      const signup = document.getElementById('lrn-signup');
-      if (signup)
-        signup.addEventListener('click', function () {
+      document.querySelectorAll('.eip-signup').forEach(function (btn) {
+        btn.addEventListener('click', function () {
           if (window.EIH) window.EIH.openAuth('signup');
         });
+      });
     })();
   </script>
-</Layout>
+</EipPage>

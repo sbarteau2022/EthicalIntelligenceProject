@@ -23,9 +23,10 @@
 // not re-derive it.
 // ============================================================
 import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import snapshot from '~/data/neural-structure-snapshot.json';
 
 const metadata = {
@@ -38,8 +39,8 @@ const m = snapshot.meta;
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/master-atlas" />
+  <div class="eip eih">
+    <EipNav />
 
     <section class="neural-stage">
       <canvas id="neural-canvas" aria-label="Rotatable 3D rendering of the knowledge neural structure"></canvas>
@@ -129,7 +130,7 @@ const m = snapshot.meta;
       <noscript><div class="neural-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <style>

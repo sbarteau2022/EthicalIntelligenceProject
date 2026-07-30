@@ -1,0 +1,187 @@
+---
+// ============================================================
+// EIP NAV — the floating glass pill from the design handoff.
+//
+// Five titles, as specified in the design conversation:
+//   Mission · Intelligence · Engineering Philosophy · Core Works
+//   · What's To Come (the products dropdown)
+//
+// A frosted highlight slides and resizes behind whichever link is
+// hovered; under 900px the link row collapses into a drawer.
+//
+// "Sign in" carries id="eih-acct", which is the hook HubAuth's
+// script wires itself to — so the real Google OAuth flow works
+// from this nav with no extra plumbing. Pages using this nav must
+// also render <HubAuth />.
+// ============================================================
+import { PRODUCTS } from '~/eip';
+
+export interface Props {
+  /** Marks the active top-level link, e.g. "/mission". */
+  current?: string;
+}
+const { current = '' } = Astro.props;
+
+const LINKS = [
+  { text: 'Mission', href: '/mission' },
+  { text: 'Intelligence', href: '/#intelligence' },
+  { text: 'Engineering Philosophy', href: '/#principles' },
+  { text: 'Core Works', href: '/core-works' },
+];
+---
+
+<div class="nav-dock">
+  <nav class="nav" id="eip-nav">
+    <a href="/" class="nav-brand">
+      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect x="7" y="7.5" width="1.5" height="13" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="7.5" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <rect x="7" y="13.25" width="8" height="1.25" rx=".6" fill="#C9A84C" opacity=".6"></rect>
+        <rect x="7" y="19" width="11.5" height="1.5" rx=".75" fill="#C9A84C"></rect>
+        <circle cx="21.5" cy="8.75" r="2" fill="#E8CC88"></circle>
+      </svg>
+      <span>Ethical Intelligence</span>
+    </a>
+
+    <div class="nav-links" id="eip-nav-links">
+      <div class="nav-pill" id="eip-nav-pill" aria-hidden="true"></div>
+      {
+        LINKS.map((l) => (
+          <a href={l.href} class={current === l.href ? 'on' : ''}>
+            {l.text}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="nav-actions">
+      <button class="nav-more" id="eip-more" aria-expanded="false" aria-controls="eip-panel">
+        What's To Come<span class="caret" aria-hidden="true">▾</span>
+      </button>
+      <button class="nav-signin" id="eih-acct" type="button">Sign in</button>
+      <a href="/elle" class="nav-cta">Talk to Elle →</a>
+      <button class="nav-burger" id="eip-burger" aria-expanded="false" aria-controls="eip-drawer" aria-label="Menu">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="nav-panel" id="eip-panel" hidden>
+    <div class="grid">
+      <div class="blurb">
+        <div class="kicker-sm">Products · Individual</div>
+        <h3>Standalone products and custom services.</h3>
+        <p>Every one runs on the same mind — one loop, one memory, one corpus. Pick the door.</p>
+        <a href="/services" class="link-mono">See the full catalog →</a>
+      </div>
+      <div class="list">
+        {
+          PRODUCTS.map((p) => (
+            <a href={p.href}>
+              <span>
+                <span class="name">{p.name}</span>
+                <span class="desc">{p.desc}</span>
+              </span>
+              <span class:list={['state', { 'is-live': p.state === 'Live' }]}>{p.state}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Under 900px the link row, the products panel and Sign in all collapse
+       in here — the pill can't hold them at phone widths. -->
+  <div class="nav-drawer" id="eip-drawer" hidden>
+    {LINKS.map((l) => <a href={l.href}>{l.text}</a>)}
+    <div class="drawer-ct">What's To Come</div>
+    {
+      PRODUCTS.map((p) => (
+        <a href={p.href} class="drawer-sub">
+          {p.name}
+        </a>
+      ))
+    }
+    <div class="drawer-rule"></div>
+    <button class="drawer-signin" id="eip-drawer-signin" type="button">Sign in</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const nav = document.getElementById('eip-nav');
+    if (!nav || nav.dataset.wired) return;
+    nav.dataset.wired = '1';
+
+    // --- sliding glass highlight -----------------------------------------
+    const row = document.getElementById('eip-nav-links');
+    const pill = document.getElementById('eip-nav-pill');
+    if (row && pill) {
+      const links = row.querySelectorAll('a');
+      links.forEach(function (a) {
+        a.addEventListener('mouseenter', function () {
+          pill.style.left = a.offsetLeft - row.scrollLeft + 'px';
+          pill.style.width = a.offsetWidth + 'px';
+          pill.style.opacity = '1';
+        });
+      });
+      row.addEventListener('mouseleave', function () {
+        pill.style.opacity = '0';
+      });
+    }
+
+    // --- one-at-a-time disclosure for the panel and the drawer -----------
+    function toggler(btnId, panelId) {
+      const btn = document.getElementById(btnId);
+      const panel = document.getElementById(panelId);
+      if (!btn || !panel) return null;
+      const api = {
+        close: function () {
+          panel.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+        },
+        isOpen: function () {
+          return !panel.hidden;
+        },
+      };
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const open = api.isOpen();
+        others.forEach(function (o) {
+          if (o !== api) o.close();
+        });
+        panel.hidden = open;
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+      return api;
+    }
+    const others = [];
+    const panelApi = toggler('eip-more', 'eip-panel');
+    const drawerApi = toggler('eip-burger', 'eip-drawer');
+    if (panelApi) others.push(panelApi);
+    if (drawerApi) others.push(drawerApi);
+
+    document.addEventListener('click', function (e) {
+      if (nav.contains(e.target)) return;
+      others.forEach(function (o) {
+        if (!document.getElementById(o === panelApi ? 'eip-panel' : 'eip-drawer').contains(e.target)) o.close();
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') others.forEach((o) => o.close());
+    });
+
+    // the drawer's Sign in defers to HubAuth, same as the pill's #eih-acct
+    const dsi = document.getElementById('eip-drawer-signin');
+    if (dsi) {
+      dsi.addEventListener('click', function () {
+        if (!window.EIH) return;
+        if (window.EIH.getToken()) window.EIH.logout();
+        else window.EIH.openAuth('signin');
+      });
+      document.addEventListener('eih:auth', function (e) {
+        dsi.textContent = e.detail && e.detail.token ? 'Sign out' : 'Sign in';
+      });
+    }
+  })();
+</script>

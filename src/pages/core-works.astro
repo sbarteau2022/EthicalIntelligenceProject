@@ -1,0 +1,257 @@
+---
+// ============================================================
+// CORE WORKS — the manuscript reader from the "Core Works" screen in
+// EIP - Pages.dc.html: a tiered volume → paper tree on the left, the reader
+// in the middle, and a sticky "Ask Elle about this paper" widget on the right.
+//
+// The tree is a real client-side switcher over ~/data/corpus.ts. The Ask-Elle
+// widget posts to the same worker endpoints /elle uses (/api/elle-conversation
+// when signed in, /api/widget-chat as a guest) with the open paper's title as
+// context, so a question asked here is a real question.
+// ============================================================
+import EipPage from '~/components/eip/EipPage.astro';
+import { CORPUS_VOLUMES, PAPER_COUNT } from '~/data/corpus';
+import { WORKER_URL, PHILPEOPLE } from '~/eip';
+
+const metadata = {
+  title: 'Core Works — the published corpus',
+  description: 'Read the papers Elle reasons from, in full, and ask her about the passage in front of you as you go.',
+};
+
+const papers = CORPUS_VOLUMES.flatMap((v) => v.papers.map((p) => ({ ...p, volume: v.name })));
+const first = papers[0];
+---
+
+<EipPage metadata={metadata} current="/core-works">
+  <section>
+    <div class="shell-wide" style="padding-top:44px;padding-bottom:20px">
+      <div class="kicker">Core Works · the published corpus</div>
+      <h1 style="font-size:clamp(2rem,4.4vw,2.9rem);max-width:820px;margin-bottom:12px">
+        Read the papers. Ask Elle as you go.
+      </h1>
+      <p class="lede" style="font-size:1.02rem;max-width:620px">
+        Everything Elle reasons from is here. Open a paper on the left; ask about the passage in front of you on the
+        right.
+      </p>
+    </div>
+  </section>
+
+  <section style="border-bottom:0">
+    <div class="shell-wide" style="padding-top:26px;padding-bottom:80px">
+      <div class="reader">
+        <!-- the tiered tree -->
+        <aside class="reader-tree">
+          <div class="hd">
+            <div class="kicker-sm">The corpus</div>
+            <div class="sub">{PAPER_COUNT} papers · {CORPUS_VOLUMES.length} volumes</div>
+          </div>
+          <div class="scroll">
+            {
+              CORPUS_VOLUMES.map((v, vi) => (
+                <details open={vi === 0}>
+                  <summary>
+                    <span class="caret">▸</span>
+                    <span class="vol">{v.name}</span>
+                    <span class="cnt">{v.papers.length}</span>
+                  </summary>
+                  <div>
+                    {v.papers.map((p) => (
+                      <button
+                        class="paper"
+                        type="button"
+                        data-slug={p.slug}
+                        aria-current={p.slug === first.slug ? 'true' : 'false'}
+                      >
+                        <span class="t">{p.title}</span>
+                        <span class="m">{p.meta}</span>
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              ))
+            }
+          </div>
+        </aside>
+
+        <!-- the reader -->
+        <article class="reader-doc">
+          <div class="hd">
+            <div class="kicker-sm" id="cw-volume">{first.volume}</div>
+            <h2 id="cw-title">{first.title}</h2>
+            <div class="meta">
+              <span id="cw-authors">{first.authors}</span>
+              <span id="cw-date">{first.date}</span>
+              <span id="cw-words">{first.words}</span>
+            </div>
+          </div>
+          <div class="body" id="cw-body">
+            {first.body.map((b) => (b.head ? <h3>{b.head}</h3> : <p>{b.text}</p>))}
+          </div>
+        </article>
+
+        <!-- ask Elle about this paper -->
+        <aside class="ask">
+          <div class="hd">
+            <span class="dot"></span>
+            <span class="lbl">Ask Elle about this paper</span>
+          </div>
+          <div class="thread" id="cw-thread">
+            <div class="msg from-elle">
+              <p>
+                I have this paper open. Ask about a passage, a definition, or where the argument is weakest — I'll
+                answer from the text and tell you if it isn't in there.
+              </p>
+            </div>
+          </div>
+          <div class="suggest">
+            <div class="hd2">Try asking</div>
+            <div class="row" id="cw-suggest">
+              <button type="button">What is the core claim?</button>
+              <button type="button">Where is this weakest?</button>
+              <button type="button">Define the key term</button>
+            </div>
+          </div>
+          <form class="compose" id="cw-form">
+            <input id="cw-input" type="text" placeholder="Ask about this passage…" autocomplete="off" />
+            <button type="submit" aria-label="Send">→</button>
+          </form>
+        </aside>
+      </div>
+
+      <p style="font-family:var(--mono);font-size:0.7rem;color:var(--t3);margin:26px 0 0">
+        Reader excerpts are the published abstracts and openings.
+        <a href={PHILPEOPLE} style="color:var(--gold)">Full texts and the complete index live on PhilPeople →</a>
+      </p>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ PAPERS: papers, WORKER_URL }}>
+    (function () {
+      const byslug = {};
+      PAPERS.forEach(function (p) {
+        byslug[p.slug] = p;
+      });
+      let open = PAPERS[0];
+
+      const el = {
+        volume: document.getElementById('cw-volume'),
+        title: document.getElementById('cw-title'),
+        authors: document.getElementById('cw-authors'),
+        date: document.getElementById('cw-date'),
+        words: document.getElementById('cw-words'),
+        body: document.getElementById('cw-body'),
+        thread: document.getElementById('cw-thread'),
+        form: document.getElementById('cw-form'),
+        input: document.getElementById('cw-input'),
+      };
+
+      function render(p) {
+        open = p;
+        el.volume.textContent = p.volume;
+        el.title.textContent = p.title;
+        el.authors.textContent = p.authors;
+        el.date.textContent = p.date;
+        el.words.textContent = p.words;
+        el.body.innerHTML = '';
+        p.body.forEach(function (b) {
+          const node = document.createElement(b.head ? 'h3' : 'p');
+          node.textContent = b.head || b.text;
+          el.body.appendChild(node);
+        });
+        el.body.scrollTop = 0;
+      }
+
+      document.querySelectorAll('.reader-tree .paper').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.reader-tree .paper').forEach(function (b) {
+            b.setAttribute('aria-current', 'false');
+          });
+          btn.setAttribute('aria-current', 'true');
+          render(byslug[btn.dataset.slug]);
+        });
+      });
+
+      function bubble(cls, text, cite) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg ' + cls;
+        const p = document.createElement('p');
+        p.textContent = text;
+        wrap.appendChild(p);
+        if (cite) {
+          const c = document.createElement('div');
+          c.className = 'cite';
+          c.textContent = cite;
+          wrap.appendChild(c);
+        }
+        el.thread.appendChild(wrap);
+        el.thread.scrollTop = el.thread.scrollHeight;
+        return wrap;
+      }
+
+      let session = null;
+      try {
+        session = localStorage.getItem('eip_elle_session');
+      } catch {
+        /* ignore */
+      }
+
+      function ask(q) {
+        if (!q) return;
+        bubble('from-you', q);
+        const pending = bubble('from-elle', 'Searching the corpus…');
+        const token = window.EIH && window.EIH.getToken ? window.EIH.getToken() : null;
+        const url = WORKER_URL + (token ? '/api/elle-conversation' : '/api/widget-chat');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers.Authorization = 'Bearer ' + token;
+        const payload = {
+          message: 'Regarding the paper "' + open.title + '" (' + open.volume + '): ' + q,
+        };
+        if (session) payload.session_id = session;
+
+        fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(payload) })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, d: d };
+            });
+          })
+          .then(function (res) {
+            const d = res.d || {};
+            if (d.session_id) {
+              session = d.session_id;
+              try {
+                localStorage.setItem('eip_elle_session', session);
+              } catch {
+                /* ignore */
+              }
+            }
+            const answer = d.reply || d.message || d.response || d.answer;
+            if (!res.ok || !answer) {
+              pending.querySelector('p').textContent =
+                "I couldn't reach the corpus just now. Open the full conversation and try there.";
+              return;
+            }
+            pending.querySelector('p').textContent = answer;
+            const cite = open.title + ' · ' + open.meta;
+            const c = document.createElement('div');
+            c.className = 'cite';
+            c.textContent = 'Reading: ' + cite;
+            pending.appendChild(c);
+          })
+          .catch(function () {
+            pending.querySelector('p').textContent = 'Connection failed. Try again.';
+          });
+      }
+
+      el.form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const q = el.input.value.trim();
+        el.input.value = '';
+        ask(q);
+      });
+      document.getElementById('cw-suggest').addEventListener('click', function (e) {
+        const b = e.target.closest('button');
+        if (b) ask(b.textContent.trim());
+      });
+    })();
+  </script>
+</EipPage>

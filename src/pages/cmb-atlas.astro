@@ -17,9 +17,10 @@
 // The renderer draws it; it re-derives nothing.
 // ============================================================
 import '~/assets/styles/hub.css';
+import '~/assets/styles/eip.css';
 import Layout from '~/layouts/Layout.astro';
-import HubNav from '~/components/hub/HubNav.astro';
-import HubFooter from '~/components/hub/HubFooter.astro';
+import EipNav from '~/components/eip/EipNav.astro';
+import EipFooter from '~/components/eip/EipFooter.astro';
 import snapshot from '~/data/cmb-snapshot.json';
 
 const metadata = {
@@ -35,8 +36,8 @@ const cv = snapshot.cosmicVariance;
 ---
 
 <Layout metadata={metadata}>
-  <div class="eih">
-    <HubNav current="/master-atlas" />
+  <div class="eip eih">
+    <EipNav />
 
     <section class="cmb-stage">
       <canvas
@@ -100,7 +101,7 @@ const cv = snapshot.cosmicVariance;
       <noscript><div class="cmb-fallback">This visualization needs JavaScript and WebGL.</div></noscript>
     </section>
 
-    <HubFooter />
+    <EipFooter />
   </div>
 
   <style>
