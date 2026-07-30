@@ -12,19 +12,21 @@
     <title>RAPID²AI — Chef View</title>
     <script is:inline src="https://accounts.google.com/gsi/client" async defer></script>
     <script is:inline src="/rapidai-auth.js"></script>
+    <link rel="stylesheet" href="/rapid-design.css" />
+    <script is:inline src="/rapid-design.js" defer></script>
     <style>
       :root {
-        --bg: #0a0e0c;
-        --surface: #111612;
-        --border: #1e2820;
-        --gold: #c9a55c;
-        --gold-dim: #7a5e28;
-        --green: #2ecc71;
-        --red: #e74c3c;
-        --yellow: #f1c40f;
-        --text: #d4d9d5;
-        --text-dim: #6b7368;
-        --accent: #1a3a2a;
+        --bg: #f2f2f3;
+        --surface: color-mix(in srgb, #fff 80%, transparent);
+        --border: #ced3da;
+        --gold: #b3902f;
+        --gold-dim: #8a6f22;
+        --green: #3f8f5f;
+        --red: #b3453a;
+        --yellow: #a8791f;
+        --text: #1d1f20;
+        --text-dim: #767e8a;
+        --accent: color-mix(in srgb, var(--r-gold-050) 65%, #fff);
       }
       * {
         margin: 0;
@@ -32,9 +34,8 @@
         box-sizing: border-box;
       }
       body {
-        background: var(--bg);
         color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: var(--r-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
         min-height: 100vh;
       }
 
@@ -43,7 +44,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: var(--bg);
+        background: linear-gradient(160deg, #1b2233 0%, #313d58 40%, #202838 75%, #161b28 100%);
         align-items: center;
         justify-content: center;
         z-index: 9999;
@@ -51,29 +52,31 @@
         gap: 1.5rem;
       }
       .gate-brand {
-        font-family: Georgia, serif;
-        font-style: italic;
-        color: var(--gold);
-        font-size: 1.4rem;
+        font-family: var(--r-font-heading, 'Barlow Condensed', serif);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--r-gold-400);
+        font-size: 1.5rem;
       }
       .gate-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid color-mix(in srgb, var(--r-gold-400) 32%, transparent);
+        border-radius: 18px;
         padding: 2.5rem 3rem;
         text-align: center;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
         align-items: center;
+        box-shadow: 0 24px 60px -24px rgba(15, 20, 30, 0.55);
       }
       .gate-title {
-        color: var(--text);
+        color: #e8ede9;
         font-size: 1rem;
         font-weight: 600;
       }
       .gate-desc {
-        color: var(--text-dim);
+        color: #9aa3ad;
         font-size: 0.82rem;
         max-width: 280px;
         line-height: 1.6;
@@ -108,7 +111,9 @@
       }
       .topbar {
         grid-column: 1 / -1;
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
@@ -116,11 +121,11 @@
         gap: 16px;
       }
       .logo {
-        font-family: Georgia, serif;
-        font-style: italic;
+        font-family: var(--r-font-heading, 'Barlow Condensed', sans-serif);
+        font-weight: 600;
         color: var(--gold);
         font-size: 20px;
-        letter-spacing: 1px;
+        letter-spacing: 0.03em;
       }
       .logo span {
         font-size: 11px;
@@ -139,11 +144,11 @@
         color: var(--text-dim);
       }
       .venue-badge {
-        background: var(--accent);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border: 1px solid var(--gold-dim);
-        color: var(--gold);
+        color: #6b5411;
         padding: 3px 10px;
-        border-radius: 4px;
+        border-radius: 999px;
         font-size: 11px;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -170,7 +175,9 @@
       }
 
       .sidebar {
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 66%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-right: 1px solid var(--border);
         padding: 20px 0;
       }
@@ -203,8 +210,8 @@
         color: var(--text);
       }
       .nav-item.active {
-        background: var(--accent);
-        color: var(--gold);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
+        color: #6b5411;
         border-left: 2px solid var(--gold);
       }
       .nav-icon {
@@ -242,10 +249,20 @@
         }
       }
       .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
+        position: relative;
+        background: linear-gradient(
+          152deg,
+          color-mix(in srgb, #fff 80%, transparent),
+          color-mix(in srgb, var(--r-ti-100) 70%, transparent)
+        );
+        backdrop-filter: blur(14px) saturate(118%);
+        -webkit-backdrop-filter: blur(14px) saturate(118%);
+        border: 1px solid color-mix(in srgb, var(--border) 85%, var(--r-gold-200));
+        border-radius: 14px;
         padding: 18px 20px;
+        box-shadow:
+          0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset,
+          0 18px 40px -28px rgba(20, 26, 38, 0.4);
       }
       .stat-label {
         font-size: 11px;
@@ -276,10 +293,19 @@
 
       /* Section */
       .section {
-        background: var(--surface);
+        background: linear-gradient(
+          152deg,
+          color-mix(in srgb, #fff 80%, transparent),
+          color-mix(in srgb, var(--r-ti-100) 70%, transparent)
+        );
+        backdrop-filter: blur(14px) saturate(118%);
+        -webkit-backdrop-filter: blur(14px) saturate(118%);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 14px;
         margin-bottom: 20px;
+        box-shadow:
+          0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset,
+          0 18px 40px -28px rgba(20, 26, 38, 0.4);
       }
       .section-header {
         padding: 16px 20px;
@@ -322,33 +348,33 @@
         border-bottom: none;
       }
       tr:hover td {
-        background: rgba(255, 255, 255, 0.015);
+        background: color-mix(in srgb, var(--r-gold-050) 55%, transparent);
       }
 
       /* Badges */
       .badge {
         display: inline-block;
-        padding: 2px 8px;
-        border-radius: 4px;
+        padding: 2px 9px;
+        border-radius: 999px;
         font-size: 11px;
         font-weight: 500;
         letter-spacing: 0.5px;
       }
       .badge-ok {
-        background: rgba(46, 204, 113, 0.12);
+        background: color-mix(in srgb, var(--green) 14%, transparent);
         color: var(--green);
       }
       .badge-warn {
-        background: rgba(241, 196, 15, 0.12);
+        background: color-mix(in srgb, var(--yellow) 16%, transparent);
         color: var(--yellow);
       }
       .badge-alert {
-        background: rgba(231, 76, 60, 0.12);
+        background: color-mix(in srgb, var(--red) 14%, transparent);
         color: var(--red);
       }
       .badge-info {
-        background: rgba(201, 165, 92, 0.12);
-        color: var(--gold);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
+        color: #6b5411;
       }
 
       /* Variance bar */
@@ -485,7 +511,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="rapid-app">
     <!-- AUTH GATE OVERLAY -->
     <div id="rapidai-gate">
       <div class="gate-brand">RAPID²AI</div>
@@ -554,30 +580,30 @@
           <div class="page-title">Cost Pulse</div>
           <div class="page-sub">Week of May 26, 2026 · Last invoice: May 28 · US Foods #8841092</div>
 
-          <div class="stat-row">
-            <div class="stat-card">
+          <div class="stat-row" data-r-cascade>
+            <div class="stat-card" data-r-tilt data-r-sheen>
               <div class="stat-label">Food Cost %</div>
-              <div class="stat-value">28.4%</div>
+              <div class="stat-value" data-r-count="28.4%">28.4%</div>
               <div class="stat-delta delta-up">▲ 1.2 pts vs last week</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-r-tilt data-r-sheen>
               <div class="stat-label">Invoice Total</div>
-              <div class="stat-value">$4,218</div>
+              <div class="stat-value" data-r-count="$4,218">$4,218</div>
               <div class="stat-delta delta-up">▲ $312 vs prior delivery</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-r-tilt data-r-sheen>
               <div class="stat-label">Credits Pending</div>
-              <div class="stat-value">$47.20</div>
+              <div class="stat-value" data-r-count="$47.20">$47.20</div>
               <div class="stat-delta delta-neutral">2 items · awaiting CM</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-r-tilt data-r-sheen>
               <div class="stat-label">Price Alerts</div>
-              <div class="stat-value" style="color:var(--yellow)">3</div>
+              <div class="stat-value" style="color:var(--yellow)" data-r-count="3">3</div>
               <div class="stat-delta delta-neutral">SKUs moved &gt;5% this week</div>
             </div>
           </div>
 
-          <div class="two-col">
+          <div class="two-col" data-r-reveal>
             <div class="section">
               <div class="section-header"><div class="section-title">Top Cost Movers — This Delivery</div></div>
               <table>
@@ -621,7 +647,7 @@
             </div>
           </div>
 
-          <div class="section">
+          <div class="section" data-r-reveal>
             <div class="section-header">
               <div class="section-title">Last Delivery — Full Line Detail</div>
               <div class="section-action">Export CSV</div>

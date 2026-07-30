@@ -12,19 +12,21 @@
     <title>RAPID²AI — COO Dashboard</title>
     <script is:inline src="https://accounts.google.com/gsi/client" async defer></script>
     <script is:inline src="/rapidai-auth.js"></script>
+    <link rel="stylesheet" href="/rapid-design.css" />
+    <script is:inline src="/rapid-design.js" defer></script>
     <style>
       :root {
-        --gold: #c9a55c;
-        --gold-dim: #a07e3a;
-        --bg: #0a0e0c;
-        --surface: #111714;
-        --surface2: #192118;
-        --text: #e8ede9;
-        --text-dim: #7a8278;
-        --border: #2a332a;
-        --green: #4caf72;
-        --yellow: #e0b96a;
-        --red: #e05c5c;
+        --gold: #b3902f;
+        --gold-dim: #8a6f22;
+        --bg: #f2f2f3;
+        --surface: color-mix(in srgb, #fff 80%, transparent);
+        --surface2: #eceef2;
+        --text: #1d1f20;
+        --text-dim: #767e8a;
+        --border: #ced3da;
+        --green: #3f8f5f;
+        --yellow: #a8791f;
+        --red: #b3453a;
         --sidebar: 220px;
       }
       * {
@@ -33,9 +35,8 @@
         box-sizing: border-box;
       }
       body {
-        background: var(--bg);
         color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: var(--r-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
         display: flex;
         min-height: 100vh;
       }
@@ -45,7 +46,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: var(--bg);
+        background: linear-gradient(160deg, #1b2233 0%, #313d58 40%, #202838 75%, #161b28 100%);
         align-items: center;
         justify-content: center;
         z-index: 9999;
@@ -53,33 +54,35 @@
         gap: 1.5rem;
       }
       .gate-brand {
-        font-family: Georgia, serif;
-        font-style: italic;
-        color: var(--gold);
-        font-size: 1.4rem;
+        font-family: var(--r-font-heading, 'Barlow Condensed', serif);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--r-gold-400);
+        font-size: 1.5rem;
       }
       .gate-sub {
         color: var(--text-dim);
         font-size: 0.85rem;
       }
       .gate-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid color-mix(in srgb, var(--r-gold-400) 32%, transparent);
+        border-radius: 18px;
         padding: 2.5rem 3rem;
         text-align: center;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
         align-items: center;
+        box-shadow: 0 24px 60px -24px rgba(15, 20, 30, 0.55);
       }
       .gate-title {
-        color: var(--text);
+        color: #e8ede9;
         font-size: 1rem;
         font-weight: 600;
       }
       .gate-desc {
-        color: var(--text-dim);
+        color: #9aa3ad;
         font-size: 0.82rem;
         max-width: 280px;
         line-height: 1.6;
@@ -121,7 +124,9 @@
       /* SIDEBAR */
       aside {
         width: var(--sidebar);
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 66%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
@@ -132,14 +137,16 @@
         overflow-y: auto;
       }
       .sidebar-brand {
+        position: relative;
         padding: 1.5rem 1.25rem 1rem;
         border-bottom: 1px solid var(--border);
       }
       .brand-wordmark {
-        font-family: Georgia, serif;
-        font-style: italic;
+        font-family: var(--r-font-heading, 'Barlow Condensed', sans-serif);
+        font-weight: 600;
+        letter-spacing: 0.03em;
         color: var(--gold);
-        font-size: 1.1rem;
+        font-size: 1.2rem;
       }
       .brand-sub {
         font-size: 0.68rem;
@@ -173,12 +180,13 @@
       }
       .sidebar-link:hover {
         color: var(--text);
-        background: rgba(255, 255, 255, 0.03);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
       }
       .sidebar-link.active {
         color: var(--gold);
-        background: rgba(201, 165, 92, 0.06);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border-left-color: var(--gold);
+        border-radius: 0 8px 8px 0;
       }
       .sidebar-icon {
         font-size: 1rem;
@@ -193,9 +201,9 @@
       .role-badge {
         font-size: 0.7rem;
         color: var(--gold);
-        background: rgba(201, 165, 92, 0.1);
-        padding: 3px 8px;
-        border-radius: 4px;
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
+        padding: 3px 10px;
+        border-radius: 999px;
         display: inline-block;
       }
 
@@ -207,7 +215,9 @@
         flex-direction: column;
       }
       header {
-        background: var(--surface);
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(14px) saturate(115%);
+        -webkit-backdrop-filter: blur(14px) saturate(115%);
         border-bottom: 1px solid var(--border);
         padding: 0 2rem;
         height: 60px;
@@ -273,10 +283,20 @@
         margin-bottom: 2rem;
       }
       .kpi {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
+        position: relative;
+        background: linear-gradient(
+          152deg,
+          color-mix(in srgb, #fff 80%, transparent),
+          color-mix(in srgb, var(--surface2) 70%, transparent)
+        );
+        backdrop-filter: blur(14px) saturate(118%);
+        -webkit-backdrop-filter: blur(14px) saturate(118%);
+        border: 1px solid color-mix(in srgb, var(--border) 85%, var(--r-gold-200));
+        border-radius: 14px;
         padding: 1.25rem 1.5rem;
+        box-shadow:
+          0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset,
+          0 18px 40px -28px rgba(20, 26, 38, 0.45);
       }
       .kpi-label {
         font-size: 0.7rem;
@@ -320,10 +340,19 @@
 
       /* PANELS */
       .panel {
-        background: var(--surface);
+        background: linear-gradient(
+          152deg,
+          color-mix(in srgb, #fff 80%, transparent),
+          color-mix(in srgb, var(--surface2) 70%, transparent)
+        );
+        backdrop-filter: blur(14px) saturate(118%);
+        -webkit-backdrop-filter: blur(14px) saturate(118%);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 14px;
         overflow: hidden;
+        box-shadow:
+          0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset,
+          0 18px 40px -28px rgba(20, 26, 38, 0.4);
       }
       .panel-header {
         padding: 1rem 1.5rem;
@@ -367,7 +396,7 @@
       }
       td {
         padding: 0.65rem 0.75rem;
-        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
         color: var(--text);
         vertical-align: middle;
       }
@@ -375,7 +404,7 @@
         border-bottom: none;
       }
       tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
+        background: color-mix(in srgb, var(--r-gold-050) 60%, transparent);
       }
 
       /* STATUS PILLS */
@@ -384,24 +413,24 @@
         align-items: center;
         gap: 5px;
         padding: 2px 9px;
-        border-radius: 20px;
+        border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 500;
       }
       .pill-green {
-        background: rgba(76, 175, 114, 0.12);
+        background: color-mix(in srgb, var(--green) 14%, transparent);
         color: var(--green);
       }
       .pill-yellow {
-        background: rgba(224, 185, 106, 0.12);
+        background: color-mix(in srgb, var(--yellow) 16%, transparent);
         color: var(--yellow);
       }
       .pill-red {
-        background: rgba(224, 92, 92, 0.12);
+        background: color-mix(in srgb, var(--red) 14%, transparent);
         color: var(--red);
       }
       .pill-dim {
-        background: rgba(122, 130, 120, 0.12);
+        background: color-mix(in srgb, var(--text-dim) 14%, transparent);
         color: var(--text-dim);
       }
       .pill::before {
@@ -421,18 +450,18 @@
       }
       .entity-tab {
         padding: 6px 16px;
-        border-radius: 6px;
+        border-radius: 999px;
         font-size: 0.8rem;
         cursor: pointer;
         border: 1px solid var(--border);
-        background: var(--surface);
+        background: color-mix(in srgb, #fff 70%, transparent);
         color: var(--text-dim);
         transition: all 0.15s;
       }
       .entity-tab.active {
-        background: rgba(201, 165, 92, 0.1);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border-color: var(--gold-dim);
-        color: var(--gold);
+        color: #6b5411;
       }
 
       /* SYNC STATUS */
@@ -441,7 +470,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
       }
       .sync-row:last-child {
         border-bottom: none;
@@ -458,7 +487,7 @@
       /* INVOICE QUEUE */
       .invoice-item {
         padding: 0.9rem 0;
-        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
       }
       .invoice-item:last-child {
         border-bottom: none;
@@ -488,7 +517,7 @@
         display: flex;
         gap: 0.75rem;
         padding: 0.75rem 0;
-        border-bottom: 1px solid rgba(42, 51, 42, 0.5);
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
         align-items: flex-start;
       }
       .alert-item:last-child {
@@ -524,16 +553,16 @@
         transition: all 0.15s;
       }
       .view-pill.active {
-        background: rgba(201, 165, 92, 0.1);
+        background: linear-gradient(180deg, var(--r-gold-050), var(--r-gold-200));
         border-color: var(--gold-dim);
-        color: var(--gold);
+        color: #6b5411;
       }
       .view-pill:hover {
         color: var(--text);
       }
     </style>
   </head>
-  <body>
+  <body class="rapid-app">
     <!-- AUTH GATE OVERLAY -->
     <div id="rapidai-gate">
       <div class="gate-brand">RAPID²AI</div>
@@ -566,7 +595,8 @@
     </div>
 
     <aside>
-      <div class="sidebar-brand">
+      <div class="sidebar-brand r-corners">
+        <span class="r-corner tl"></span><span class="r-corner tr"></span>
         <div class="brand-wordmark">RAPID²AI</div>
         <div class="brand-sub">COO · Estate View</div>
       </div>
@@ -633,35 +663,35 @@
           <button class="entity-tab" onclick="setEntity(this,'dierberg')">Dierberg Ed. Foundation</button>
         </div>
 
-        <div class="kpi-row">
-          <div class="kpi">
+        <div class="kpi-row" data-r-cascade>
+          <div class="kpi" data-r-tilt data-r-sheen>
             <div class="kpi-label">Today's Net Sales</div>
-            <div class="kpi-value" id="kpi-sales">$4,612</div>
+            <div class="kpi-value" id="kpi-sales" data-r-count="$4,612">$4,612</div>
             <div class="kpi-delta up">+12% vs last Tuesday</div>
           </div>
-          <div class="kpi">
+          <div class="kpi" data-r-tilt data-r-sheen>
             <div class="kpi-label">Invoices Pending Review</div>
-            <div class="kpi-value" id="kpi-invoices">1</div>
+            <div class="kpi-value" id="kpi-invoices" data-r-count="1">1</div>
             <div class="kpi-delta neutral">Requires action</div>
           </div>
-          <div class="kpi">
+          <div class="kpi" data-r-tilt data-r-sheen>
             <div class="kpi-label">COGS MTD</div>
-            <div class="kpi-value" id="kpi-cogs">$18,240</div>
+            <div class="kpi-value" id="kpi-cogs" data-r-count="$18,240">$18,240</div>
             <div class="kpi-delta down">+3.1% vs last month</div>
           </div>
-          <div class="kpi">
+          <div class="kpi" data-r-tilt data-r-sheen>
             <div class="kpi-label">Ledger Entries Today</div>
-            <div class="kpi-value" id="kpi-entries">8</div>
+            <div class="kpi-value" id="kpi-entries" data-r-count="8">8</div>
             <div class="kpi-delta neutral">Auto-posted</div>
           </div>
-          <div class="kpi">
+          <div class="kpi" data-r-tilt data-r-sheen>
             <div class="kpi-label">Gate Failures (7d)</div>
-            <div class="kpi-value" id="kpi-failures">0</div>
+            <div class="kpi-value" id="kpi-failures" data-r-count="0">0</div>
             <div class="kpi-delta neutral">Clean week</div>
           </div>
         </div>
 
-        <div class="grid-2">
+        <div class="grid-2" data-r-reveal>
           <div class="panel">
             <div class="panel-header">
               <span class="panel-title">Invoice Queue</span>
@@ -743,7 +773,7 @@
           </div>
         </div>
 
-        <div class="grid-2">
+        <div class="grid-2" data-r-reveal>
           <div class="panel">
             <div class="panel-header">
               <span class="panel-title">POS — Daily Summary (Tin Mill)</span>
@@ -800,7 +830,7 @@
           </div>
         </div>
 
-        <div class="panel" style="margin-bottom:1.5rem;">
+        <div class="panel" style="margin-bottom:1.5rem;" data-r-reveal>
           <div class="panel-header">
             <span class="panel-title">Ledger Health — Hermannhof Inc.</span>
             <a class="panel-action" href="/coo/ledger">Full ledger →</a>

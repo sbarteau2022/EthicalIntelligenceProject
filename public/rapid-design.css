@@ -1,0 +1,198 @@
+/* RAPID²AI — shared "Atlas" design system for the product surfaces
+   (COO dashboard, Chef view, Intelligence chat). Ported from the Atlas
+   Command Center design handoff: Titanium + Gold palette — frosted glass
+   cards on a light ground, Barlow Condensed / Barlow type, blueprint
+   corner registration marks, gold accent. Loaded as a plain stylesheet
+   (no build step) alongside rapidai-auth.js on each RAPID²AI page. */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap');
+
+:root {
+  --r-ti-50: #f4f5f7;
+  --r-ti-100: #e7e9ed;
+  --r-ti-300: #ced3da;
+  --r-ti-500: #a7aeb8;
+  --r-ti-700: #767e8a;
+
+  --r-gold: #b3902f;
+  --r-gold-400: #c9a83f;
+  --r-gold-200: #e6d49a;
+  --r-gold-050: #f6efd9;
+
+  --r-ink: #1d1f20;
+  --r-ink-dim: color-mix(in srgb, #1d1f20 55%, transparent);
+
+  --r-green: #3f8f5f;
+  --r-yellow: #a8791f;
+  --r-red: #b3453a;
+
+  --r-font-heading: 'Barlow Condensed', system-ui, sans-serif;
+  --r-font-body: 'Barlow', system-ui, sans-serif;
+
+  --r-radius-sm: 8px;
+  --r-radius-md: 12px;
+  --r-radius-lg: 18px;
+
+  --r-shadow-sm: 0 1px 2px color-mix(in srgb, #1d1f20 10%, transparent);
+  --r-shadow-md: 0 10px 24px -12px color-mix(in srgb, #1d1f20 24%, transparent);
+  --r-shadow-lg: 0 26px 54px -30px rgba(20, 26, 38, 0.4);
+}
+
+.rapid-app {
+  background: linear-gradient(168deg, var(--r-ti-50) 0%, #eceef2 46%, var(--r-ti-100) 100%);
+  color: var(--r-ink);
+  font-family: var(--r-font-body);
+}
+
+.rapid-app h1,
+.rapid-app h2,
+.rapid-app h3,
+.rapid-app h4,
+.r-heading {
+  font-family: var(--r-font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* — frosted glass surface, used for sidebars/headers/cards/panels — */
+.r-glass {
+  background: linear-gradient(
+    152deg,
+    color-mix(in srgb, #fff 80%, transparent),
+    color-mix(in srgb, var(--r-ti-100) 70%, transparent)
+  );
+  backdrop-filter: blur(14px) saturate(118%);
+  -webkit-backdrop-filter: blur(14px) saturate(118%);
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 65%, transparent) inset;
+}
+
+/* — blueprint corner registration marks ("+") — gold, wired to .r-corners
+   wrapper. Apply to hero/brand surfaces for the Atlas signature look. — */
+.r-corners {
+  position: relative;
+}
+.r-corners > .r-corner {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  color: var(--r-gold-400);
+  pointer-events: none;
+}
+.r-corners > .r-corner::before,
+.r-corners > .r-corner::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+}
+.r-corners > .r-corner::before {
+  left: 5px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+.r-corners > .r-corner::after {
+  top: 5px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+.r-corners > .r-corner.tl {
+  top: -6px;
+  left: -6px;
+}
+.r-corners > .r-corner.tr {
+  top: -6px;
+  right: -6px;
+}
+.r-corners > .r-corner.bl {
+  bottom: -6px;
+  left: -6px;
+}
+.r-corners > .r-corner.br {
+  bottom: -6px;
+  right: -6px;
+}
+
+/* — reveal-on-scroll / reveal-on-mount — */
+[data-r-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-r-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* — cascade: stagger the children of a container in as it reveals — */
+[data-r-cascade] > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+[data-r-cascade].is-visible > * {
+  opacity: 1;
+  transform: none;
+}
+[data-r-cascade] > *:nth-child(1) {
+  transition-delay: 0ms;
+}
+[data-r-cascade] > *:nth-child(2) {
+  transition-delay: 60ms;
+}
+[data-r-cascade] > *:nth-child(3) {
+  transition-delay: 120ms;
+}
+[data-r-cascade] > *:nth-child(4) {
+  transition-delay: 180ms;
+}
+[data-r-cascade] > *:nth-child(5) {
+  transition-delay: 240ms;
+}
+[data-r-cascade] > *:nth-child(n + 6) {
+  transition-delay: 300ms;
+}
+
+/* — tilt + sheen hover, for KPI/stat cards — */
+[data-r-tilt] {
+  transition: transform 0.25s ease;
+  will-change: transform;
+}
+[data-r-sheen] {
+  position: relative;
+  overflow: hidden;
+}
+[data-r-sheen]::after {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    color-mix(in srgb, var(--r-gold-200) 55%, transparent) 50%,
+    transparent 60%
+  );
+  opacity: 0;
+  transform: translateX(-60%);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+[data-r-sheen].sheen-on::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-r-reveal],
+  [data-r-cascade] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-r-tilt] {
+    transform: none !important;
+  }
+}
