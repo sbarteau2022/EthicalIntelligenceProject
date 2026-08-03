@@ -17,9 +17,11 @@
 //           bathymetric shelf glow
 //         · deep abyssal trenches + brighter shallows in the ocean, and 90
 //           earthy brown highland patches on the land
-//         · ~130 readership nodes weighted by relative readership, firing
+//         · readership nodes weighted by relative readership, firing
 //           like synapses (sudden spikes, long dark gaps) with thread
-//           filaments between them
+//           filaments between them — the node positions are the real reader
+//           cities from the PhilArchive log (src/data/reader-cities.ts),
+//           not scattered points
 //         · real 23.4° axial tilt, spin around the tilted axis
 //         · three parallax star shells + three deep-space nebulae
 //
@@ -43,6 +45,7 @@
 
 <script>
   import * as THREE from 'three';
+  import { READER_CITIES } from '../../data/reader-cities';
 
   // deterministic hash so the scene is identical on every load
   const seeded = (n: number) => {
@@ -60,157 +63,20 @@
     );
   }
 
-  /** Readership nodes — real cities, `w` is relative readership weight. */
-  const CITIES: { lat: number; lon: number; w: number; hub?: boolean }[] = [
-    { lat: 38.7, lon: -91.4, hub: true, w: 1 }, // primary hub node
-    // North America
-    { lat: 40.7, lon: -74.0, w: 1 },
-    { lat: 37.8, lon: -122.4, w: 0.9 },
-    { lat: 43.7, lon: -79.4, w: 0.7 },
-    { lat: 41.9, lon: -87.6, w: 0.75 },
-    { lat: 19.4, lon: -99.1, w: 0.6 },
-    { lat: 47.6, lon: -122.3, w: 0.6 },
-    { lat: 33.7, lon: -84.4, w: 0.5 },
-    { lat: 30.3, lon: -97.7, w: 0.55 },
-    { lat: 42.4, lon: -71.1, w: 0.75 },
-    { lat: 45.5, lon: -73.6, w: 0.45 },
-    { lat: 49.3, lon: -123.1, w: 0.45 },
-    { lat: 25.8, lon: -80.2, w: 0.4 },
-    { lat: 39.7, lon: -105.0, w: 0.4 },
-    { lat: 23.1, lon: -82.4, w: 0.25 },
-    { lat: 9.9, lon: -84.1, w: 0.25 },
-    // South America
-    { lat: -23.5, lon: -46.6, w: 0.7 },
-    { lat: 4.7, lon: -74.1, w: 0.45 },
-    { lat: -34.6, lon: -58.4, w: 0.55 },
-    { lat: -12.0, lon: -77.0, w: 0.35 },
-    { lat: -33.4, lon: -70.7, w: 0.4 },
-    { lat: -22.9, lon: -43.2, w: 0.5 },
-    { lat: 10.5, lon: -66.9, w: 0.25 },
-    { lat: -0.2, lon: -78.5, w: 0.22 },
-    // Europe
-    { lat: 51.5, lon: -0.12, w: 1 },
-    { lat: 52.5, lon: 13.4, w: 0.75 },
-    { lat: 48.9, lon: 2.35, w: 0.8 },
-    { lat: 40.4, lon: -3.7, w: 0.55 },
-    { lat: 41.9, lon: 12.5, w: 0.5 },
-    { lat: 52.4, lon: 4.9, w: 0.6 },
-    { lat: 59.3, lon: 18.1, w: 0.45 },
-    { lat: 60.2, lon: 24.9, w: 0.35 },
-    { lat: 50.1, lon: 14.4, w: 0.35 },
-    { lat: 47.5, lon: 19.0, w: 0.3 },
-    { lat: 38.7, lon: -9.1, w: 0.35 },
-    { lat: 53.3, lon: -6.3, w: 0.4 },
-    { lat: 55.8, lon: 37.6, w: 0.5 },
-    { lat: 41.0, lon: 29.0, w: 0.45 },
-    // Africa
-    { lat: -33.9, lon: 18.4, w: 0.5 },
-    { lat: 6.5, lon: 3.4, w: 0.55 },
-    { lat: -1.3, lon: 36.8, w: 0.45 },
-    { lat: 30.0, lon: 31.2, w: 0.5 },
-    { lat: 33.6, lon: -7.6, w: 0.3 },
-    { lat: 9.0, lon: 38.7, w: 0.28 },
-    { lat: -26.2, lon: 28.0, w: 0.45 },
-    { lat: 5.6, lon: -0.2, w: 0.3 },
-    { lat: -6.8, lon: 39.3, w: 0.25 },
-    // Asia & Middle East
-    { lat: 19.1, lon: 72.9, w: 0.75 },
-    { lat: 28.6, lon: 77.2, w: 0.7 },
-    { lat: 12.9, lon: 77.6, w: 0.65 },
-    { lat: 1.35, lon: 103.8, w: 0.7 },
-    { lat: 35.7, lon: 139.7, w: 0.9 },
-    { lat: 34.7, lon: 135.5, w: 0.5 },
-    { lat: 37.6, lon: 127.0, w: 0.65 },
-    { lat: 39.9, lon: 116.4, w: 0.6 },
-    { lat: 31.2, lon: 121.5, w: 0.6 },
-    { lat: 22.3, lon: 114.2, w: 0.55 },
-    { lat: 25.2, lon: 55.3, w: 0.5 },
-    { lat: 32.1, lon: 34.8, w: 0.45 },
-    { lat: 13.8, lon: 100.5, w: 0.4 },
-    { lat: 14.6, lon: 121.0, w: 0.4 },
-    { lat: -6.2, lon: 106.8, w: 0.45 },
-    { lat: 23.8, lon: 90.4, w: 0.35 },
-    { lat: 41.3, lon: 69.2, w: 0.22 },
-    // Oceania
-    { lat: -33.9, lon: 151.2, w: 0.65 },
-    { lat: -37.8, lon: 145.0, w: 0.55 },
-    { lat: -27.5, lon: 153.0, w: 0.35 },
-    { lat: -31.9, lon: 115.9, w: 0.3 },
-    { lat: -36.8, lon: 174.8, w: 0.35 },
-    { lat: -41.3, lon: 174.8, w: 0.25 },
-    // second tier — wider spread, smaller readerships
-    { lat: 39.1, lon: -94.6, w: 0.3 },
-    { lat: 38.6, lon: -90.2, w: 0.35 },
-    { lat: 44.98, lon: -93.3, w: 0.25 },
-    { lat: 33.4, lon: -112.1, w: 0.22 },
-    { lat: 45.5, lon: -122.7, w: 0.25 },
-    { lat: 39.95, lon: -75.2, w: 0.3 },
-    { lat: 38.9, lon: -77.0, w: 0.4 },
-    { lat: 36.2, lon: -86.8, w: 0.2 },
-    { lat: 40.8, lon: -111.9, w: 0.18 },
-    { lat: 51.0, lon: -114.1, w: 0.2 },
-    { lat: 44.6, lon: -63.6, w: 0.15 },
-    { lat: 20.7, lon: -103.3, w: 0.2 },
-    { lat: 25.7, lon: -100.3, w: 0.2 },
-    { lat: 6.2, lon: -75.6, w: 0.22 },
-    { lat: -8.05, lon: -34.9, w: 0.2 },
-    { lat: -15.8, lon: -47.9, w: 0.25 },
-    { lat: -34.9, lon: -56.2, w: 0.18 },
-    { lat: -16.5, lon: -68.1, w: 0.15 },
-    { lat: -25.3, lon: -57.6, w: 0.14 },
-    { lat: 9.0, lon: -79.5, w: 0.18 },
-    { lat: 14.6, lon: -90.5, w: 0.15 },
-    { lat: 18.5, lon: -69.9, w: 0.16 },
-    { lat: 18.4, lon: -66.1, w: 0.16 },
-    { lat: 59.9, lon: 10.8, w: 0.28 },
-    { lat: 55.7, lon: 12.6, w: 0.3 },
-    { lat: 52.2, lon: 21.0, w: 0.3 },
-    { lat: 48.2, lon: 16.4, w: 0.28 },
-    { lat: 47.4, lon: 8.5, w: 0.3 },
-    { lat: 48.1, lon: 11.6, w: 0.3 },
-    { lat: 45.5, lon: 9.2, w: 0.3 },
-    { lat: 41.4, lon: 2.2, w: 0.32 },
-    { lat: 38.0, lon: 23.7, w: 0.22 },
-    { lat: 44.4, lon: 26.1, w: 0.2 },
-    { lat: 50.45, lon: 30.5, w: 0.25 },
-    { lat: 55.95, lon: -3.2, w: 0.22 },
-    { lat: 50.85, lon: 4.35, w: 0.25 },
-    { lat: 14.7, lon: -17.5, w: 0.15 },
-    { lat: 5.3, lon: -4.0, w: 0.16 },
-    { lat: 0.35, lon: 32.6, w: 0.16 },
-    { lat: -1.95, lon: 30.1, w: 0.14 },
-    { lat: -15.4, lon: 28.3, w: 0.14 },
-    { lat: -17.8, lon: 31.0, w: 0.13 },
-    { lat: 36.75, lon: 3.06, w: 0.18 },
-    { lat: 36.8, lon: 10.2, w: 0.16 },
-    { lat: 15.6, lon: 32.5, w: 0.13 },
-    { lat: 24.7, lon: 46.7, w: 0.25 },
-    { lat: 25.3, lon: 51.5, w: 0.22 },
-    { lat: 31.95, lon: 35.9, w: 0.16 },
-    { lat: 24.9, lon: 67.0, w: 0.3 },
-    { lat: 31.5, lon: 74.3, w: 0.25 },
-    { lat: 13.1, lon: 80.3, w: 0.3 },
-    { lat: 22.6, lon: 88.4, w: 0.3 },
-    { lat: 17.4, lon: 78.5, w: 0.28 },
-    { lat: 27.7, lon: 85.3, w: 0.14 },
-    { lat: 6.9, lon: 79.9, w: 0.16 },
-    { lat: 21.0, lon: 105.8, w: 0.2 },
-    { lat: 10.8, lon: 106.7, w: 0.22 },
-    { lat: 3.14, lon: 101.7, w: 0.28 },
-    { lat: 25.0, lon: 121.5, w: 0.32 },
-    { lat: 35.2, lon: 136.9, w: 0.25 },
-    { lat: 43.1, lon: 141.35, w: 0.18 },
-    { lat: 35.1, lon: 129.0, w: 0.22 },
-    { lat: 30.7, lon: 104.1, w: 0.22 },
-    { lat: 34.3, lon: 108.9, w: 0.2 },
-    { lat: 47.9, lon: 106.9, w: 0.1 },
-    { lat: 43.2, lon: 76.9, w: 0.12 },
-    { lat: -34.9, lon: 138.6, w: 0.2 },
-    { lat: -35.3, lon: 149.1, w: 0.18 },
-    { lat: -43.5, lon: 172.6, w: 0.15 },
-    { lat: -18.1, lon: 178.4, w: 0.1 },
-    { lat: -9.4, lon: 147.2, w: 0.1 },
-  ];
+  /**
+   * Readership nodes — the real reader cities from the PhilArchive log,
+   * imported from the one canonical list (src/data/reader-cities.ts) that
+   * the flat reach map on /glass reads from too. `w` is derived from the
+   * log's own readership band; nothing here is invented. The heaviest-read
+   * city is the hub the synapse threads radiate from.
+   */
+  const TIER_W: Record<number, number> = { 3: 1, 2: 0.62, 1: 0.34 };
+  const CITIES: { lat: number; lon: number; w: number; hub?: boolean }[] = READER_CITIES.map((c, i) => ({
+    lat: c.lat,
+    lon: c.lon,
+    w: TIER_W[c.tier],
+    ...(i === 0 ? { hub: true } : {}),
+  }));
 
   /** Major ranges as lon/lat polylines with a width and a peak height. */
   const RANGES = [
