@@ -14,7 +14,7 @@
 // page styles on navigation, so nothing leaks onto other routes.
 // ============================================================
 import Layout from '~/layouts/Layout.astro';
-import { READER_CITIES } from '~/data/reader-cities';
+import { READER_CITIES, CITY_COUNT, COUNTRY_COUNT, CONTINENT_COUNT } from '~/data/reader-cities';
 
 // The reach map draws the one canonical reader-city list (see
 // src/data/reader-cities.ts) — the same list the hero globe renders.
@@ -93,14 +93,18 @@ const metadata = {
       <p class="reach-intro">
         No institutional affiliation, no marketing, no push — just the work, posted to an open archive. Over roughly
         eight weeks (June–August 2026), PhilArchive's own logs place the corpus in <strong
-          >80+ cities across 45+ countries and all six inhabited continents</strong
+          >{CITY_COUNT} cities across {COUNTRY_COUNT} countries and territories, on all {CONTINENT_COUNT} inhabited continents</strong
         >, opened along the way from named university networks. Every point on the map below is a real reader city
         pulled from that log.
       </p>
       <div class="reach-stats">
         <div class="r-stat glass"><div class="r-n">10,000+</div><div class="r-l">downloads, unpromoted</div></div>
-        <div class="r-stat glass"><div class="r-n">45+</div><div class="r-l">countries in the readership log</div></div>
-        <div class="r-stat glass"><div class="r-n">80+</div><div class="r-l">reader cities, six continents</div></div>
+        <div class="r-stat glass">
+          <div class="r-n">{COUNTRY_COUNT}</div><div class="r-l">countries and territories in the readership log</div>
+        </div>
+        <div class="r-stat glass">
+          <div class="r-n">{CITY_COUNT}</div><div class="r-l">reader cities, {CONTINENT_COUNT} continents</div>
+        </div>
         <div class="r-stat glass">
           <div class="r-n">21+</div><div class="r-l">confirmed reader institutions (PhilPeople-verified)</div>
         </div>
