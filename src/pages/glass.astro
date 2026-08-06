@@ -15,6 +15,7 @@
 // ============================================================
 import Layout from '~/layouts/Layout.astro';
 import { READER_CITIES, CITY_COUNT, COUNTRY_COUNT, CONTINENT_COUNT } from '~/data/reader-cities';
+import { READER_INSTITUTIONS, INSTITUTION_COUNT } from '~/data/reader-institutions';
 
 // The reach map draws the one canonical reader-city list (see
 // src/data/reader-cities.ts) — the same list the hero globe renders.
@@ -81,7 +82,7 @@ const metadata = {
           </div>
           <div class="hero-proof">
             <div class="proof"><b>29+</b><span>Papers</span></div>
-            <div class="proof"><b>17+</b><span>Institutions</span></div>
+            <div class="proof"><b>{INSTITUTION_COUNT}+</b><span>Institutions</span></div>
             <div class="proof"><b>4</b><span>Continents</span></div>
             <div class="proof"><b>Top 2%</b><span>PhilPeople</span></div>
           </div>
@@ -106,7 +107,8 @@ const metadata = {
           <div class="r-n">{CITY_COUNT}</div><div class="r-l">reader cities, {CONTINENT_COUNT} continents</div>
         </div>
         <div class="r-stat glass">
-          <div class="r-n">21+</div><div class="r-l">confirmed reader institutions (PhilPeople-verified)</div>
+          <div class="r-n">{INSTITUTION_COUNT}+</div>
+          <div class="r-l">confirmed reader institutions (PhilPeople-verified)</div>
         </div>
       </div>
 
@@ -124,113 +126,18 @@ const metadata = {
 
       <div class="uni-head">Confirmed reader institutions — labeled by thread where a specific paper is logged</div>
       <div class="uni-grid">
-        <div class="uni glass">
-          <div class="u-name">University of Michigan</div><div class="u-loc">Ann Arbor, USA · Math</div><div
-            class="u-doc"
-          >
-            The Markov Blanket at Scale
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">John Carroll University</div><div class="u-loc">Ohio, USA · Philosophy</div><div
-            class="u-doc"
-          >
-            The 20th Century Objection · The External Factor · The Driving Mechanism
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Queen's University Belfast</div><div class="u-loc">Northern Ireland · Philosophy</div><div
-            class="u-doc"
-          >
-            War in Superposition
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">KU Leuven</div><div class="u-loc">Belgium</div><div class="u-doc">
-            Gravity and the Ground
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Massey University</div><div class="u-loc">New Zealand</div><div class="u-doc">
-            The First Note and the Octave
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Tasmania</div><div class="u-loc">Australia</div><div class="u-doc">
-            The Substrate Identity Continuity Theorem
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Cambridge</div><div class="u-loc">UK</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Hebrew University of Jerusalem</div><div class="u-loc">Israel</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">National Sun Yat-sen University</div><div class="u-loc">Taiwan</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Universität Leipzig</div><div class="u-loc">Germany</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Western Ontario</div><div class="u-loc">Canada</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Montreal</div><div class="u-loc">Canada</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Oklahoma</div><div class="u-loc">USA</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Kansas</div><div class="u-loc">USA</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Florida Atlantic University</div><div class="u-loc">USA</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Iowa State University</div><div class="u-loc">USA</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">Boston University</div><div class="u-loc">USA · unconfirmed</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">NYU</div><div class="u-loc">USA</div><div class="u-doc">general corpus readership</div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">UIC</div><div class="u-loc">USA</div><div class="u-doc">general corpus readership</div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">SUTD</div><div class="u-loc">Singapore</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
-        <div class="uni glass">
-          <div class="u-name">University of Gdansk</div><div class="u-loc">Poland</div><div class="u-doc">
-            general corpus readership
-          </div>
-        </div>
+        {
+          READER_INSTITUTIONS.map((u) => (
+            <div class="uni glass">
+              <div class="u-name">{u.name}</div>
+              <div class="u-loc">
+                {u.loc}
+                {u.unconfirmed ? ' · unconfirmed' : ''}
+              </div>
+              <div class="u-doc">{u.paper ?? 'general corpus readership'}</div>
+            </div>
+          ))
+        }
       </div>
       <p class="reach-note">
         Confirmed directly from PhilPeople download notifications through roughly May 2026 — the true count is likely
