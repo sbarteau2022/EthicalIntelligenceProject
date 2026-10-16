@@ -1,0 +1,230 @@
+{
+  "version": "1.0.0",
+  "files": [
+    {
+      "path": "DESIGN-GUIDE.md",
+      "bytes": 18214,
+      "sha256": "1ac4e62289708fd0b870458d8e4ea9968b0e6b48bf677950f504208de4a83f7e"
+    },
+    {
+      "path": "atoma-brand-board.png",
+      "bytes": 95691,
+      "sha256": "69c5a2d5ac820cf36654e32cc72edd0adbf5c2a51731f3c94f57a779c1a88c85"
+    },
+    {
+      "path": "atoma-brand-board.svg",
+      "bytes": 250418,
+      "sha256": "87d85f3153b9d8976812dc7833f9de099f68c607e71d1a44a189f5be771e823f"
+    },
+    {
+      "path": "atoma-favicon.svg",
+      "bytes": 345,
+      "sha256": "b24a822c84afe2a3c6b943961ebb3adc802b7d6c8541adba5ede2183ec78631b"
+    },
+    {
+      "path": "atoma-sculpture.svg",
+      "bytes": 2284,
+      "sha256": "03e3db532f1a6daf9c632987a3e681e601652ce518603506e76d979905cde02c"
+    },
+    {
+      "path": "atoma-social-1200x630.png",
+      "bytes": 43481,
+      "sha256": "27f94f866c7e3decb106b3d1aac0f6de420e3e3515954ada6deb43dd1e141169"
+    },
+    {
+      "path": "atoma-social-1200x630.svg",
+      "bytes": 69139,
+      "sha256": "ce3d8976c475333e76c48262a0159c25afef1114b88aa06b269f15e0c3174e27"
+    },
+    {
+      "path": "atoma-touch-icon.png",
+      "bytes": 3679,
+      "sha256": "2a70757e5f6fda5b3bee37b1f8b9bb88e00a0868aa1f03fa94c7870a1e47c667"
+    },
+    {
+      "path": "font-sources.json",
+      "bytes": 929,
+      "sha256": "d9804e59e270b31ed20eaf607c1386744e393309355ea317354993aacdbb4120"
+    },
+    {
+      "path": "fonts/Geist-OFL.txt",
+      "bytes": 4387,
+      "sha256": "f12f59163d92084b0473315ae4566cde0c1233d940ae464f5225a69c347cc691"
+    },
+    {
+      "path": "fonts/Geist-Variable.ttf",
+      "bytes": 169056,
+      "sha256": "73894e0448cae90a92b6c2f8732b7bb9acb7b94c418bff559dad4a18e1de9659"
+    },
+    {
+      "path": "fonts/Geist-Variable.woff2",
+      "bytes": 69760,
+      "sha256": "2ffebe993e969069a9789d15164b7715d42491b5835516c5e3b935d5f81b05f1"
+    },
+    {
+      "path": "fonts/InstrumentSerif-Italic.ttf",
+      "bytes": 71592,
+      "sha256": "08939b8bdf534afec24ae0ef5e03f948940cd9a8fe08e7fecbad040e62327385"
+    },
+    {
+      "path": "fonts/InstrumentSerif-Italic.woff2",
+      "bytes": 28096,
+      "sha256": "4f7aacc18d491dea8778bbc591db87b9455625899ed5f913957e7fd82604c294"
+    },
+    {
+      "path": "fonts/InstrumentSerif-OFL.txt",
+      "bytes": 4404,
+      "sha256": "b6b2292aa580937fb63796878d65a027a27f8c3db2d97601d0c34d9031f4ca17"
+    },
+    {
+      "path": "fonts/InstrumentSerif-Regular.ttf",
+      "bytes": 70012,
+      "sha256": "498efd461f6ddfcb7a111bf9a565709d2085d48201d501ead960d93e84ffbb88"
+    },
+    {
+      "path": "fonts/InstrumentSerif-Regular.woff2",
+      "bytes": 27440,
+      "sha256": "ca21b99b0d6b88a0dc34cebfe48104611e5c7f8f92746bed26c37aa470174322"
+    },
+    {
+      "path": "grant-intelligence-social-1200x630.png",
+      "bytes": 41492,
+      "sha256": "0f879bb4f17d56159fa0b97105759530f731548a2fe5e74e6d7a4a5cb7c6b7f1"
+    },
+    {
+      "path": "grant-intelligence-social-1200x630.svg",
+      "bytes": 68451,
+      "sha256": "de21a5c6d2775a411037b86441613bbd91ec82313354eada81e93e422a85166b"
+    },
+    {
+      "path": "logos/atoma-mark-color.png",
+      "bytes": 13768,
+      "sha256": "1267883a869618bfcb96a7c52d51a7e88cc59a57a5cc8b107eb6ff23f6723283"
+    },
+    {
+      "path": "logos/atoma-mark-color.svg",
+      "bytes": 247,
+      "sha256": "d9a4d93609b1dc014ac2cb0f77a2be0ab54225db124b99ab5182e3629c1eb243"
+    },
+    {
+      "path": "logos/atoma-mark-ink.png",
+      "bytes": 12883,
+      "sha256": "cefd3e8fe642cb2ba318ea396ce2834ee11b4f0dd6579b31d639adfbaf5743ba"
+    },
+    {
+      "path": "logos/atoma-mark-ink.svg",
+      "bytes": 247,
+      "sha256": "f0f03403d15a0acb59fc55f218c921fb080d15eb20b040cc0ea272b082f8ec4e"
+    },
+    {
+      "path": "logos/atoma-mark-white.png",
+      "bytes": 14844,
+      "sha256": "a2901fc22d972c548c793fd22fbd950ee509c85f5530f33d838651f73fe8c9a1"
+    },
+    {
+      "path": "logos/atoma-mark-white.svg",
+      "bytes": 247,
+      "sha256": "4eea814f1ed0e0ec610d293f41321d73d5709567c833f83136eb66b6b2da58e5"
+    },
+    {
+      "path": "logos/atoma-wordmark-color.png",
+      "bytes": 19614,
+      "sha256": "5bd729eaa2733487527b1e26fc1f7f9f777235d196f07a4f5890ea3e41245359"
+    },
+    {
+      "path": "logos/atoma-wordmark-color.svg",
+      "bytes": 9899,
+      "sha256": "4eb92427f92b38dda9e3405a4554c51db35892ab0902e0137e82eb3541c3c211"
+    },
+    {
+      "path": "logos/atoma-wordmark-ink.png",
+      "bytes": 19300,
+      "sha256": "3abc048f89cc6e0d1379ca4768cc1af4933e33d95d8183392f1cb2677ddebb12"
+    },
+    {
+      "path": "logos/atoma-wordmark-ink.svg",
+      "bytes": 9899,
+      "sha256": "294d94d259c06a36ec4ac3d38346bbc6399852c6a2be4b17ed23fbd89a026155"
+    },
+    {
+      "path": "logos/atoma-wordmark-white.png",
+      "bytes": 19360,
+      "sha256": "5a87aef435a8c8769a3ada8dbc6afdf5aa9bfc5a5e5c74877c68e28477c1bbde"
+    },
+    {
+      "path": "logos/atoma-wordmark-white.svg",
+      "bytes": 9899,
+      "sha256": "df6280ccb79f787681aa9266d365c8ff775d10a2bbfd66b1cc3f5a269c1aeff3"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-color.png",
+      "bytes": 9625,
+      "sha256": "2725bbdd603a6391ff8315fbaeb26fcb79d31f590ca0ff7eadf717996db68ca5"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-color.svg",
+      "bytes": 275,
+      "sha256": "20dda5064280de836ee2b54c4053a2c50d6250430aa32014746e968cbdb13085"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-ink.png",
+      "bytes": 10136,
+      "sha256": "4487947a0a005cdac187841b251ae8b63fa185243304ece61e1871fffb7570b9"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-ink.svg",
+      "bytes": 275,
+      "sha256": "dec41838ecfbeffdd9b4418dbe05268d5968f4104b1d8a34683d4b3bd1b51ba0"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-white.png",
+      "bytes": 10292,
+      "sha256": "2586a5ae46500ad7d6ab9ca94e8811761292b92f4d6c48ed1145838acd8d6608"
+    },
+    {
+      "path": "logos/grant-intelligence-mark-white.svg",
+      "bytes": 275,
+      "sha256": "dcd4636687dd46eb7bac2cc4f39a5a86be3bb4448a24fa7a0dd6949c4ad519ef"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-color.png",
+      "bytes": 15893,
+      "sha256": "2363661abeed7d1e6cbf687e9d20f61eec516c48965236589b2eb39922920b26"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-color.svg",
+      "bytes": 9682,
+      "sha256": "f965d041f206590f94fb4ee84d246f5e0a764530cb394e3ff90833fd307d056e"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-ink.png",
+      "bytes": 15944,
+      "sha256": "df728232dd62c445849f37f3b163a66bdeb9507c8aa09bbe8278a13b676b386b"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-ink.svg",
+      "bytes": 9682,
+      "sha256": "4a7a40bc0a05b5b272495fe63ceb249c7b9481972c210efdf0e9c779c9cbd334"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-white.png",
+      "bytes": 15762,
+      "sha256": "9385038bd4ce7d28cda71a6cf5120e9e5bede03ca7a703cd13a3cadf9f01b37e"
+    },
+    {
+      "path": "logos/grant-intelligence-wordmark-white.svg",
+      "bytes": 9682,
+      "sha256": "0fb0bb7407689e1051acfe56bb0bac0da51898f44841aee55ab2db2ecfcf91c2"
+    },
+    {
+      "path": "tokens.css",
+      "bytes": 1149,
+      "sha256": "5590069fb4089fd2009a6be0c43e77eca176b64c0147849c186a46fea74b285b"
+    },
+    {
+      "path": "tokens.json",
+      "bytes": 923,
+      "sha256": "73c4a673191305d1e854604d4c73b005d9469f3fc54b64e808a4b51978f5c986"
+    }
+  ]
+}

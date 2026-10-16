@@ -1,0 +1,41 @@
+@font-face {
+  font-family: Geist;
+  src: url('/assets/brand/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/assets/brand/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/assets/brand/fonts/InstrumentSerif-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+:root {
+  --ae-eggshell: #f2f1eb;
+  --ae-paper: #fcfcf8;
+  --ae-ink: #151d29;
+  --ae-blue: #2f5bea;
+  --ae-blue-soft: #c8d8fc;
+  --ae-titanium: #b8c1cb;
+  --ae-titanium-strong: #7b8796;
+  --ae-muted: #5c6675;
+  --ae-line: #d0d3d3;
+  --ae-night: #101827;
+  --ae-sans: Geist, system-ui, -apple-system, sans-serif;
+  --ae-serif: 'Instrument Serif', Georgia, serif;
+  --ae-mono: 'SFMono-Regular', Consolas, monospace;
+  --ae-max: 1280px;
+  --ae-gutter: clamp(22px, 5.3vw, 88px);
+  --ae-section: clamp(72px, 9vw, 136px);
+  --ae-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ae-radius: 4px;
+}

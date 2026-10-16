@@ -8,6 +8,10 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "brand:vectors": "uv run scripts/build-brand-vectors.py",
+    "brand:package": "node scripts/package-brand.mjs",
+    "brand:build": "npm run brand:vectors && npm run brand:package",
+    "test:brand": "uv run scripts/verify-brand-ui.py",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",

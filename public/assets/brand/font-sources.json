@@ -1,0 +1,21 @@
+{
+  "license": "SIL Open Font License 1.1; individual license files are supplied in fonts/",
+  "sources": [
+    {
+      "file": "fonts/Geist-Variable.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/geist/Geist%5Bwght%5D.ttf",
+      "license": "fonts/Geist-OFL.txt"
+    },
+    {
+      "file": "fonts/InstrumentSerif-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentserif/InstrumentSerif-Regular.ttf",
+      "license": "fonts/InstrumentSerif-OFL.txt"
+    },
+    {
+      "file": "fonts/InstrumentSerif-Italic.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentserif/InstrumentSerif-Italic.ttf",
+      "license": "fonts/InstrumentSerif-OFL.txt"
+    }
+  ],
+  "derivatives": "WOFF2 files are format conversions of these local masters. Wordmark letterforms are converted to SVG paths. Input file hashes are in manifest.json."
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="640" viewBox="0 0 600 640" fill="none">
+  <defs>
+    <linearGradient id="metal" x1="15" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#FAFBFA"/><stop offset=".33" stop-color="#CED3D8"/><stop offset=".51" stop-color="#F4F5F4"/><stop offset=".72" stop-color="#A8B1BD"/><stop offset="1" stop-color="#DBDFE1"/></linearGradient>
+    <linearGradient id="edge" x1="7" y1="9" x2="59" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#A6ADB7"/><stop offset="1" stop-color="#6E7B8B"/></linearGradient>
+    <linearGradient id="blue" x1="20" y1="39" x2="50" y2="49" gradientUnits="userSpaceOnUse"><stop stop-color="#5684FF"/><stop offset=".45" stop-color="#2F5BEA"/><stop offset="1" stop-color="#1439A0"/></linearGradient>
+    <filter id="shadow" x="-100%" y="-100%" width="300%" height="350%"><feGaussianBlur stdDeviation="12"/></filter>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0v36" stroke="#B8C1CB" stroke-width=".6" opacity=".28"/></pattern>
+  </defs>
+  <rect width="600" height="640" fill="url(#grid)"/><circle cx="300" cy="310" r="215" stroke="#B8C1CB" stroke-width=".8" opacity=".6"/><circle cx="300" cy="310" r="170" stroke="#B8C1CB" stroke-width=".7" stroke-dasharray="2 8"/>
+  <path d="M300 55v45M300 520v45M46 310h45M509 310h45" stroke="#9AA8BB" stroke-width="1"/><ellipse cx="301" cy="492" rx="160" ry="27" fill="#1D2B45" opacity=".14" filter="url(#shadow)"/>
+  <g transform="translate(73 83) matrix(.98 .13 -.12 1 0 0) scale(6.6)"><path d="M8 59 30 13h10l22 46H48L35 31 22 59H8Z" fill="url(#edge)"/><path d="M5 55 27 9h10l22 46H45L32 27 19 55H5Z" fill="url(#metal)" stroke="#E4E7E9" stroke-width=".22"/><path d="m59 55 3 4H48l-3-4H59ZM37 9l3 4 22 46-3-4L37 9Z" fill="#8F9BAA"/><path d="M28 43h20l5 10H23l5-10Z" fill="#153CAC"/><path d="M25 39h20l5 10H20l5-10Z" fill="url(#blue)" stroke="#6290FF" stroke-width=".16"/></g>
+  <path d="M55 421c20-60 143-115 275-137 132-23 239-12 240 27" stroke="#2F5BEA" stroke-width="1.2" opacity=".5"/><circle cx="55" cy="421" r="4" fill="#2F5BEA"/><circle cx="570" cy="311" r="3" fill="#2F5BEA"/><path d="M62 121h46M85 98v46M492 509h46M515 486v46" stroke="#2F5BEA" stroke-width=".8" opacity=".6"/>
+</svg>

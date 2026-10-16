@@ -14,6 +14,33 @@ This repository contains the project's public website — a statically generated
 
 For agent/AI-assistant conventions (house format, verification checklist, path aliases, etc.), see [AGENTS.md](./AGENTS.md).
 
+## Atoma Engineering — staged design
+
+The `staging/atoma-engineering` branch adds the reviewed eggshell/blue/titanium
+marketing design at `/engineering`, with a printable brand book at
+`/engineering/brand`. The existing homepage, Observer/Atlas pages, renderers,
+OAuth, and live integrations are unchanged. This is an additive design preview,
+not a production homepage replacement.
+
+The kit includes separate Atoma and Grant Intelligence identities, SVG/PNG
+artwork, social cards, self-hosted fonts/licenses, CSS/JSON tokens, and source.
+Download `/assets/brand/atoma-brand-package.zip`. The product links open Grant
+Intelligence's independent Worker host, not this site's unrelated `/app`.
+Contact remains the labeled placeholder `hello@atoma.example`; project briefs
+stay in page memory and can be copied/downloaded without submission or storage.
+
+Build the kit with `npm run brand:build` (Node.js, uv, zip, and installed Sharp).
+Build/preview the site with `npm run build` and
+`npm run preview -- --host 127.0.0.1 --port 8794`, then run
+`npm run test:brand -- --url http://127.0.0.1:8794 --site-regressions`.
+Add `--artifacts /absolute/output/directory` for review captures.
+See [the design specification](./docs/ATOMA_DESIGN_PACKAGE.md) and
+[standalone kit instructions](./docs/ATOMA_PACKAGE_README.md).
+
+Only pushes to `main` trigger the production deploy workflow. This staging
+branch is not merged; a PR may trigger the repository's preview workflow.
+Unrelated local preprint deletions and private agent settings are excluded.
+
 <br>
 
 ## Table of Contents
